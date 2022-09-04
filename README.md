@@ -1,1 +1,1 @@
-# R_base_vis_course
+This repository contains some data and notebooks for a workshop on R-based data visualization.
