@@ -1,0 +1,18 @@
+--- 
+title: "Visualization in R workshop"
+author: "Anna Heintz-Buschart and Joachim Goedhart"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+documentclass: book
+bibliography: [book.bib, packages.bib]
+description: |
+  This is a collection of markdown files used during a workshop of the Science
+  Park Study group at University of Amsterdam, 14th September 2022
+link-citations: yes
+github-repo: rstudio/bookdown-demo
+---
+
+# About
+
+This book is based on a collection of R markdown files used during a workshop of the [Science Park Study Group](https://scienceparkstudygroup.info/) at University of Amsterdam, 14th September 2022. 
+

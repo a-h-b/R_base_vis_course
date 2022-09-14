@@ -1,0 +1,70 @@
+---
+title: "02 - Intro to the {tidyverse}"
+author: "Joachim Goedhart"
+date: '2022-09-08'
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: 4
+  pdf_document: default
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### 2.1 Why `{tidyverse}`?
+
+The `{tidyverse}` is a collection of R packages that extend the functionality of base R. The packages are developed to simplify and accelerate data analysis with R. All packages share an underlying design philosophy, grammar, and data structures. You may say that the `{tidyverse}` equips R with superpowers. Some of the packages may be familiar, e.g. `{ggplot2}` or `{tidyr}` and these may be installed already. But if you'd like to use some of these, you may as well install it in one go:
+
+```{r}
+if(!require(tidyverse)){
+  install.packages("tidyverse",repos = "http://cran.us.r-project.org")
+  library(tidyverse)
+}
+```
+
+### 2.2 Reading data from excel
+
+The `{readxl}` package that is installed as part of the `{tidyverse}` can be used to read data from excel files:
+
+```{r}
+library(readxl)
+df_xl <- read_excel("allData.xlsx", sheet = 2)
+head(df_xl)
+```
+
+### 2.3 The pipe operator
+
+Unlike the `{openxlsx}` package, there is no automatic detection and removal of empty lines or columns. To do this we can add a function to do this with the pipe operator `%>%` that is often used in the tidyverse. This operator is used to take the result of a function and feed it into the next function. The function that we will use is `drop_na()` and we tell this function to remove any line with "NA" in the column "Hair" from the data:
+
+```{r}
+df_xl <- read_excel("allData.xlsx", sheet = 2, skip = 1) %>% drop_na(Hair)
+head(df_xl)
+```
+
+It is possible to use multiple pipe operators to combine multiple functions in a single command. Here we add another function `select()` to get rid of the 4th column, since it is empty. The `-` indicates that we do *not* select column number 4. Since the commands become pretty long when multiple pipe operators are used, it is good practice to start each function on a new line:
+
+```{r}
+read_excel("allData.xlsx", sheet = 2, skip = 1) %>%
+  drop_na(Hair) %>%
+  select(-4) %>%
+  head()
+```
+
+There are many more functions for data manipulation in the tidyverse, but in this workshop we will focus on the use of the `{ggplot2}` package for plotting.
+
+### 2.4 Resources on tidyverse
+
+Tidyverse website:
+<https://www.tidyverse.org>
+
+R for Data Science (Hadley Wickham & Garrett Grolemund):
+<https://r4ds.had.co.nz/index.html>
+
+A Modern Dive into R and the Tidyverse (Chester Ismay & Albert Y. Kim ):
+<https://moderndive.com>

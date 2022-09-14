@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 3 Importing data - base R | Visualization in R workshop</title>
+  <meta name="description" content="<p>This is a collection of markdown files used during a workshop of the Science
+Park Study group at University of Amsterdam, 14th September 2022</p>" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 3 Importing data - base R | Visualization in R workshop" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="<p>This is a collection of markdown files used during a workshop of the Science
+Park Study group at University of Amsterdam, 14th September 2022</p>" />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 3 Importing data - base R | Visualization in R workshop" />
+  
+  <meta name="twitter:description" content="<p>This is a collection of markdown files used during a workshop of the Science
+Park Study group at University of Amsterdam, 14th September 2022</p>" />
+  
+
+<meta name="author" content="Anna Heintz-Buschart and Joachim Goedhart" />
+
+
+<meta name="date" content="2022-09-14" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="hello-world---base-r.html"/>
+<link rel="next" href="intro-to-the-tidyverse.html"/>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Visualization in R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> About</a></li>
+<li class="chapter" data-level="2" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html"><i class="fa fa-check"></i><b>2</b> Hello World - base R</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html#welcome"><i class="fa fa-check"></i><b>2.1</b> Welcome</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html#interacting-with-r"><i class="fa fa-check"></i><b>2.1.1</b> Interacting with R</a></li>
+<li class="chapter" data-level="2.1.2" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html#chunks"><i class="fa fa-check"></i><b>2.1.2</b> Chunks</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html#test-knitting"><i class="fa fa-check"></i><b>2.2</b> Test ‘knitting’</a></li>
+<li class="chapter" data-level="2.3" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html#resources-on-r"><i class="fa fa-check"></i><b>2.3</b> Resources on R</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html"><i class="fa fa-check"></i><b>3</b> Importing data - base R</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#using-base-r"><i class="fa fa-check"></i><b>3.1</b> Using base R</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#tab-delimited-data-with-a-header-and-using-standard-decimal-points"><i class="fa fa-check"></i><b>3.1.1</b> Tab-delimited data with a header and using standard decimal points</a></li>
+<li class="chapter" data-level="3.1.2" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#non-standard-decimal-points"><i class="fa fa-check"></i><b>3.1.2</b> Non-standard decimal points</a></li>
+<li class="chapter" data-level="3.1.3" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#comma-separated-data-with-a-header-and-using-standard-decimal-points"><i class="fa fa-check"></i><b>3.1.3</b> Comma-separated data with a header and using standard decimal points</a></li>
+<li class="chapter" data-level="3.1.4" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#tables-without-headers"><i class="fa fa-check"></i><b>3.1.4</b> Tables without headers</a></li>
+<li class="chapter" data-level="3.1.5" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#additional-lines"><i class="fa fa-check"></i><b>3.1.5</b> Additional lines</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#further-methods"><i class="fa fa-check"></i><b>3.2</b> Further methods</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#excel-files"><i class="fa fa-check"></i><b>3.2.1</b> Excel files</a></li>
+<li class="chapter" data-level="3.2.2" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#reading-from-urls"><i class="fa fa-check"></i><b>3.2.2</b> Reading from URLs</a></li>
+<li class="chapter" data-level="3.2.3" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#reading-from-the-clipboard"><i class="fa fa-check"></i><b>3.2.3</b> Reading from the clipboard</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="intro-to-the-tidyverse.html"><a href="intro-to-the-tidyverse.html"><i class="fa fa-check"></i><b>4</b> Intro to the {tidyverse}</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="intro-to-the-tidyverse.html"><a href="intro-to-the-tidyverse.html#why-tidyverse"><i class="fa fa-check"></i><b>4.1</b> Why <code>{tidyverse}</code>?</a></li>
+<li class="chapter" data-level="4.2" data-path="intro-to-the-tidyverse.html"><a href="intro-to-the-tidyverse.html#reading-data-from-excel"><i class="fa fa-check"></i><b>4.2</b> Reading data from excel</a></li>
+<li class="chapter" data-level="4.3" data-path="intro-to-the-tidyverse.html"><a href="intro-to-the-tidyverse.html#the-pipe-operator"><i class="fa fa-check"></i><b>4.3</b> The pipe operator</a></li>
+<li class="chapter" data-level="4.4" data-path="intro-to-the-tidyverse.html"><a href="intro-to-the-tidyverse.html#resources-on-tidyverse"><i class="fa fa-check"></i><b>4.4</b> Resources on tidyverse</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html"><i class="fa fa-check"></i><b>5</b> Introduction to scatter plots in base R</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#set-up"><i class="fa fa-check"></i><b>5.1</b> Set up</a></li>
+<li class="chapter" data-level="5.2" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#formatting-plots"><i class="fa fa-check"></i><b>5.2</b> Formatting plots</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#defaults"><i class="fa fa-check"></i><b>5.2.1</b> Defaults</a></li>
+<li class="chapter" data-level="5.2.2" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#margins"><i class="fa fa-check"></i><b>5.2.2</b> Margins</a></li>
+<li class="chapter" data-level="5.2.3" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#plot-borders"><i class="fa fa-check"></i><b>5.2.3</b> Plot borders</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#axes"><i class="fa fa-check"></i><b>5.3</b> Axes</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#axis-marks"><i class="fa fa-check"></i><b>5.3.1</b> Axis marks</a></li>
+<li class="chapter" data-level="5.3.2" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#axis-labels"><i class="fa fa-check"></i><b>5.3.2</b> Axis labels</a></li>
+<li class="chapter" data-level="5.3.3" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#scales-and-ranges"><i class="fa fa-check"></i><b>5.3.3</b> Scales and ranges</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#points"><i class="fa fa-check"></i><b>5.4</b> Points</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#shapes"><i class="fa fa-check"></i><b>5.4.1</b> Shapes</a></li>
+<li class="chapter" data-level="5.4.2" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#colour"><i class="fa fa-check"></i><b>5.4.2</b> Colour</a></li>
+<li class="chapter" data-level="5.4.3" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#size"><i class="fa fa-check"></i><b>5.4.3</b> Size</a></li>
+<li class="chapter" data-level="5.4.4" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#multiple-sets-of-points"><i class="fa fa-check"></i><b>5.4.4</b> Multiple sets of points</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#legends"><i class="fa fa-check"></i><b>5.5</b> Legends</a></li>
+<li class="chapter" data-level="5.6" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#lines"><i class="fa fa-check"></i><b>5.6</b> Lines</a>
+<ul>
+<li class="chapter" data-level="5.6.1" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#histogram-style-lines"><i class="fa fa-check"></i><b>5.6.1</b> Histogram-style lines</a></li>
+<li class="chapter" data-level="5.6.2" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#lines-between-points"><i class="fa fa-check"></i><b>5.6.2</b> Lines between points</a></li>
+<li class="chapter" data-level="5.6.3" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#lines-through-the-plot"><i class="fa fa-check"></i><b>5.6.3</b> Lines through the plot</a></li>
+<li class="chapter" data-level="5.6.4" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#trend-lines"><i class="fa fa-check"></i><b>5.6.4</b> Trend lines</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html"><i class="fa fa-check"></i><b>6</b> Introduction to scatter plots in R/ggplot2</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#setup"><i class="fa fa-check"></i><b>6.1</b> Setup</a></li>
+<li class="chapter" data-level="6.2" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#scatterplots"><i class="fa fa-check"></i><b>6.2</b> Scatterplots</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#defaults-1"><i class="fa fa-check"></i><b>6.2.1</b> Defaults</a></li>
+<li class="chapter" data-level="6.2.2" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#themes"><i class="fa fa-check"></i><b>6.2.2</b> Themes</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#intermezzo-plots-as-objects"><i class="fa fa-check"></i><b>6.3</b> Intermezzo: Plots as objects</a></li>
+<li class="chapter" data-level="6.4" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#modifying-plots"><i class="fa fa-check"></i><b>6.4</b> Modifying plots</a>
+<ul>
+<li class="chapter" data-level="6.4.1" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#axis-labels-1"><i class="fa fa-check"></i><b>6.4.1</b> Axis labels</a></li>
+<li class="chapter" data-level="6.4.2" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#scales-and-ranges-1"><i class="fa fa-check"></i><b>6.4.2</b> Scales and ranges</a></li>
+<li class="chapter" data-level="6.4.3" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#aesthetics-geometries"><i class="fa fa-check"></i><b>6.4.3</b> Aesthetics &amp; Geometries</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#legends-1"><i class="fa fa-check"></i><b>6.5</b> Legends</a></li>
+<li class="chapter" data-level="6.6" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#lines-and-trends"><i class="fa fa-check"></i><b>6.6</b> Lines and trends</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html"><i class="fa fa-check"></i><b>7</b> Summarizing distributions in base R</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#setup-1"><i class="fa fa-check"></i><b>7.1</b> Setup</a></li>
+<li class="chapter" data-level="7.2" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#the-data"><i class="fa fa-check"></i><b>7.2</b> The data</a></li>
+<li class="chapter" data-level="7.3" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#just-the-mean-barplots"><i class="fa fa-check"></i><b>7.3</b> Just the mean: Barplots</a>
+<ul>
+<li class="chapter" data-level="7.3.1" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#simple-barplots"><i class="fa fa-check"></i><b>7.3.1</b> Simple barplots</a></li>
+<li class="chapter" data-level="7.3.2" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#barplots-with-error-bars"><i class="fa fa-check"></i><b>7.3.2</b> Barplots with error bars</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#medians-quartiles-and-outliers-boxplots"><i class="fa fa-check"></i><b>7.4</b> Medians, quartiles, and outliers: Boxplots</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#basic-boxplots"><i class="fa fa-check"></i><b>7.4.1</b> Basic boxplots</a></li>
+<li class="chapter" data-level="7.4.2" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#adding-points-on-top"><i class="fa fa-check"></i><b>7.4.2</b> Adding points on top</a></li>
+<li class="chapter" data-level="7.4.3" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#adding-lines-between-points"><i class="fa fa-check"></i><b>7.4.3</b> Adding lines between points</a></li>
+<li class="chapter" data-level="7.4.4" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#half-boxes"><i class="fa fa-check"></i><b>7.4.4</b> Half-boxes</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#histograms"><i class="fa fa-check"></i><b>7.5</b> Histograms</a></li>
+<li class="chapter" data-level="7.6" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#density-plots"><i class="fa fa-check"></i><b>7.6</b> Density plots</a></li>
+<li class="chapter" data-level="7.7" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#violinplots"><i class="fa fa-check"></i><b>7.7</b> Violinplots</a></li>
+<li class="chapter" data-level="7.8" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#beanplots"><i class="fa fa-check"></i><b>7.8</b> Beanplots</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html"><i class="fa fa-check"></i><b>8</b> Distributions &amp; ggplot2</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#setup-and-data"><i class="fa fa-check"></i><b>8.1</b> Setup and data</a></li>
+<li class="chapter" data-level="8.2" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#multiple-distributions"><i class="fa fa-check"></i><b>8.2</b> Multiple distributions</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#plotting-the-data"><i class="fa fa-check"></i><b>8.2.1</b> Plotting the data</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#boxplots"><i class="fa fa-check"></i><b>8.3</b> Boxplots</a></li>
+<li class="chapter" data-level="8.4" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#violinplots-1"><i class="fa fa-check"></i><b>8.4</b> Violinplots</a></li>
+<li class="chapter" data-level="8.5" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#facets-splitting-into-multiple-plots"><i class="fa fa-check"></i><b>8.5</b> Facets: Splitting into multiple plots</a></li>
+<li class="chapter" data-level="8.6" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#a-single-distribution"><i class="fa fa-check"></i><b>8.6</b> A single distribution</a>
+<ul>
+<li class="chapter" data-level="8.6.1" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#a-single-violinplot"><i class="fa fa-check"></i><b>8.6.1</b> A single violinplot</a></li>
+<li class="chapter" data-level="8.6.2" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#density-plot"><i class="fa fa-check"></i><b>8.6.2</b> Density plot</a></li>
+<li class="chapter" data-level="8.6.3" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#histogram"><i class="fa fa-check"></i><b>8.6.3</b> Histogram</a></li>
+</ul></li>
+<li class="chapter" data-level="8.7" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#two-distributions"><i class="fa fa-check"></i><b>8.7</b> Two distributions</a>
+<ul>
+<li class="chapter" data-level="8.7.1" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#histogram-density"><i class="fa fa-check"></i><b>8.7.1</b> Histogram &amp; Density</a></li>
+<li class="chapter" data-level="8.7.2" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#splitting-into-two-plots"><i class="fa fa-check"></i><b>8.7.2</b> Splitting into two plots</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html"><i class="fa fa-check"></i><b>9</b> Heatmaps <em>et al.</em> - base R</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#setup-2"><i class="fa fa-check"></i><b>9.1</b> Setup</a></li>
+<li class="chapter" data-level="9.2" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#loading-data"><i class="fa fa-check"></i><b>9.2</b> Loading data</a></li>
+<li class="chapter" data-level="9.3" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#basic-heatmaps"><i class="fa fa-check"></i><b>9.3</b> Basic heatmaps</a>
+<ul>
+<li class="chapter" data-level="9.3.1" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#a-simple-heatmap"><i class="fa fa-check"></i><b>9.3.1</b> A simple heatmap</a></li>
+<li class="chapter" data-level="9.3.2" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#scaling"><i class="fa fa-check"></i><b>9.3.2</b> Scaling</a></li>
+<li class="chapter" data-level="9.3.3" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#colour-schemes"><i class="fa fa-check"></i><b>9.3.3</b> Colour schemes</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#decorating-heatmaps"><i class="fa fa-check"></i><b>9.4</b> Decorating heatmaps</a>
+<ul>
+<li class="chapter" data-level="9.4.1" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#dendrograms"><i class="fa fa-check"></i><b>9.4.1</b> Dendrograms</a></li>
+<li class="chapter" data-level="9.4.2" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#ordering-features-and-samples"><i class="fa fa-check"></i><b>9.4.2</b> Ordering features and samples</a></li>
+<li class="chapter" data-level="9.4.3" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#adding-attributes"><i class="fa fa-check"></i><b>9.4.3</b> Adding attributes</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="venn-euler-and-upset-diagrams.html"><a href="venn-euler-and-upset-diagrams.html"><i class="fa fa-check"></i><b>10</b> Venn, Euler, and upSet diagrams</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="venn-euler-and-upset-diagrams.html"><a href="venn-euler-and-upset-diagrams.html#setup-and-data-1"><i class="fa fa-check"></i><b>10.1</b> Setup and data</a></li>
+<li class="chapter" data-level="10.2" data-path="venn-euler-and-upset-diagrams.html"><a href="venn-euler-and-upset-diagrams.html#venn-diagrams"><i class="fa fa-check"></i><b>10.2</b> Venn diagrams</a></li>
+<li class="chapter" data-level="10.3" data-path="venn-euler-and-upset-diagrams.html"><a href="venn-euler-and-upset-diagrams.html#euler-diagrams"><i class="fa fa-check"></i><b>10.3</b> Euler diagrams</a></li>
+<li class="chapter" data-level="10.4" data-path="venn-euler-and-upset-diagrams.html"><a href="venn-euler-and-upset-diagrams.html#upset-plots"><i class="fa fa-check"></i><b>10.4</b> UpSet plots</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html"><i class="fa fa-check"></i><b>11</b> Visualizing networks with igraph</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#setup-3"><i class="fa fa-check"></i><b>11.1</b> Setup</a></li>
+<li class="chapter" data-level="11.2" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#network-representations"><i class="fa fa-check"></i><b>11.2</b> Network representations</a>
+<ul>
+<li class="chapter" data-level="11.2.1" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#network-formats-edgelist"><i class="fa fa-check"></i><b>11.2.1</b> Network formats: edgelist</a></li>
+<li class="chapter" data-level="11.2.2" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#network-formats-adjacency-matrix"><i class="fa fa-check"></i><b>11.2.2</b> Network formats: adjacency matrix</a></li>
+</ul></li>
+<li class="chapter" data-level="11.3" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#network-visualization"><i class="fa fa-check"></i><b>11.3</b> Network visualization</a>
+<ul>
+<li class="chapter" data-level="11.3.1" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#layouts"><i class="fa fa-check"></i><b>11.3.1</b> Layouts</a></li>
+<li class="chapter" data-level="11.3.2" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#node-labels"><i class="fa fa-check"></i><b>11.3.2</b> Node labels</a></li>
+<li class="chapter" data-level="11.3.3" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#node-shapes-and-sizes"><i class="fa fa-check"></i><b>11.3.3</b> Node shapes and sizes</a></li>
+<li class="chapter" data-level="11.3.4" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#edge-appearance"><i class="fa fa-check"></i><b>11.3.4</b> Edge appearance</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/a-h-b/R_base_vis_course" target="blank">Rendered with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Visualization in R workshop</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="importing-data---base-r" class="section level1" number="3">
+<h1><span class="header-section-number">Chapter 3</span> Importing data - base R</h1>
+<p>In this chapter, we take a look at functions to import data into R.</p>
+<div id="using-base-r" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Using base R</h2>
+<p>If we are only relying on base R, we need our data in common text
+formats, such as tab- or comma separated files. It’s not unusual for
+laboratory machines, analysis programs, or bioinformaticians to supply
+the data in such a format. If you’ve got data in Microsoft Excel, you
+can choose comma-separated (.csv) and tab-separated (.tsv) format from
+the <code>Save as...</code> menu.</p>
+<p>R’s base functions for reading files need to be told about the structure
+of the file. Then, it is actually pretty flexible with the input format.
+Here are some examples. Take a look at the files we import in a text
+editor, such as Textedit or Notepad, to see what the original data looks
+like.</p>
+<div id="tab-delimited-data-with-a-header-and-using-standard-decimal-points" class="section level3" number="3.1.1">
+<h3><span class="header-section-number">3.1.1</span> Tab-delimited data with a header and using standard decimal points</h3>
+<p>The first example is a pretty standard text file without any hidden
+problems. <em>Remember, you can execute the chunks by clicking the <code>Run</code>
+button within the chunk or by placing your cursor inside it and pressing
+<code>Cmd+Shift+Enter</code>.</em></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="importing-data---base-r.html#cb7-1" aria-hidden="true" tabindex="-1"></a>UA_v1 <span class="ot">&lt;-</span> <span class="fu">read.delim</span>(<span class="st">&quot;../datasets/USArrests_tab.txt&quot;</span>)</span>
+<span id="cb7-2"><a href="importing-data---base-r.html#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(UA_v1)</span></code></pre></div>
+<pre><code>##   Murder Assault UrbanPop Rape
+## 1   13.2     236       58 21.2
+## 2   10.0     263       48 44.5
+## 3    8.1     294       80 31.0
+## 4    8.8     190       50 19.5
+## 5    9.0     276       91 40.6
+## 6    7.9     204       78 38.7</code></pre>
+</div>
+<div id="non-standard-decimal-points" class="section level3" number="3.1.2">
+<h3><span class="header-section-number">3.1.2</span> Non-standard decimal points</h3>
+<p>If your computer is set up with Dutch standards, Excel most likely
+exports numbers with a comma instead of a point/full stop as decimal
+point. Here’s how you can tell R about this.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="importing-data---base-r.html#cb9-1" aria-hidden="true" tabindex="-1"></a>UA_v2 <span class="ot">&lt;-</span> <span class="fu">read.delim</span>(<span class="st">&quot;../datasets/USArrestsComma_tab.txt&quot;</span>,<span class="at">dec=</span><span class="st">&quot;,&quot;</span>)</span>
+<span id="cb9-2"><a href="importing-data---base-r.html#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(UA_v2)</span></code></pre></div>
+<pre><code>##   Murder Assault UrbanPop Rape
+## 1   13.2     236       58 21.2
+## 2   10.0     263       48 44.5
+## 3    8.1     294       80 31.0
+## 4    8.8     190       50 19.5
+## 5    9.0     276       91 40.6
+## 6    7.9     204       78 38.7</code></pre>
+</div>
+<div id="comma-separated-data-with-a-header-and-using-standard-decimal-points" class="section level3" number="3.1.3">
+<h3><span class="header-section-number">3.1.3</span> Comma-separated data with a header and using standard decimal points</h3>
+<p>Data with standard decimal points might also come separated by commas:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="importing-data---base-r.html#cb11-1" aria-hidden="true" tabindex="-1"></a>UA_v3 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;../datasets/USArrests_comma.csv&quot;</span>)</span>
+<span id="cb11-2"><a href="importing-data---base-r.html#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(UA_v3)</span></code></pre></div>
+<pre><code>##   Murder Assault UrbanPop Rape
+## 1   13.2     236       58 21.2
+## 2   10.0     263       48 44.5
+## 3    8.1     294       80 31.0
+## 4    8.8     190       50 19.5
+## 5    9.0     276       91 40.6
+## 6    7.9     204       78 38.7</code></pre>
+<p>If you look at the chunk above, we used different functions to read the
+tab- and comma-separated files. This saves us some typing, because by
+default <code>read.delim</code> separates the input at a tab and <code>read.csv</code>
+separates the input at the comma. However, <code>read.delim</code> and <code>read.csv</code>
+(along with a whole bunch of other functions) belong to one family. They
+only differ in their defaults, so if you explicitly state the field
+separator and some other formatting characteristics (like the decimal
+point <code>dec</code> above), you can interchange these functions. I find it a lot
+easier to remember the names of those arguments than the defaults of all
+the functions. So, I will use <code>read.delim</code> for the rest of the notebook:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="importing-data---base-r.html#cb13-1" aria-hidden="true" tabindex="-1"></a>UA_v3b <span class="ot">&lt;-</span> <span class="fu">read.delim</span>(<span class="st">&quot;../datasets/USArrests_comma.csv&quot;</span>,<span class="at">sep=</span><span class="st">&quot;,&quot;</span>)</span>
+<span id="cb13-2"><a href="importing-data---base-r.html#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(UA_v3b)</span></code></pre></div>
+<pre><code>##   Murder Assault UrbanPop Rape
+## 1   13.2     236       58 21.2
+## 2   10.0     263       48 44.5
+## 3    8.1     294       80 31.0
+## 4    8.8     190       50 19.5
+## 5    9.0     276       91 40.6
+## 6    7.9     204       78 38.7</code></pre>
+</div>
+<div id="tables-without-headers" class="section level3" number="3.1.4">
+<h3><span class="header-section-number">3.1.4</span> Tables without headers</h3>
+<p>While not best practice, you sometimes get data without a set of column
+headers:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="importing-data---base-r.html#cb15-1" aria-hidden="true" tabindex="-1"></a>UA_v4 <span class="ot">&lt;-</span> <span class="fu">read.delim</span>(<span class="st">&quot;../datasets/USArrests_commaNoHeader.csv&quot;</span>,<span class="at">sep=</span><span class="st">&quot;,&quot;</span>)</span>
+<span id="cb15-2"><a href="importing-data---base-r.html#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(UA_v4)</span></code></pre></div>
+<pre><code>##   X13.2 X236 X58 X21.2
+## 1  10.0  263  48  44.5
+## 2   8.1  294  80  31.0
+## 3   8.8  190  50  19.5
+## 4   9.0  276  91  40.6
+## 5   7.9  204  78  38.7
+## 6   3.3  110  77  11.1</code></pre>
+<p>You can add column names manually:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="importing-data---base-r.html#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(UA_v4) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Murder&quot;</span>, <span class="st">&quot;Assault&quot;</span>, <span class="st">&quot;UrbanPop&quot;</span>, <span class="st">&quot;Rape&quot;</span>)</span>
+<span id="cb17-2"><a href="importing-data---base-r.html#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(UA_v4)</span></code></pre></div>
+<pre><code>##   Murder Assault UrbanPop Rape
+## 1   10.0     263       48 44.5
+## 2    8.1     294       80 31.0
+## 3    8.8     190       50 19.5
+## 4    9.0     276       91 40.6
+## 5    7.9     204       78 38.7
+## 6    3.3     110       77 11.1</code></pre>
+</div>
+<div id="additional-lines" class="section level3" number="3.1.5">
+<h3><span class="header-section-number">3.1.5</span> Additional lines</h3>
+<p>Sometimes your data has some kind of preface that does not match the
+rest of your data. You can ignore it, if it is labeled with a specific
+character like so:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="importing-data---base-r.html#cb19-1" aria-hidden="true" tabindex="-1"></a>UA_v5 <span class="ot">&lt;-</span> <span class="fu">read.delim</span>(<span class="st">&quot;../datasets/USArrests_tabComments.txt&quot;</span>,<span class="at">comment.char =</span> <span class="st">&quot;#&quot;</span>)</span>
+<span id="cb19-2"><a href="importing-data---base-r.html#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(UA_v5)</span></code></pre></div>
+<pre><code>##   Murder Assault UrbanPop Rape
+## 1   13.2     236       58 21.2
+## 2   10.0     263       48 44.5
+## 3    8.1     294       80 31.0
+## 4    8.8     190       50 19.5
+## 5    9.0     276       91 40.6
+## 6    7.9     204       78 38.7</code></pre>
+<p>Such a character is also ignored further down:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="importing-data---base-r.html#cb21-1" aria-hidden="true" tabindex="-1"></a>UA_v6 <span class="ot">&lt;-</span> <span class="fu">read.delim</span>(<span class="st">&quot;../datasets/USArrests_tabManipulated.txt&quot;</span>,<span class="at">comment.char =</span> <span class="st">&quot;;&quot;</span>)</span>
+<span id="cb21-2"><a href="importing-data---base-r.html#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(UA_v6)</span></code></pre></div>
+<pre><code>##   Murder Assault UrbanPop Rape
+## 1   13.2     236       58 21.2
+## 2   10.0     263       48 44.5
+## 3    8.1     294       80 31.0
+## 4    8.8     190       50 19.5
+## 5    9.0     276       91 40.6
+## 6    7.2     113       65 21.0</code></pre>
+<p>There are many more options, e.g.:</p>
+<ul>
+<li><code>skip</code> : if you want to skip a
+certain number of lines at the top</li>
+<li><code>quote</code> : if fields with text are
+enclosed by quotation marks other than <code>"</code> or <code>'</code></li>
+<li><code>row.names</code> : if one
+of the columns contains row names, which can be handled differently in
+R</li>
+<li><code>na.strings</code> : if you need to mark non-available data points, e.g.
+“NaN” or “n.d.”; you can also use multiple words, e.g.
+c(“NA,”“n.d.”“Na”)</li>
+<li><code>stringsAsFactors</code> : if R should interpret columns
+with words in the data table as factors instead of a vector of words.
+Don’t worry, if you don’t know the difference between factors and
+character vectors at this moment. But if you’re curious, take a look at
+the <a href="https://adv-r.hadley.nz/vectors-chap.html#factors">chapter on
+factors</a> in the
+advanced R book.</li>
+</ul>
+</div>
+</div>
+<div id="further-methods" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Further methods</h2>
+<div id="excel-files" class="section level3" number="3.2.1">
+<h3><span class="header-section-number">3.2.1</span> Excel files</h3>
+<p>There are several functions/packages that can deal with the <code>.xlsx</code>
+format, e.g. <a href="https://readxl.tidyverse.org/"><code>readxl</code></a>, which is
+automatically installed with the <code>tidyverse</code> package or
+<a href="https://ycphs.github.io/openxlsx/index.html"><code>openxlsx</code></a>, which is
+demonstrated below.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="importing-data---base-r.html#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">require</span>(openxlsx)){</span>
+<span id="cb23-2"><a href="importing-data---base-r.html#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">&quot;openxlsx&quot;</span>,<span class="at">repos =</span> <span class="st">&quot;http://cran.us.r-project.org&quot;</span>)</span>
+<span id="cb23-3"><a href="importing-data---base-r.html#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(openxlsx)</span>
+<span id="cb23-4"><a href="importing-data---base-r.html#cb23-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb23-5"><a href="importing-data---base-r.html#cb23-5" aria-hidden="true" tabindex="-1"></a>pg <span class="ot">&lt;-</span> <span class="fu">read.xlsx</span>(<span class="st">&quot;../datasets/plantGrowth.xlsx&quot;</span>)</span>
+<span id="cb23-6"><a href="importing-data---base-r.html#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pg)</span></code></pre></div>
+<pre><code>##   weight group
+## 1   4.17  ctrl
+## 2   5.58  ctrl
+## 3   5.18  ctrl
+## 4   6.11  ctrl
+## 5   4.50  ctrl
+## 6   4.61  ctrl</code></pre>
+<p>You can see above that this function is smart enough to take the decimal
+separator from Excel and change it to the standard full stop. By
+default, the first line becomes the column names.</p>
+<p>It is even a bit more
+smart: Take a look at the second sheet of <code>allData.xlsx</code> in the course
+material. It does not feature the cleanest formatting with those empty
+lines. But <code>read.xlsx</code> understands that we don’t want to have empty
+lines.</p>
+<p>To load the second sheet, we need to use the <code>sheet</code> argument -
+this determines which of the sheets in an .xlsx file to read. You can
+either give the name <code>sheet=hairEyeColor</code> or the number of the sheet:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="importing-data---base-r.html#cb25-1" aria-hidden="true" tabindex="-1"></a>hc <span class="ot">&lt;-</span> <span class="fu">read.xlsx</span>(<span class="st">&quot;../datasets/allData.xlsx&quot;</span>,<span class="at">sheet =</span> <span class="dv">2</span>)</span>
+<span id="cb25-2"><a href="importing-data---base-r.html#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(hc)</span></code></pre></div>
+<pre><code>##    Hair   Eye  Sex Freq
+## 1 Black Brown Male   32
+## 2 Brown Brown Male   53
+## 3   Red Brown Male   10
+## 4 Blond Brown Male    3
+## 5 Black  Blue Male   11
+## 6 Brown  Blue Male   50</code></pre>
+</div>
+<div id="reading-from-urls" class="section level3" number="3.2.2">
+<h3><span class="header-section-number">3.2.2</span> Reading from URLs</h3>
+<p>You can use base R’s <code>read.delim</code>/<code>read.csv</code>/<code>read.table</code> family of
+functions to load data from a webpage by giving the URL:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="importing-data---base-r.html#cb27-1" aria-hidden="true" tabindex="-1"></a>turl <span class="ot">&lt;-</span> <span class="fu">read.delim</span>(<span class="st">&quot;https://github.com/a-h-b/R_base_vis_course/raw/main/TestCSV.csv&quot;</span>, </span>
+<span id="cb27-2"><a href="importing-data---base-r.html#cb27-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">sep =</span> <span class="st">&quot;,&quot;</span>)</span>
+<span id="cb27-3"><a href="importing-data---base-r.html#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(turl)</span></code></pre></div>
+<pre><code>##   Header.1 Header.2
+## 1     Text        1
+## 2      and        2
+## 3     more        3
+## 4     text        4</code></pre>
+</div>
+<div id="reading-from-the-clipboard" class="section level3" number="3.2.3">
+<h3><span class="header-section-number">3.2.3</span> Reading from the clipboard</h3>
+<p>R can actually read data that you’ve copied ‘from the clipboard.’
+But we recommend to never use this function, because it’s not
+reproducible.</p>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="hello-world---base-r.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="intro-to-the-tidyverse.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/01_importData.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf", "_main.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

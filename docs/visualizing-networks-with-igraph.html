@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 11 Visualizing networks with igraph | Visualization in R workshop</title>
+  <meta name="description" content="<p>This is a collection of markdown files used during a workshop of the Science
+Park Study group at University of Amsterdam, 14th September 2022</p>" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 11 Visualizing networks with igraph | Visualization in R workshop" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="<p>This is a collection of markdown files used during a workshop of the Science
+Park Study group at University of Amsterdam, 14th September 2022</p>" />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 11 Visualizing networks with igraph | Visualization in R workshop" />
+  
+  <meta name="twitter:description" content="<p>This is a collection of markdown files used during a workshop of the Science
+Park Study group at University of Amsterdam, 14th September 2022</p>" />
+  
+
+<meta name="author" content="Anna Heintz-Buschart and Joachim Goedhart" />
+
+
+<meta name="date" content="2022-09-14" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="venn-euler-and-upset-diagrams.html"/>
+<link rel="next" href="references.html"/>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Visualization in R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> About</a></li>
+<li class="chapter" data-level="2" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html"><i class="fa fa-check"></i><b>2</b> Hello World - base R</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html#welcome"><i class="fa fa-check"></i><b>2.1</b> Welcome</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html#interacting-with-r"><i class="fa fa-check"></i><b>2.1.1</b> Interacting with R</a></li>
+<li class="chapter" data-level="2.1.2" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html#chunks"><i class="fa fa-check"></i><b>2.1.2</b> Chunks</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html#test-knitting"><i class="fa fa-check"></i><b>2.2</b> Test ‘knitting’</a></li>
+<li class="chapter" data-level="2.3" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html#resources-on-r"><i class="fa fa-check"></i><b>2.3</b> Resources on R</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html"><i class="fa fa-check"></i><b>3</b> Importing data - base R</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#using-base-r"><i class="fa fa-check"></i><b>3.1</b> Using base R</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#tab-delimited-data-with-a-header-and-using-standard-decimal-points"><i class="fa fa-check"></i><b>3.1.1</b> Tab-delimited data with a header and using standard decimal points</a></li>
+<li class="chapter" data-level="3.1.2" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#non-standard-decimal-points"><i class="fa fa-check"></i><b>3.1.2</b> Non-standard decimal points</a></li>
+<li class="chapter" data-level="3.1.3" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#comma-separated-data-with-a-header-and-using-standard-decimal-points"><i class="fa fa-check"></i><b>3.1.3</b> Comma-separated data with a header and using standard decimal points</a></li>
+<li class="chapter" data-level="3.1.4" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#tables-without-headers"><i class="fa fa-check"></i><b>3.1.4</b> Tables without headers</a></li>
+<li class="chapter" data-level="3.1.5" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#additional-lines"><i class="fa fa-check"></i><b>3.1.5</b> Additional lines</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#further-methods"><i class="fa fa-check"></i><b>3.2</b> Further methods</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#excel-files"><i class="fa fa-check"></i><b>3.2.1</b> Excel files</a></li>
+<li class="chapter" data-level="3.2.2" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#reading-from-urls"><i class="fa fa-check"></i><b>3.2.2</b> Reading from URLs</a></li>
+<li class="chapter" data-level="3.2.3" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#reading-from-the-clipboard"><i class="fa fa-check"></i><b>3.2.3</b> Reading from the clipboard</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="intro-to-the-tidyverse.html"><a href="intro-to-the-tidyverse.html"><i class="fa fa-check"></i><b>4</b> Intro to the {tidyverse}</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="intro-to-the-tidyverse.html"><a href="intro-to-the-tidyverse.html#why-tidyverse"><i class="fa fa-check"></i><b>4.1</b> Why <code>{tidyverse}</code>?</a></li>
+<li class="chapter" data-level="4.2" data-path="intro-to-the-tidyverse.html"><a href="intro-to-the-tidyverse.html#reading-data-from-excel"><i class="fa fa-check"></i><b>4.2</b> Reading data from excel</a></li>
+<li class="chapter" data-level="4.3" data-path="intro-to-the-tidyverse.html"><a href="intro-to-the-tidyverse.html#the-pipe-operator"><i class="fa fa-check"></i><b>4.3</b> The pipe operator</a></li>
+<li class="chapter" data-level="4.4" data-path="intro-to-the-tidyverse.html"><a href="intro-to-the-tidyverse.html#resources-on-tidyverse"><i class="fa fa-check"></i><b>4.4</b> Resources on tidyverse</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html"><i class="fa fa-check"></i><b>5</b> Introduction to scatter plots in base R</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#set-up"><i class="fa fa-check"></i><b>5.1</b> Set up</a></li>
+<li class="chapter" data-level="5.2" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#formatting-plots"><i class="fa fa-check"></i><b>5.2</b> Formatting plots</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#defaults"><i class="fa fa-check"></i><b>5.2.1</b> Defaults</a></li>
+<li class="chapter" data-level="5.2.2" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#margins"><i class="fa fa-check"></i><b>5.2.2</b> Margins</a></li>
+<li class="chapter" data-level="5.2.3" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#plot-borders"><i class="fa fa-check"></i><b>5.2.3</b> Plot borders</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#axes"><i class="fa fa-check"></i><b>5.3</b> Axes</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#axis-marks"><i class="fa fa-check"></i><b>5.3.1</b> Axis marks</a></li>
+<li class="chapter" data-level="5.3.2" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#axis-labels"><i class="fa fa-check"></i><b>5.3.2</b> Axis labels</a></li>
+<li class="chapter" data-level="5.3.3" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#scales-and-ranges"><i class="fa fa-check"></i><b>5.3.3</b> Scales and ranges</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#points"><i class="fa fa-check"></i><b>5.4</b> Points</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#shapes"><i class="fa fa-check"></i><b>5.4.1</b> Shapes</a></li>
+<li class="chapter" data-level="5.4.2" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#colour"><i class="fa fa-check"></i><b>5.4.2</b> Colour</a></li>
+<li class="chapter" data-level="5.4.3" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#size"><i class="fa fa-check"></i><b>5.4.3</b> Size</a></li>
+<li class="chapter" data-level="5.4.4" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#multiple-sets-of-points"><i class="fa fa-check"></i><b>5.4.4</b> Multiple sets of points</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#legends"><i class="fa fa-check"></i><b>5.5</b> Legends</a></li>
+<li class="chapter" data-level="5.6" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#lines"><i class="fa fa-check"></i><b>5.6</b> Lines</a>
+<ul>
+<li class="chapter" data-level="5.6.1" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#histogram-style-lines"><i class="fa fa-check"></i><b>5.6.1</b> Histogram-style lines</a></li>
+<li class="chapter" data-level="5.6.2" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#lines-between-points"><i class="fa fa-check"></i><b>5.6.2</b> Lines between points</a></li>
+<li class="chapter" data-level="5.6.3" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#lines-through-the-plot"><i class="fa fa-check"></i><b>5.6.3</b> Lines through the plot</a></li>
+<li class="chapter" data-level="5.6.4" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#trend-lines"><i class="fa fa-check"></i><b>5.6.4</b> Trend lines</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html"><i class="fa fa-check"></i><b>6</b> Introduction to scatter plots in R/ggplot2</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#setup"><i class="fa fa-check"></i><b>6.1</b> Setup</a></li>
+<li class="chapter" data-level="6.2" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#scatterplots"><i class="fa fa-check"></i><b>6.2</b> Scatterplots</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#defaults-1"><i class="fa fa-check"></i><b>6.2.1</b> Defaults</a></li>
+<li class="chapter" data-level="6.2.2" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#themes"><i class="fa fa-check"></i><b>6.2.2</b> Themes</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#intermezzo-plots-as-objects"><i class="fa fa-check"></i><b>6.3</b> Intermezzo: Plots as objects</a></li>
+<li class="chapter" data-level="6.4" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#modifying-plots"><i class="fa fa-check"></i><b>6.4</b> Modifying plots</a>
+<ul>
+<li class="chapter" data-level="6.4.1" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#axis-labels-1"><i class="fa fa-check"></i><b>6.4.1</b> Axis labels</a></li>
+<li class="chapter" data-level="6.4.2" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#scales-and-ranges-1"><i class="fa fa-check"></i><b>6.4.2</b> Scales and ranges</a></li>
+<li class="chapter" data-level="6.4.3" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#aesthetics-geometries"><i class="fa fa-check"></i><b>6.4.3</b> Aesthetics &amp; Geometries</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#legends-1"><i class="fa fa-check"></i><b>6.5</b> Legends</a></li>
+<li class="chapter" data-level="6.6" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#lines-and-trends"><i class="fa fa-check"></i><b>6.6</b> Lines and trends</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html"><i class="fa fa-check"></i><b>7</b> Summarizing distributions in base R</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#setup-1"><i class="fa fa-check"></i><b>7.1</b> Setup</a></li>
+<li class="chapter" data-level="7.2" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#the-data"><i class="fa fa-check"></i><b>7.2</b> The data</a></li>
+<li class="chapter" data-level="7.3" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#just-the-mean-barplots"><i class="fa fa-check"></i><b>7.3</b> Just the mean: Barplots</a>
+<ul>
+<li class="chapter" data-level="7.3.1" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#simple-barplots"><i class="fa fa-check"></i><b>7.3.1</b> Simple barplots</a></li>
+<li class="chapter" data-level="7.3.2" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#barplots-with-error-bars"><i class="fa fa-check"></i><b>7.3.2</b> Barplots with error bars</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#medians-quartiles-and-outliers-boxplots"><i class="fa fa-check"></i><b>7.4</b> Medians, quartiles, and outliers: Boxplots</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#basic-boxplots"><i class="fa fa-check"></i><b>7.4.1</b> Basic boxplots</a></li>
+<li class="chapter" data-level="7.4.2" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#adding-points-on-top"><i class="fa fa-check"></i><b>7.4.2</b> Adding points on top</a></li>
+<li class="chapter" data-level="7.4.3" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#adding-lines-between-points"><i class="fa fa-check"></i><b>7.4.3</b> Adding lines between points</a></li>
+<li class="chapter" data-level="7.4.4" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#half-boxes"><i class="fa fa-check"></i><b>7.4.4</b> Half-boxes</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#histograms"><i class="fa fa-check"></i><b>7.5</b> Histograms</a></li>
+<li class="chapter" data-level="7.6" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#density-plots"><i class="fa fa-check"></i><b>7.6</b> Density plots</a></li>
+<li class="chapter" data-level="7.7" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#violinplots"><i class="fa fa-check"></i><b>7.7</b> Violinplots</a></li>
+<li class="chapter" data-level="7.8" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#beanplots"><i class="fa fa-check"></i><b>7.8</b> Beanplots</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html"><i class="fa fa-check"></i><b>8</b> Distributions &amp; ggplot2</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#setup-and-data"><i class="fa fa-check"></i><b>8.1</b> Setup and data</a></li>
+<li class="chapter" data-level="8.2" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#multiple-distributions"><i class="fa fa-check"></i><b>8.2</b> Multiple distributions</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#plotting-the-data"><i class="fa fa-check"></i><b>8.2.1</b> Plotting the data</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#boxplots"><i class="fa fa-check"></i><b>8.3</b> Boxplots</a></li>
+<li class="chapter" data-level="8.4" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#violinplots-1"><i class="fa fa-check"></i><b>8.4</b> Violinplots</a></li>
+<li class="chapter" data-level="8.5" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#facets-splitting-into-multiple-plots"><i class="fa fa-check"></i><b>8.5</b> Facets: Splitting into multiple plots</a></li>
+<li class="chapter" data-level="8.6" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#a-single-distribution"><i class="fa fa-check"></i><b>8.6</b> A single distribution</a>
+<ul>
+<li class="chapter" data-level="8.6.1" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#a-single-violinplot"><i class="fa fa-check"></i><b>8.6.1</b> A single violinplot</a></li>
+<li class="chapter" data-level="8.6.2" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#density-plot"><i class="fa fa-check"></i><b>8.6.2</b> Density plot</a></li>
+<li class="chapter" data-level="8.6.3" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#histogram"><i class="fa fa-check"></i><b>8.6.3</b> Histogram</a></li>
+</ul></li>
+<li class="chapter" data-level="8.7" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#two-distributions"><i class="fa fa-check"></i><b>8.7</b> Two distributions</a>
+<ul>
+<li class="chapter" data-level="8.7.1" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#histogram-density"><i class="fa fa-check"></i><b>8.7.1</b> Histogram &amp; Density</a></li>
+<li class="chapter" data-level="8.7.2" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#splitting-into-two-plots"><i class="fa fa-check"></i><b>8.7.2</b> Splitting into two plots</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html"><i class="fa fa-check"></i><b>9</b> Heatmaps <em>et al.</em> - base R</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#setup-2"><i class="fa fa-check"></i><b>9.1</b> Setup</a></li>
+<li class="chapter" data-level="9.2" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#loading-data"><i class="fa fa-check"></i><b>9.2</b> Loading data</a></li>
+<li class="chapter" data-level="9.3" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#basic-heatmaps"><i class="fa fa-check"></i><b>9.3</b> Basic heatmaps</a>
+<ul>
+<li class="chapter" data-level="9.3.1" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#a-simple-heatmap"><i class="fa fa-check"></i><b>9.3.1</b> A simple heatmap</a></li>
+<li class="chapter" data-level="9.3.2" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#scaling"><i class="fa fa-check"></i><b>9.3.2</b> Scaling</a></li>
+<li class="chapter" data-level="9.3.3" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#colour-schemes"><i class="fa fa-check"></i><b>9.3.3</b> Colour schemes</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#decorating-heatmaps"><i class="fa fa-check"></i><b>9.4</b> Decorating heatmaps</a>
+<ul>
+<li class="chapter" data-level="9.4.1" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#dendrograms"><i class="fa fa-check"></i><b>9.4.1</b> Dendrograms</a></li>
+<li class="chapter" data-level="9.4.2" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#ordering-features-and-samples"><i class="fa fa-check"></i><b>9.4.2</b> Ordering features and samples</a></li>
+<li class="chapter" data-level="9.4.3" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#adding-attributes"><i class="fa fa-check"></i><b>9.4.3</b> Adding attributes</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="venn-euler-and-upset-diagrams.html"><a href="venn-euler-and-upset-diagrams.html"><i class="fa fa-check"></i><b>10</b> Venn, Euler, and upSet diagrams</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="venn-euler-and-upset-diagrams.html"><a href="venn-euler-and-upset-diagrams.html#setup-and-data-1"><i class="fa fa-check"></i><b>10.1</b> Setup and data</a></li>
+<li class="chapter" data-level="10.2" data-path="venn-euler-and-upset-diagrams.html"><a href="venn-euler-and-upset-diagrams.html#venn-diagrams"><i class="fa fa-check"></i><b>10.2</b> Venn diagrams</a></li>
+<li class="chapter" data-level="10.3" data-path="venn-euler-and-upset-diagrams.html"><a href="venn-euler-and-upset-diagrams.html#euler-diagrams"><i class="fa fa-check"></i><b>10.3</b> Euler diagrams</a></li>
+<li class="chapter" data-level="10.4" data-path="venn-euler-and-upset-diagrams.html"><a href="venn-euler-and-upset-diagrams.html#upset-plots"><i class="fa fa-check"></i><b>10.4</b> UpSet plots</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html"><i class="fa fa-check"></i><b>11</b> Visualizing networks with igraph</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#setup-3"><i class="fa fa-check"></i><b>11.1</b> Setup</a></li>
+<li class="chapter" data-level="11.2" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#network-representations"><i class="fa fa-check"></i><b>11.2</b> Network representations</a>
+<ul>
+<li class="chapter" data-level="11.2.1" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#network-formats-edgelist"><i class="fa fa-check"></i><b>11.2.1</b> Network formats: edgelist</a></li>
+<li class="chapter" data-level="11.2.2" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#network-formats-adjacency-matrix"><i class="fa fa-check"></i><b>11.2.2</b> Network formats: adjacency matrix</a></li>
+</ul></li>
+<li class="chapter" data-level="11.3" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#network-visualization"><i class="fa fa-check"></i><b>11.3</b> Network visualization</a>
+<ul>
+<li class="chapter" data-level="11.3.1" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#layouts"><i class="fa fa-check"></i><b>11.3.1</b> Layouts</a></li>
+<li class="chapter" data-level="11.3.2" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#node-labels"><i class="fa fa-check"></i><b>11.3.2</b> Node labels</a></li>
+<li class="chapter" data-level="11.3.3" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#node-shapes-and-sizes"><i class="fa fa-check"></i><b>11.3.3</b> Node shapes and sizes</a></li>
+<li class="chapter" data-level="11.3.4" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#edge-appearance"><i class="fa fa-check"></i><b>11.3.4</b> Edge appearance</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/a-h-b/R_base_vis_course" target="blank">Rendered with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Visualization in R workshop</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="visualizing-networks-with-igraph" class="section level1" number="11">
+<h1><span class="header-section-number">Chapter 11</span> Visualizing networks with igraph</h1>
+<p>In this chapter, we take a look at networks. R can handle networks,
+both for analysis as well as for visualization. There are several
+packages to help with this job. The methods in this tutorial are based
+on the <a href="https://igraph.org/r/">igraph</a> package. The igraph project
+actually interfaces with several programming languages, so you may also
+find it in other contexts.</p>
+<div id="setup-3" class="section level2" number="11.1">
+<h2><span class="header-section-number">11.1</span> Setup</h2>
+<div class="sourceCode" id="cb273"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb273-1"><a href="visualizing-networks-with-igraph.html#cb273-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">require</span>(igraph)){</span>
+<span id="cb273-2"><a href="visualizing-networks-with-igraph.html#cb273-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">&quot;igraph&quot;</span>,<span class="at">repos =</span> <span class="st">&quot;http://cran.us.r-project.org&quot;</span>)</span>
+<span id="cb273-3"><a href="visualizing-networks-with-igraph.html#cb273-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(igraph)</span>
+<span id="cb273-4"><a href="visualizing-networks-with-igraph.html#cb273-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>## Loading required package: igraph</code></pre>
+<pre><code>## 
+## Attaching package: &#39;igraph&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:gtools&#39;:
+## 
+##     permute</code></pre>
+<pre><code>## The following objects are masked from &#39;package:dplyr&#39;:
+## 
+##     as_data_frame, groups, union</code></pre>
+<pre><code>## The following objects are masked from &#39;package:purrr&#39;:
+## 
+##     compose, simplify</code></pre>
+<pre><code>## The following object is masked from &#39;package:tidyr&#39;:
+## 
+##     crossing</code></pre>
+<pre><code>## The following object is masked from &#39;package:tibble&#39;:
+## 
+##     as_data_frame</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     decompose, spectrum</code></pre>
+<pre><code>## The following object is masked from &#39;package:base&#39;:
+## 
+##     union</code></pre>
+</div>
+<div id="network-representations" class="section level2" number="11.2">
+<h2><span class="header-section-number">11.2</span> Network representations</h2>
+<p>There are multiple ways of reading in or defining a network. The two
+most common ways to represent a network are <em>edge lists</em> and <em>adjacency
+matrices</em>.</p>
+<div id="network-formats-edgelist" class="section level3" number="11.2.1">
+<h3><span class="header-section-number">11.2.1</span> Network formats: edgelist</h3>
+<p>In the first representation, you have a table with at least two columns.
+Every line represents an edge. The two columns take the two nodes that
+are connected in this line. Directionality is straight-forward with
+this: You can define one column to contain only source nodes (where the
+arrow starts) and the other column to contain only sink or target nodes
+(where the arrow ends). Un-directed networks can be (implicitly or
+explicitly) defined by giving every edge twice, with the source and sink
+nodes of one line being exchanged in the other line. Directionality and
+weights can also be defined in additional columns. A common input file
+format is <a href="http://www.cbmc.it/fastcent/doc/SifFormat.htm">simple interaction
+format</a>.</p>
+<p>Here is the example of a simple network.</p>
+<div class="sourceCode" id="cb283"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb283-1"><a href="visualizing-networks-with-igraph.html#cb283-1" aria-hidden="true" tabindex="-1"></a>edgelist_circle1 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="st">&quot;A&quot;</span>,<span class="st">&quot;B&quot;</span>,<span class="st">&quot;B&quot;</span>,<span class="st">&quot;C&quot;</span>,<span class="st">&quot;C&quot;</span>,<span class="st">&quot;D&quot;</span>,<span class="st">&quot;D&quot;</span>,<span class="st">&quot;E&quot;</span>,<span class="st">&quot;E&quot;</span>,<span class="st">&quot;F&quot;</span>,<span class="st">&quot;F&quot;</span>,<span class="st">&quot;A&quot;</span>),</span>
+<span id="cb283-2"><a href="visualizing-networks-with-igraph.html#cb283-2" aria-hidden="true" tabindex="-1"></a>                           <span class="at">byrow =</span> T,</span>
+<span id="cb283-3"><a href="visualizing-networks-with-igraph.html#cb283-3" aria-hidden="true" tabindex="-1"></a>                           <span class="at">ncol=</span><span class="dv">2</span>,</span>
+<span id="cb283-4"><a href="visualizing-networks-with-igraph.html#cb283-4" aria-hidden="true" tabindex="-1"></a>                           <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>),<span class="fu">c</span>(<span class="st">&quot;source&quot;</span>,<span class="st">&quot;sink&quot;</span>)))</span>
+<span id="cb283-5"><a href="visualizing-networks-with-igraph.html#cb283-5" aria-hidden="true" tabindex="-1"></a>edgelist_circle1</span></code></pre></div>
+<pre><code>##   source sink
+## 1 &quot;A&quot;    &quot;B&quot; 
+## 2 &quot;B&quot;    &quot;C&quot; 
+## 3 &quot;C&quot;    &quot;D&quot; 
+## 4 &quot;D&quot;    &quot;E&quot; 
+## 5 &quot;E&quot;    &quot;F&quot; 
+## 6 &quot;F&quot;    &quot;A&quot;</code></pre>
+<div class="sourceCode" id="cb285"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb285-1"><a href="visualizing-networks-with-igraph.html#cb285-1" aria-hidden="true" tabindex="-1"></a>testgraph_circle1 <span class="ot">&lt;-</span> <span class="fu">graph_from_edgelist</span>(edgelist_circle1)</span>
+<span id="cb285-2"><a href="visualizing-networks-with-igraph.html#cb285-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(testgraph_circle1, <span class="at">layout =</span> <span class="fu">layout_in_circle</span>(testgraph_circle1))</span></code></pre></div>
+<p><img src="_main_files/figure-html/09exampleRing1_igraph-1.png" width="672" /></p>
+</div>
+<div id="network-formats-adjacency-matrix" class="section level3" number="11.2.2">
+<h3><span class="header-section-number">11.2.2</span> Network formats: adjacency matrix</h3>
+<p>The second representation is a square matrix with one row and one column
+each for every node. The fields that are spanned by this matrix contain
+information on whether an edge connects the node belonging to this row
+and the node belonging to this column. Usually, <code>0</code> indicates no
+connection and <code>1</code> indicates a connection (weights can be introduced,
+too, if necessary). Directionality is dealt with by using the two
+triangles of the matrix: the matrix is read such that the rows indicate
+source nodes and the columns sink nodes for the edges.</p>
+<div class="sourceCode" id="cb286"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb286-1"><a href="visualizing-networks-with-igraph.html#cb286-1" aria-hidden="true" tabindex="-1"></a><span class="co">#make an empty matrix with as many rows and columns as there are nodes</span></span>
+<span id="cb286-2"><a href="visualizing-networks-with-igraph.html#cb286-2" aria-hidden="true" tabindex="-1"></a>adjMat_circle2 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>,</span>
+<span id="cb286-3"><a href="visualizing-networks-with-igraph.html#cb286-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">nrow=</span><span class="dv">6</span>,</span>
+<span id="cb286-4"><a href="visualizing-networks-with-igraph.html#cb286-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">ncol=</span><span class="dv">6</span>,</span>
+<span id="cb286-5"><a href="visualizing-networks-with-igraph.html#cb286-5" aria-hidden="true" tabindex="-1"></a>                         <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="st">&quot;J&quot;</span>,<span class="st">&quot;K&quot;</span>,<span class="st">&quot;L&quot;</span>,<span class="st">&quot;M&quot;</span>,<span class="st">&quot;N&quot;</span>,<span class="st">&quot;O&quot;</span>),</span>
+<span id="cb286-6"><a href="visualizing-networks-with-igraph.html#cb286-6" aria-hidden="true" tabindex="-1"></a>                                         <span class="fu">c</span>(<span class="st">&quot;J&quot;</span>,<span class="st">&quot;K&quot;</span>,<span class="st">&quot;L&quot;</span>,<span class="st">&quot;M&quot;</span>,<span class="st">&quot;N&quot;</span>,<span class="st">&quot;O&quot;</span>)))</span>
+<span id="cb286-7"><a href="visualizing-networks-with-igraph.html#cb286-7" aria-hidden="true" tabindex="-1"></a><span class="co">#fill matrix by connecting each node to only the next</span></span>
+<span id="cb286-8"><a href="visualizing-networks-with-igraph.html#cb286-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(<span class="fu">nrow</span>(adjMat_circle2)<span class="sc">-</span><span class="dv">1</span>)){</span>
+<span id="cb286-9"><a href="visualizing-networks-with-igraph.html#cb286-9" aria-hidden="true" tabindex="-1"></a>  adjMat_circle2[i,i<span class="sc">+</span><span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb286-10"><a href="visualizing-networks-with-igraph.html#cb286-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb286-11"><a href="visualizing-networks-with-igraph.html#cb286-11" aria-hidden="true" tabindex="-1"></a><span class="co">#close the circle</span></span>
+<span id="cb286-12"><a href="visualizing-networks-with-igraph.html#cb286-12" aria-hidden="true" tabindex="-1"></a>adjMat_circle2[<span class="fu">nrow</span>(adjMat_circle2),<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb286-13"><a href="visualizing-networks-with-igraph.html#cb286-13" aria-hidden="true" tabindex="-1"></a>adjMat_circle2</span></code></pre></div>
+<pre><code>##   J K L M N O
+## J 0 1 0 0 0 0
+## K 0 0 1 0 0 0
+## L 0 0 0 1 0 0
+## M 0 0 0 0 1 0
+## N 0 0 0 0 0 1
+## O 1 0 0 0 0 0</code></pre>
+<div class="sourceCode" id="cb288"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb288-1"><a href="visualizing-networks-with-igraph.html#cb288-1" aria-hidden="true" tabindex="-1"></a>testgraph_circle2 <span class="ot">&lt;-</span> <span class="fu">graph_from_adjacency_matrix</span>(adjMat_circle2)</span>
+<span id="cb288-2"><a href="visualizing-networks-with-igraph.html#cb288-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(testgraph_circle2, <span class="at">layout =</span> <span class="fu">layout_in_circle</span>(testgraph_circle2))</span></code></pre></div>
+<p><img src="_main_files/figure-html/09exampleRing2_igraph-1.png" width="672" /></p>
+<p><strong>Exercise</strong>: In the code below, change the edgelist in a way that
+breaks the circle and adds a new edge instead. Plot the result.</p>
+<div class="sourceCode" id="cb289"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb289-1"><a href="visualizing-networks-with-igraph.html#cb289-1" aria-hidden="true" tabindex="-1"></a>edgelist_new <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="st">&quot;A&quot;</span>,<span class="st">&quot;B&quot;</span>,<span class="st">&quot;B&quot;</span>,<span class="st">&quot;C&quot;</span>,<span class="st">&quot;C&quot;</span>,<span class="st">&quot;D&quot;</span>,<span class="st">&quot;D&quot;</span>,<span class="st">&quot;E&quot;</span>,<span class="st">&quot;E&quot;</span>,<span class="st">&quot;F&quot;</span>,<span class="st">&quot;F&quot;</span>,<span class="st">&quot;A&quot;</span>), <span class="co">#adapt this</span></span>
+<span id="cb289-2"><a href="visualizing-networks-with-igraph.html#cb289-2" aria-hidden="true" tabindex="-1"></a>                           <span class="at">byrow =</span> T,</span>
+<span id="cb289-3"><a href="visualizing-networks-with-igraph.html#cb289-3" aria-hidden="true" tabindex="-1"></a>                           <span class="at">ncol=</span><span class="dv">2</span>,</span>
+<span id="cb289-4"><a href="visualizing-networks-with-igraph.html#cb289-4" aria-hidden="true" tabindex="-1"></a>                           <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>),<span class="fu">c</span>(<span class="st">&quot;source&quot;</span>,<span class="st">&quot;sink&quot;</span>)))</span>
+<span id="cb289-5"><a href="visualizing-networks-with-igraph.html#cb289-5" aria-hidden="true" tabindex="-1"></a>edgelist_new</span></code></pre></div>
+<pre><code>##   source sink
+## 1 &quot;A&quot;    &quot;B&quot; 
+## 2 &quot;B&quot;    &quot;C&quot; 
+## 3 &quot;C&quot;    &quot;D&quot; 
+## 4 &quot;D&quot;    &quot;E&quot; 
+## 5 &quot;E&quot;    &quot;F&quot; 
+## 6 &quot;F&quot;    &quot;A&quot;</code></pre>
+<div class="sourceCode" id="cb291"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb291-1"><a href="visualizing-networks-with-igraph.html#cb291-1" aria-hidden="true" tabindex="-1"></a>testgraph_new1 <span class="ot">&lt;-</span> <span class="fu">graph_from_edgelist</span>(edgelist_new)</span>
+<span id="cb291-2"><a href="visualizing-networks-with-igraph.html#cb291-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(testgraph_new1, <span class="at">layout =</span> <span class="fu">layout_in_circle</span>(testgraph_new1))</span></code></pre></div>
+<p><img src="_main_files/figure-html/09example_change1_igraph-1.png" width="672" /></p>
+<p><strong>Exercise</strong>: In the code below, change the adjacency matrix in a way
+that breaks the circle and adds a new edge instead. Plot the result.</p>
+<div class="sourceCode" id="cb292"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb292-1"><a href="visualizing-networks-with-igraph.html#cb292-1" aria-hidden="true" tabindex="-1"></a>adjMat_new <span class="ot">&lt;-</span> adjMat_circle2</span>
+<span id="cb292-2"><a href="visualizing-networks-with-igraph.html#cb292-2" aria-hidden="true" tabindex="-1"></a><span class="co">#replace at least two fields by adjusting the following lines (you need to un-comment them by removing the hashkey):</span></span>
+<span id="cb292-3"><a href="visualizing-networks-with-igraph.html#cb292-3" aria-hidden="true" tabindex="-1"></a><span class="co"># adjMat_new[x1,y1] &lt;- 0</span></span>
+<span id="cb292-4"><a href="visualizing-networks-with-igraph.html#cb292-4" aria-hidden="true" tabindex="-1"></a><span class="co"># adjMat_new[x2,y2] &lt;- 1</span></span>
+<span id="cb292-5"><a href="visualizing-networks-with-igraph.html#cb292-5" aria-hidden="true" tabindex="-1"></a>adjMat_new </span></code></pre></div>
+<pre><code>##   J K L M N O
+## J 0 1 0 0 0 0
+## K 0 0 1 0 0 0
+## L 0 0 0 1 0 0
+## M 0 0 0 0 1 0
+## N 0 0 0 0 0 1
+## O 1 0 0 0 0 0</code></pre>
+<div class="sourceCode" id="cb294"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb294-1"><a href="visualizing-networks-with-igraph.html#cb294-1" aria-hidden="true" tabindex="-1"></a>testgraph_new2 <span class="ot">&lt;-</span> <span class="fu">graph_from_adjacency_matrix</span>(adjMat_new )</span>
+<span id="cb294-2"><a href="visualizing-networks-with-igraph.html#cb294-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(testgraph_new2, <span class="at">layout =</span> <span class="fu">layout_in_circle</span>(testgraph_new2))</span></code></pre></div>
+<p><img src="_main_files/figure-html/09example_change2_igraph-1.png" width="672" /></p>
+</div>
+</div>
+<div id="network-visualization" class="section level2" number="11.3">
+<h2><span class="header-section-number">11.3</span> Network visualization</h2>
+<p>base R and <code>igraph</code> are not really made for visualizing large
+graphs/networks. There’s better software outthere for those tasks. But
+what is nice is that you can integrate your visualization with the
+functions to analyse graphs and R’s statistical tools and all the
+visualizations for the results from those functions. So let’s take a
+look at <code>igraph</code>’s options for plotting graphs.</p>
+<p>We’ll first create a simple graph from a built-in function. In real
+life, you’d be using an <code>igraph</code> object that you created from an
+adjacency matrix or an edge list, depending on your data.</p>
+<div class="sourceCode" id="cb295"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb295-1"><a href="visualizing-networks-with-igraph.html#cb295-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">graph_from_atlas</span>(<span class="dv">501</span>)</span>
+<span id="cb295-2"><a href="visualizing-networks-with-igraph.html#cb295-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g)</span></code></pre></div>
+<p><img src="_main_files/figure-html/09atlasgraph-1.png" width="672" /></p>
+<p>As you can see, this graph’s nodes don’t have names. Let’s give them
+some.</p>
+<div class="sourceCode" id="cb296"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb296-1"><a href="visualizing-networks-with-igraph.html#cb296-1" aria-hidden="true" tabindex="-1"></a><span class="fu">V</span>(g)<span class="sc">$</span>name <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Maria&quot;</span>,<span class="st">&quot;Johannes&quot;</span>,<span class="st">&quot;Jan&quot;</span>,<span class="st">&quot;Johanna&quot;</span>,<span class="st">&quot;Cornelis&quot;</span>,<span class="st">&quot;Hendrik&quot;</span>,<span class="st">&quot;Anna&quot;</span>)</span>
+<span id="cb296-2"><a href="visualizing-networks-with-igraph.html#cb296-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g)</span></code></pre></div>
+<p><img src="_main_files/figure-html/09names-1.png" width="672" /></p>
+<div id="layouts" class="section level3" number="11.3.1">
+<h3><span class="header-section-number">11.3.1</span> Layouts</h3>
+<p>Layouts are what determine where the nodes sit on the canvas. By
+default, <code>igraph</code> guesses a good layout algorithm for your graph’s size.
+For a small graph, this is usually a Fruchterman-Reingold force-directed
+layout, which will put more connected nodes closer to each other. It can
+also be chosen explicitly:</p>
+<div class="sourceCode" id="cb297"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb297-1"><a href="visualizing-networks-with-igraph.html#cb297-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g,<span class="at">layout =</span> <span class="fu">layout_with_fr</span>(g))</span></code></pre></div>
+<p><img src="_main_files/figure-html/09gfr-1.png" width="672" /></p>
+<p>One important point to notice is that the layout does not always look
+the same. If you run the above chunk a couple of times, you will end up
+with slightly different positions of your nodes. This can be a problem,
+if you want to plot the same graph twice, but highlight different
+aspects. In this case, you can save a layout.</p>
+<div class="sourceCode" id="cb298"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb298-1"><a href="visualizing-networks-with-igraph.html#cb298-1" aria-hidden="true" tabindex="-1"></a>frg <span class="ot">&lt;-</span> <span class="fu">layout_with_fr</span>(g)</span></code></pre></div>
+<p>Now, you can re-use this layout - run the following chunk a couple of
+times, you will see that nothing changes:</p>
+<div class="sourceCode" id="cb299"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb299-1"><a href="visualizing-networks-with-igraph.html#cb299-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">layout=</span>frg)</span></code></pre></div>
+<p><img src="_main_files/figure-html/09plotsavedLayout-1.png" width="672" /></p>
+<p>You’ve already met the circle layout above:</p>
+<div class="sourceCode" id="cb300"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb300-1"><a href="visualizing-networks-with-igraph.html#cb300-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g,<span class="at">layout =</span> <span class="fu">layout_in_circle</span>(g))</span></code></pre></div>
+<p><img src="_main_files/figure-html/09gcircle-1.png" width="672" /></p>
+<p>More layouts include stars:</p>
+<div class="sourceCode" id="cb301"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb301-1"><a href="visualizing-networks-with-igraph.html#cb301-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g,<span class="at">layout =</span> <span class="fu">layout_as_star</span>(g))</span></code></pre></div>
+<p><img src="_main_files/figure-html/09gstar-1.png" width="672" /></p>
+<p>… as trees (this one is nice for tree-like structures, e.g.
+pedigrees):</p>
+<div class="sourceCode" id="cb302"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb302-1"><a href="visualizing-networks-with-igraph.html#cb302-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g,<span class="at">layout =</span> <span class="fu">layout_as_tree</span>(g))</span></code></pre></div>
+<p><img src="_main_files/figure-html/09gtree-1.png" width="672" /></p>
+<p>… other algorithms that try to bring more connected nodes together
+while avoiding crowding, e.g.,</p>
+<p>… using the Kamada-Kawai layout:</p>
+<div class="sourceCode" id="cb303"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb303-1"><a href="visualizing-networks-with-igraph.html#cb303-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g,<span class="at">layout =</span> <span class="fu">layout_with_kk</span>(g))</span></code></pre></div>
+<p><img src="_main_files/figure-html/09gkk-1.png" width="672" /></p>
+<p>… using the GEM layout:</p>
+<div class="sourceCode" id="cb304"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb304-1"><a href="visualizing-networks-with-igraph.html#cb304-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g,<span class="at">layout =</span> <span class="fu">layout_with_gem</span>(g))</span></code></pre></div>
+<p><img src="_main_files/figure-html/09ggem-1.png" width="672" /></p>
+<p>… or using multi-dimensional scaling of the distances between the
+nodes in the graph (problematic with equi-distant nodes like we have
+them here):</p>
+<div class="sourceCode" id="cb305"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb305-1"><a href="visualizing-networks-with-igraph.html#cb305-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g,<span class="at">layout =</span> <span class="fu">layout_with_mds</span>(g))</span></code></pre></div>
+<p><img src="_main_files/figure-html/09gmds-1.png" width="672" /></p>
+<p>… or just plain random:</p>
+<div class="sourceCode" id="cb306"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb306-1"><a href="visualizing-networks-with-igraph.html#cb306-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g,<span class="at">layout =</span> <span class="fu">layout_randomly</span>(g))</span></code></pre></div>
+<p><img src="_main_files/figure-html/09grand-1.png" width="672" /></p>
+<p>You can even set all the coordinates manually, by giving one coordinate
+per node in a <span class="math inline">\(n\times2\)</span> matric (n being the number of nodes).</p>
+<div class="sourceCode" id="cb307"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb307-1"><a href="visualizing-networks-with-igraph.html#cb307-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g,<span class="at">layout =</span> <span class="fu">matrix</span>(<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>,<span class="dv">14</span>,<span class="at">replace=</span>T),<span class="at">nrow=</span><span class="dv">7</span>,<span class="at">ncol=</span><span class="dv">2</span>))</span></code></pre></div>
+<p><img src="_main_files/figure-html/09gmanl-1.png" width="672" /></p>
+</div>
+<div id="node-labels" class="section level3" number="11.3.2">
+<h3><span class="header-section-number">11.3.2</span> Node labels</h3>
+<p>Let’s keep our FR-layout from above and manipulate its look. <em>Exercise:</em>
+play around with the visualization arguments shown below to understand
+how they work. Let’s start with the labels. You can choose not to plot
+them:</p>
+<div class="sourceCode" id="cb308"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb308-1"><a href="visualizing-networks-with-igraph.html#cb308-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">layout=</span>frg,</span>
+<span id="cb308-2"><a href="visualizing-networks-with-igraph.html#cb308-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label =</span> <span class="cn">NA</span>) <span class="co">#no labels</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/09noLabels-1.png" width="672" /></p>
+<p>In a very un-R-ish way, the default labels have serifs. You can change
+to a more usual sans serif font like so:</p>
+<div class="sourceCode" id="cb309"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb309-1"><a href="visualizing-networks-with-igraph.html#cb309-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">layout=</span>frg,</span>
+<span id="cb309-2"><a href="visualizing-networks-with-igraph.html#cb309-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.family =</span> <span class="st">&quot;sans&quot;</span>) <span class="co"># sans serif labels</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/09nsLabels-1.png" width="672" /></p>
+<p>And change the color:</p>
+<div class="sourceCode" id="cb310"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb310-1"><a href="visualizing-networks-with-igraph.html#cb310-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">layout=</span>frg,</span>
+<span id="cb310-2"><a href="visualizing-networks-with-igraph.html#cb310-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.family =</span> <span class="st">&quot;sans&quot;</span>, <span class="co"># sans serif labels</span></span>
+<span id="cb310-3"><a href="visualizing-networks-with-igraph.html#cb310-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.color =</span> <span class="st">&quot;black&quot;</span>) <span class="co">#color</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/09colLabels-1.png" width="672" /></p>
+<p>… and the size:</p>
+<div class="sourceCode" id="cb311"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb311-1"><a href="visualizing-networks-with-igraph.html#cb311-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">layout=</span>frg,</span>
+<span id="cb311-2"><a href="visualizing-networks-with-igraph.html#cb311-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.family =</span> <span class="st">&quot;sans&quot;</span>, <span class="co"># sans serif labels</span></span>
+<span id="cb311-3"><a href="visualizing-networks-with-igraph.html#cb311-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.color =</span> <span class="st">&quot;black&quot;</span>, <span class="co">#color</span></span>
+<span id="cb311-4"><a href="visualizing-networks-with-igraph.html#cb311-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.cex =</span> <span class="fl">0.7</span>) <span class="co"># size</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/09vlabSize-1.png" width="672" /></p>
+<p>… also for the individual nodes:</p>
+<div class="sourceCode" id="cb312"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb312-1"><a href="visualizing-networks-with-igraph.html#cb312-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">layout=</span>frg,</span>
+<span id="cb312-2"><a href="visualizing-networks-with-igraph.html#cb312-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.family =</span> <span class="st">&quot;sans&quot;</span>, <span class="co"># sans serif labels</span></span>
+<span id="cb312-3"><a href="visualizing-networks-with-igraph.html#cb312-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.color =</span> <span class="st">&quot;black&quot;</span>, <span class="co">#color</span></span>
+<span id="cb312-4"><a href="visualizing-networks-with-igraph.html#cb312-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.cex =</span> <span class="fl">0.2</span><span class="sc">*</span><span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>) <span class="co"># size</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/09vlabSize2-1.png" width="672" /></p>
+<p>With this, you could also take values from an analysis, e.g. the degree
+(i.e. number of connections) of the nodes:</p>
+<div class="sourceCode" id="cb313"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb313-1"><a href="visualizing-networks-with-igraph.html#cb313-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">layout=</span>frg,</span>
+<span id="cb313-2"><a href="visualizing-networks-with-igraph.html#cb313-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.family =</span> <span class="st">&quot;sans&quot;</span>, <span class="co"># sans serif labels</span></span>
+<span id="cb313-3"><a href="visualizing-networks-with-igraph.html#cb313-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.color =</span> <span class="st">&quot;black&quot;</span>, <span class="co">#color</span></span>
+<span id="cb313-4"><a href="visualizing-networks-with-igraph.html#cb313-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.cex =</span> <span class="fl">0.2</span><span class="sc">*</span><span class="fu">degree</span>(g)) <span class="co"># size based on degree</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/09vlabSize3-1.png" width="672" /></p>
+<p>The labels don’t need to sit in the node:</p>
+<div class="sourceCode" id="cb314"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb314-1"><a href="visualizing-networks-with-igraph.html#cb314-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">layout=</span>frg,</span>
+<span id="cb314-2"><a href="visualizing-networks-with-igraph.html#cb314-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.family =</span> <span class="st">&quot;sans&quot;</span>, <span class="co"># sans serif labels</span></span>
+<span id="cb314-3"><a href="visualizing-networks-with-igraph.html#cb314-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.color =</span> <span class="st">&quot;black&quot;</span>, <span class="co">#color</span></span>
+<span id="cb314-4"><a href="visualizing-networks-with-igraph.html#cb314-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.cex =</span> <span class="fl">0.6</span>, <span class="co"># size </span></span>
+<span id="cb314-5"><a href="visualizing-networks-with-igraph.html#cb314-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.dist =</span> <span class="dv">3</span>, <span class="co"># label distance to node centre</span></span>
+<span id="cb314-6"><a href="visualizing-networks-with-igraph.html#cb314-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.degree =</span> <span class="dv">0</span>) <span class="co"># label position 0=right, pi=left, pi/2=below etc</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/09vlabPos-1.png" width="672" /></p>
+</div>
+<div id="node-shapes-and-sizes" class="section level3" number="11.3.3">
+<h3><span class="header-section-number">11.3.3</span> Node shapes and sizes</h3>
+<p>You have a choice of different shapes, e.g. circles, squares,
+rectangles, spheres.</p>
+<div class="sourceCode" id="cb315"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb315-1"><a href="visualizing-networks-with-igraph.html#cb315-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">layout=</span>frg,</span>
+<span id="cb315-2"><a href="visualizing-networks-with-igraph.html#cb315-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.shape=</span><span class="st">&quot;square&quot;</span>,</span>
+<span id="cb315-3"><a href="visualizing-networks-with-igraph.html#cb315-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.size =</span> <span class="dv">40</span>,</span>
+<span id="cb315-4"><a href="visualizing-networks-with-igraph.html#cb315-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.family =</span> <span class="st">&quot;sans&quot;</span>, <span class="co"># sans serif labels</span></span>
+<span id="cb315-5"><a href="visualizing-networks-with-igraph.html#cb315-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.color =</span> <span class="st">&quot;black&quot;</span>, <span class="co"># label color</span></span>
+<span id="cb315-6"><a href="visualizing-networks-with-igraph.html#cb315-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.cex =</span> <span class="fl">0.6</span>) <span class="co"># label size </span></span></code></pre></div>
+<p><img src="_main_files/figure-html/09vShape-1.png" width="672" /></p>
+<p>As always, they can be set by node:</p>
+<div class="sourceCode" id="cb316"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb316-1"><a href="visualizing-networks-with-igraph.html#cb316-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">layout=</span>frg,</span>
+<span id="cb316-2"><a href="visualizing-networks-with-igraph.html#cb316-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.shape=</span><span class="fu">c</span>(<span class="st">&quot;square&quot;</span>,<span class="st">&quot;circle&quot;</span>)[<span class="dv">1</span><span class="sc">+</span><span class="fu">as.numeric</span>(<span class="fu">grepl</span>(<span class="st">&quot;nn&quot;</span>,<span class="fu">V</span>(g)<span class="sc">$</span>name))],</span>
+<span id="cb316-3"><a href="visualizing-networks-with-igraph.html#cb316-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.size =</span> <span class="dv">40</span>,</span>
+<span id="cb316-4"><a href="visualizing-networks-with-igraph.html#cb316-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.family =</span> <span class="st">&quot;sans&quot;</span>, <span class="co"># sans serif labels</span></span>
+<span id="cb316-5"><a href="visualizing-networks-with-igraph.html#cb316-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.color =</span> <span class="st">&quot;black&quot;</span>, <span class="co"># label color</span></span>
+<span id="cb316-6"><a href="visualizing-networks-with-igraph.html#cb316-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.cex =</span> <span class="fl">0.6</span>) <span class="co"># label size </span></span></code></pre></div>
+<p><img src="_main_files/figure-html/09vShape2-1.png" width="672" /></p>
+<p>Colours of both the node and its frame can be chosen freely, too:</p>
+<div class="sourceCode" id="cb317"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb317-1"><a href="visualizing-networks-with-igraph.html#cb317-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">layout=</span>frg,</span>
+<span id="cb317-2"><a href="visualizing-networks-with-igraph.html#cb317-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.shape=</span><span class="fu">c</span>(<span class="st">&quot;square&quot;</span>,<span class="st">&quot;circle&quot;</span>)[<span class="dv">1</span><span class="sc">+</span><span class="fu">as.numeric</span>(<span class="fu">grepl</span>(<span class="st">&quot;nn&quot;</span>,<span class="fu">V</span>(g)<span class="sc">$</span>name))],</span>
+<span id="cb317-3"><a href="visualizing-networks-with-igraph.html#cb317-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.color =</span> <span class="fu">c</span>(<span class="st">&quot;darkgreen&quot;</span>,<span class="st">&quot;orange&quot;</span>)[<span class="dv">1</span><span class="sc">+</span><span class="fu">as.numeric</span>(<span class="fu">grepl</span>(<span class="st">&quot;^J&quot;</span>,<span class="fu">V</span>(g)<span class="sc">$</span>name))],</span>
+<span id="cb317-4"><a href="visualizing-networks-with-igraph.html#cb317-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.frame.color =</span> <span class="fu">c</span>(<span class="st">&quot;black&quot;</span>,<span class="st">&quot;grey&quot;</span>), <span class="co"># vectors are not recycled, any node without a value gets an NA</span></span>
+<span id="cb317-5"><a href="visualizing-networks-with-igraph.html#cb317-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.size =</span> <span class="dv">40</span>,</span>
+<span id="cb317-6"><a href="visualizing-networks-with-igraph.html#cb317-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.family =</span> <span class="st">&quot;sans&quot;</span>, <span class="co"># sans serif labels</span></span>
+<span id="cb317-7"><a href="visualizing-networks-with-igraph.html#cb317-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.color =</span> <span class="st">&quot;black&quot;</span>, <span class="co"># label color</span></span>
+<span id="cb317-8"><a href="visualizing-networks-with-igraph.html#cb317-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.cex =</span> <span class="fl">0.6</span>) <span class="co"># label size </span></span></code></pre></div>
+<p><img src="_main_files/figure-html/09vShape3-1.png" width="672" /></p>
+<p>A special case of nodes are pies:</p>
+<div class="sourceCode" id="cb318"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb318-1"><a href="visualizing-networks-with-igraph.html#cb318-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">layout=</span>frg,</span>
+<span id="cb318-2"><a href="visualizing-networks-with-igraph.html#cb318-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.shape=</span> <span class="st">&quot;pie&quot;</span>,</span>
+<span id="cb318-3"><a href="visualizing-networks-with-igraph.html#cb318-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.size =</span> <span class="dv">30</span>,</span>
+<span id="cb318-4"><a href="visualizing-networks-with-igraph.html#cb318-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.pie =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">2</span>),</span>
+<span id="cb318-5"><a href="visualizing-networks-with-igraph.html#cb318-5" aria-hidden="true" tabindex="-1"></a>                       <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>),</span>
+<span id="cb318-6"><a href="visualizing-networks-with-igraph.html#cb318-6" aria-hidden="true" tabindex="-1"></a>                       <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>),</span>
+<span id="cb318-7"><a href="visualizing-networks-with-igraph.html#cb318-7" aria-hidden="true" tabindex="-1"></a>                       <span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>),</span>
+<span id="cb318-8"><a href="visualizing-networks-with-igraph.html#cb318-8" aria-hidden="true" tabindex="-1"></a>                       <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">0</span>,<span class="dv">3</span>),</span>
+<span id="cb318-9"><a href="visualizing-networks-with-igraph.html#cb318-9" aria-hidden="true" tabindex="-1"></a>                       <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>),</span>
+<span id="cb318-10"><a href="visualizing-networks-with-igraph.html#cb318-10" aria-hidden="true" tabindex="-1"></a>                       <span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">0</span>,<span class="dv">1</span>),</span>
+<span id="cb318-11"><a href="visualizing-networks-with-igraph.html#cb318-11" aria-hidden="true" tabindex="-1"></a>                       <span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>)),</span>
+<span id="cb318-12"><a href="visualizing-networks-with-igraph.html#cb318-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.pie.color =</span> <span class="fu">list</span>(<span class="fu">rainbow</span>(<span class="dv">4</span>)),</span>
+<span id="cb318-13"><a href="visualizing-networks-with-igraph.html#cb318-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.family =</span> <span class="st">&quot;sans&quot;</span>, <span class="co"># sans serif labels</span></span>
+<span id="cb318-14"><a href="visualizing-networks-with-igraph.html#cb318-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.color =</span> <span class="st">&quot;black&quot;</span>, <span class="co"># label color</span></span>
+<span id="cb318-15"><a href="visualizing-networks-with-igraph.html#cb318-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.cex =</span> <span class="fl">0.6</span>, <span class="co"># label size </span></span>
+<span id="cb318-16"><a href="visualizing-networks-with-igraph.html#cb318-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.dist =</span> <span class="dv">3</span>, <span class="co"># label distance to node centre</span></span>
+<span id="cb318-17"><a href="visualizing-networks-with-igraph.html#cb318-17" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.degree =</span> <span class="dv">0</span>) <span class="co"># label position 0=right, pi=left, pi/2=below etc</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/09vPies-1.png" width="672" /></p>
+<p>Which are especially effective with the size vector:</p>
+<div class="sourceCode" id="cb319"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb319-1"><a href="visualizing-networks-with-igraph.html#cb319-1" aria-hidden="true" tabindex="-1"></a>pieList <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">2</span>),</span>
+<span id="cb319-2"><a href="visualizing-networks-with-igraph.html#cb319-2" aria-hidden="true" tabindex="-1"></a>                <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>),</span>
+<span id="cb319-3"><a href="visualizing-networks-with-igraph.html#cb319-3" aria-hidden="true" tabindex="-1"></a>                <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>),</span>
+<span id="cb319-4"><a href="visualizing-networks-with-igraph.html#cb319-4" aria-hidden="true" tabindex="-1"></a>                <span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>),</span>
+<span id="cb319-5"><a href="visualizing-networks-with-igraph.html#cb319-5" aria-hidden="true" tabindex="-1"></a>                <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">0</span>,<span class="dv">3</span>),</span>
+<span id="cb319-6"><a href="visualizing-networks-with-igraph.html#cb319-6" aria-hidden="true" tabindex="-1"></a>                <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>),</span>
+<span id="cb319-7"><a href="visualizing-networks-with-igraph.html#cb319-7" aria-hidden="true" tabindex="-1"></a>                <span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">0</span>,<span class="dv">1</span>),</span>
+<span id="cb319-8"><a href="visualizing-networks-with-igraph.html#cb319-8" aria-hidden="true" tabindex="-1"></a>                <span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>))</span>
+<span id="cb319-9"><a href="visualizing-networks-with-igraph.html#cb319-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">layout=</span>frg,</span>
+<span id="cb319-10"><a href="visualizing-networks-with-igraph.html#cb319-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.shape=</span> <span class="st">&quot;pie&quot;</span>,</span>
+<span id="cb319-11"><a href="visualizing-networks-with-igraph.html#cb319-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.size =</span> <span class="fu">sapply</span>(pieList,sum)<span class="sc">*</span><span class="dv">6</span>,</span>
+<span id="cb319-12"><a href="visualizing-networks-with-igraph.html#cb319-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.pie =</span> pieList,</span>
+<span id="cb319-13"><a href="visualizing-networks-with-igraph.html#cb319-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.pie.color =</span> <span class="fu">list</span>(<span class="fu">rainbow</span>(<span class="dv">4</span>)),</span>
+<span id="cb319-14"><a href="visualizing-networks-with-igraph.html#cb319-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.family =</span> <span class="st">&quot;sans&quot;</span>, <span class="co"># sans serif labels</span></span>
+<span id="cb319-15"><a href="visualizing-networks-with-igraph.html#cb319-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.color =</span> <span class="st">&quot;black&quot;</span>, <span class="co"># label color</span></span>
+<span id="cb319-16"><a href="visualizing-networks-with-igraph.html#cb319-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.cex =</span> <span class="fl">0.6</span>, <span class="co"># label size </span></span>
+<span id="cb319-17"><a href="visualizing-networks-with-igraph.html#cb319-17" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.dist =</span> <span class="fu">rep</span>(<span class="dv">3</span>,<span class="dv">7</span>), <span class="co"># label distance to node centre</span></span>
+<span id="cb319-18"><a href="visualizing-networks-with-igraph.html#cb319-18" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.degree =</span> <span class="fu">rep</span>(<span class="dv">0</span>,<span class="dv">7</span>)) <span class="co"># label position 0=right, pi=left, pi/2=below etc</span></span></code></pre></div>
+<pre><code>## Warning in label.dist * cos(-label.degree) * (vertex.size + 6 * 8 * log10(2)):
+## longer object length is not a multiple of shorter object length</code></pre>
+<pre><code>## Warning in layout[, 1] + label.dist * cos(-label.degree) * (vertex.size + :
+## longer object length is not a multiple of shorter object length</code></pre>
+<pre><code>## Warning in label.dist * sin(-label.degree) * (vertex.size + 6 * 8 * log10(2)):
+## longer object length is not a multiple of shorter object length</code></pre>
+<pre><code>## Warning in layout[, 2] + label.dist * sin(-label.degree) * (vertex.size + :
+## longer object length is not a multiple of shorter object length</code></pre>
+<p><img src="_main_files/figure-html/09vPies2-1.png" width="672" /></p>
+</div>
+<div id="edge-appearance" class="section level3" number="11.3.4">
+<h3><span class="header-section-number">11.3.4</span> Edge appearance</h3>
+<p>Of course, the edges can also be controlled individually.</p>
+<div class="sourceCode" id="cb324"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb324-1"><a href="visualizing-networks-with-igraph.html#cb324-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">layout=</span>frg,</span>
+<span id="cb324-2"><a href="visualizing-networks-with-igraph.html#cb324-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.color =</span> <span class="st">&quot;black&quot;</span>,</span>
+<span id="cb324-3"><a href="visualizing-networks-with-igraph.html#cb324-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.family =</span> <span class="st">&quot;sans&quot;</span>, <span class="co"># sans serif labels</span></span>
+<span id="cb324-4"><a href="visualizing-networks-with-igraph.html#cb324-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.color =</span> <span class="st">&quot;black&quot;</span>, <span class="co">#color</span></span>
+<span id="cb324-5"><a href="visualizing-networks-with-igraph.html#cb324-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.cex =</span> <span class="fl">0.6</span>, <span class="co"># size </span></span>
+<span id="cb324-6"><a href="visualizing-networks-with-igraph.html#cb324-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.dist =</span> <span class="dv">3</span>, <span class="co"># label distance to node centre</span></span>
+<span id="cb324-7"><a href="visualizing-networks-with-igraph.html#cb324-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.degree =</span> <span class="dv">0</span>) <span class="co"># label position 0=right, pi=left, pi/2=below etc</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/09ecol-1.png" width="672" /></p>
+<p>… including the line type:</p>
+<div class="sourceCode" id="cb325"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb325-1"><a href="visualizing-networks-with-igraph.html#cb325-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">layout=</span>frg,</span>
+<span id="cb325-2"><a href="visualizing-networks-with-igraph.html#cb325-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.lty =</span> <span class="dv">3</span>,</span>
+<span id="cb325-3"><a href="visualizing-networks-with-igraph.html#cb325-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.color =</span> <span class="st">&quot;black&quot;</span>,</span>
+<span id="cb325-4"><a href="visualizing-networks-with-igraph.html#cb325-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.family =</span> <span class="st">&quot;sans&quot;</span>, <span class="co"># sans serif labels</span></span>
+<span id="cb325-5"><a href="visualizing-networks-with-igraph.html#cb325-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.color =</span> <span class="st">&quot;black&quot;</span>, <span class="co">#color</span></span>
+<span id="cb325-6"><a href="visualizing-networks-with-igraph.html#cb325-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.cex =</span> <span class="fl">0.6</span>, <span class="co"># size </span></span>
+<span id="cb325-7"><a href="visualizing-networks-with-igraph.html#cb325-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.dist =</span> <span class="dv">3</span>, <span class="co"># label distance to node centre</span></span>
+<span id="cb325-8"><a href="visualizing-networks-with-igraph.html#cb325-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.degree =</span> <span class="dv">0</span>) <span class="co"># label position 0=right, pi=left, pi/2=below etc</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/09elty-1.png" width="672" /></p>
+<p>… and the thickness:</p>
+<div class="sourceCode" id="cb326"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb326-1"><a href="visualizing-networks-with-igraph.html#cb326-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">layout=</span>frg,</span>
+<span id="cb326-2"><a href="visualizing-networks-with-igraph.html#cb326-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.width =</span> <span class="dv">3</span>,</span>
+<span id="cb326-3"><a href="visualizing-networks-with-igraph.html#cb326-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.lty =</span> <span class="dv">2</span>,</span>
+<span id="cb326-4"><a href="visualizing-networks-with-igraph.html#cb326-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.color =</span> <span class="st">&quot;black&quot;</span>,</span>
+<span id="cb326-5"><a href="visualizing-networks-with-igraph.html#cb326-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.family =</span> <span class="st">&quot;sans&quot;</span>, <span class="co"># sans serif labels</span></span>
+<span id="cb326-6"><a href="visualizing-networks-with-igraph.html#cb326-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.color =</span> <span class="st">&quot;black&quot;</span>, <span class="co">#color</span></span>
+<span id="cb326-7"><a href="visualizing-networks-with-igraph.html#cb326-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.cex =</span> <span class="fl">0.6</span>, <span class="co"># size </span></span>
+<span id="cb326-8"><a href="visualizing-networks-with-igraph.html#cb326-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.dist =</span> <span class="dv">3</span>, <span class="co"># label distance to node centre</span></span>
+<span id="cb326-9"><a href="visualizing-networks-with-igraph.html#cb326-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.degree =</span> <span class="dv">0</span>) <span class="co"># label position 0=right, pi=left, pi/2=below etc</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/09ewidth-1.png" width="672" /></p>
+<p>… which can, of course be adapted per edge:</p>
+<div class="sourceCode" id="cb327"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb327-1"><a href="visualizing-networks-with-igraph.html#cb327-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">layout=</span>frg,</span>
+<span id="cb327-2"><a href="visualizing-networks-with-igraph.html#cb327-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.width =</span> <span class="fu">sqrt</span>(<span class="fu">edge_betweenness</span>(g)),</span>
+<span id="cb327-3"><a href="visualizing-networks-with-igraph.html#cb327-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.lty =</span> <span class="dv">2</span>,</span>
+<span id="cb327-4"><a href="visualizing-networks-with-igraph.html#cb327-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.color =</span> <span class="st">&quot;black&quot;</span>,</span>
+<span id="cb327-5"><a href="visualizing-networks-with-igraph.html#cb327-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.family =</span> <span class="st">&quot;sans&quot;</span>, <span class="co"># sans serif labels</span></span>
+<span id="cb327-6"><a href="visualizing-networks-with-igraph.html#cb327-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.color =</span> <span class="st">&quot;black&quot;</span>, <span class="co">#color</span></span>
+<span id="cb327-7"><a href="visualizing-networks-with-igraph.html#cb327-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.cex =</span> <span class="fl">0.6</span>, <span class="co"># size </span></span>
+<span id="cb327-8"><a href="visualizing-networks-with-igraph.html#cb327-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.dist =</span> <span class="dv">3</span>, <span class="co"># label distance to node centre</span></span>
+<span id="cb327-9"><a href="visualizing-networks-with-igraph.html#cb327-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.degree =</span> <span class="dv">0</span>) <span class="co"># label position 0=right, pi=left, pi/2=below etc</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/09elty2-1.png" width="672" /></p>
+<p>Edges can be curved:</p>
+<div class="sourceCode" id="cb328"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb328-1"><a href="visualizing-networks-with-igraph.html#cb328-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">layout=</span>frg,</span>
+<span id="cb328-2"><a href="visualizing-networks-with-igraph.html#cb328-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.curved =</span> T,</span>
+<span id="cb328-3"><a href="visualizing-networks-with-igraph.html#cb328-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.width =</span> <span class="fu">sqrt</span>(<span class="fu">edge_betweenness</span>(g)),</span>
+<span id="cb328-4"><a href="visualizing-networks-with-igraph.html#cb328-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.lty =</span> <span class="dv">1</span>,</span>
+<span id="cb328-5"><a href="visualizing-networks-with-igraph.html#cb328-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.color =</span> <span class="st">&quot;black&quot;</span>,</span>
+<span id="cb328-6"><a href="visualizing-networks-with-igraph.html#cb328-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.family =</span> <span class="st">&quot;sans&quot;</span>, <span class="co"># sans serif labels</span></span>
+<span id="cb328-7"><a href="visualizing-networks-with-igraph.html#cb328-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.color =</span> <span class="st">&quot;black&quot;</span>, <span class="co">#color</span></span>
+<span id="cb328-8"><a href="visualizing-networks-with-igraph.html#cb328-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.cex =</span> <span class="fl">0.6</span>, <span class="co"># size </span></span>
+<span id="cb328-9"><a href="visualizing-networks-with-igraph.html#cb328-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.dist =</span> <span class="dv">3</span>, <span class="co"># label distance to node centre</span></span>
+<span id="cb328-10"><a href="visualizing-networks-with-igraph.html#cb328-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.degree =</span> <span class="dv">0</span>) <span class="co"># label position 0=right, pi=left, pi/2=below etc</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/09ecurve-1.png" width="672" /></p>
+<p>… and more or less curved:</p>
+<div class="sourceCode" id="cb329"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb329-1"><a href="visualizing-networks-with-igraph.html#cb329-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">layout=</span>frg,</span>
+<span id="cb329-2"><a href="visualizing-networks-with-igraph.html#cb329-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.curved =</span> <span class="fl">0.1</span>,</span>
+<span id="cb329-3"><a href="visualizing-networks-with-igraph.html#cb329-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.width =</span> <span class="fu">sqrt</span>(<span class="fu">edge_betweenness</span>(g)),</span>
+<span id="cb329-4"><a href="visualizing-networks-with-igraph.html#cb329-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.lty =</span> <span class="dv">1</span>,</span>
+<span id="cb329-5"><a href="visualizing-networks-with-igraph.html#cb329-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.color =</span> <span class="st">&quot;black&quot;</span>,</span>
+<span id="cb329-6"><a href="visualizing-networks-with-igraph.html#cb329-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.family =</span> <span class="st">&quot;sans&quot;</span>, <span class="co"># sans serif labels</span></span>
+<span id="cb329-7"><a href="visualizing-networks-with-igraph.html#cb329-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.color =</span> <span class="st">&quot;black&quot;</span>, <span class="co">#color</span></span>
+<span id="cb329-8"><a href="visualizing-networks-with-igraph.html#cb329-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.cex =</span> <span class="fl">0.6</span>, <span class="co"># size </span></span>
+<span id="cb329-9"><a href="visualizing-networks-with-igraph.html#cb329-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.dist =</span> <span class="dv">3</span>, <span class="co"># label distance to node centre</span></span>
+<span id="cb329-10"><a href="visualizing-networks-with-igraph.html#cb329-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.degree =</span> <span class="dv">0</span>) <span class="co"># label position 0=right, pi=left, pi/2=below etc</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/09ecurve1-1.png" width="672" /></p>
+<div class="sourceCode" id="cb330"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb330-1"><a href="visualizing-networks-with-igraph.html#cb330-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">layout=</span>frg,</span>
+<span id="cb330-2"><a href="visualizing-networks-with-igraph.html#cb330-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.curved =</span> <span class="sc">-</span><span class="dv">2</span>,</span>
+<span id="cb330-3"><a href="visualizing-networks-with-igraph.html#cb330-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.width =</span> <span class="fu">sqrt</span>(<span class="fu">edge_betweenness</span>(g)),</span>
+<span id="cb330-4"><a href="visualizing-networks-with-igraph.html#cb330-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.lty =</span> <span class="dv">1</span>,</span>
+<span id="cb330-5"><a href="visualizing-networks-with-igraph.html#cb330-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.color =</span> <span class="st">&quot;black&quot;</span>,</span>
+<span id="cb330-6"><a href="visualizing-networks-with-igraph.html#cb330-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.family =</span> <span class="st">&quot;sans&quot;</span>, <span class="co"># sans serif labels</span></span>
+<span id="cb330-7"><a href="visualizing-networks-with-igraph.html#cb330-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.color =</span> <span class="st">&quot;black&quot;</span>, <span class="co">#color</span></span>
+<span id="cb330-8"><a href="visualizing-networks-with-igraph.html#cb330-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.cex =</span> <span class="fl">0.6</span>, <span class="co"># size </span></span>
+<span id="cb330-9"><a href="visualizing-networks-with-igraph.html#cb330-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.dist =</span> <span class="dv">3</span>, <span class="co"># label distance to node centre</span></span>
+<span id="cb330-10"><a href="visualizing-networks-with-igraph.html#cb330-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.degree =</span> <span class="dv">0</span>) <span class="co"># label position 0=right, pi=left, pi/2=below etc</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/09ecurve2-1.png" width="672" /></p>
+<p>Of course, edges may have labels:</p>
+<div class="sourceCode" id="cb331"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb331-1"><a href="visualizing-networks-with-igraph.html#cb331-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g, <span class="at">layout=</span>frg,</span>
+<span id="cb331-2"><a href="visualizing-networks-with-igraph.html#cb331-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.label =</span> <span class="fu">E</span>(g),</span>
+<span id="cb331-3"><a href="visualizing-networks-with-igraph.html#cb331-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.label.family =</span> <span class="st">&quot;sans&quot;</span>,</span>
+<span id="cb331-4"><a href="visualizing-networks-with-igraph.html#cb331-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.label.cex =</span> <span class="fl">0.6</span>,</span>
+<span id="cb331-5"><a href="visualizing-networks-with-igraph.html#cb331-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.label.color =</span> <span class="st">&quot;magenta&quot;</span>,</span>
+<span id="cb331-6"><a href="visualizing-networks-with-igraph.html#cb331-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.label.font =</span> <span class="dv">3</span>,</span>
+<span id="cb331-7"><a href="visualizing-networks-with-igraph.html#cb331-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.curved =</span> <span class="fl">0.1</span>,</span>
+<span id="cb331-8"><a href="visualizing-networks-with-igraph.html#cb331-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.width =</span> <span class="fu">sqrt</span>(<span class="fu">edge_betweenness</span>(g)),</span>
+<span id="cb331-9"><a href="visualizing-networks-with-igraph.html#cb331-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.lty =</span> <span class="dv">1</span>,</span>
+<span id="cb331-10"><a href="visualizing-networks-with-igraph.html#cb331-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">edge.color =</span> <span class="st">&quot;black&quot;</span>,</span>
+<span id="cb331-11"><a href="visualizing-networks-with-igraph.html#cb331-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.family =</span> <span class="st">&quot;sans&quot;</span>, <span class="co"># sans serif labels</span></span>
+<span id="cb331-12"><a href="visualizing-networks-with-igraph.html#cb331-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.color =</span> <span class="st">&quot;black&quot;</span>, <span class="co">#color</span></span>
+<span id="cb331-13"><a href="visualizing-networks-with-igraph.html#cb331-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.cex =</span> <span class="fl">0.6</span>, <span class="co"># size </span></span>
+<span id="cb331-14"><a href="visualizing-networks-with-igraph.html#cb331-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.dist =</span> <span class="dv">3</span>, <span class="co"># label distance to node centre</span></span>
+<span id="cb331-15"><a href="visualizing-networks-with-igraph.html#cb331-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">vertex.label.degree =</span> <span class="dv">0</span>) <span class="co"># label position 0=right, pi=left, pi/2=below etc</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/09eLab-1.png" width="672" /></p>
+<p>You can also add a title, box and other things. See <code>?igraph.plotting</code>
+for further tips.</p>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="venn-euler-and-upset-diagrams.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/09_networks_igraph.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf", "_main.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

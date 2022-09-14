@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 8 Distributions &amp; ggplot2 | Visualization in R workshop</title>
+  <meta name="description" content="<p>This is a collection of markdown files used during a workshop of the Science
+Park Study group at University of Amsterdam, 14th September 2022</p>" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 8 Distributions &amp; ggplot2 | Visualization in R workshop" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="<p>This is a collection of markdown files used during a workshop of the Science
+Park Study group at University of Amsterdam, 14th September 2022</p>" />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 8 Distributions &amp; ggplot2 | Visualization in R workshop" />
+  
+  <meta name="twitter:description" content="<p>This is a collection of markdown files used during a workshop of the Science
+Park Study group at University of Amsterdam, 14th September 2022</p>" />
+  
+
+<meta name="author" content="Anna Heintz-Buschart and Joachim Goedhart" />
+
+
+<meta name="date" content="2022-09-14" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="summarizing-distributions-in-base-r.html"/>
+<link rel="next" href="heatmaps-et-al.---base-r.html"/>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Visualization in R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> About</a></li>
+<li class="chapter" data-level="2" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html"><i class="fa fa-check"></i><b>2</b> Hello World - base R</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html#welcome"><i class="fa fa-check"></i><b>2.1</b> Welcome</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html#interacting-with-r"><i class="fa fa-check"></i><b>2.1.1</b> Interacting with R</a></li>
+<li class="chapter" data-level="2.1.2" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html#chunks"><i class="fa fa-check"></i><b>2.1.2</b> Chunks</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html#test-knitting"><i class="fa fa-check"></i><b>2.2</b> Test ‘knitting’</a></li>
+<li class="chapter" data-level="2.3" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html#resources-on-r"><i class="fa fa-check"></i><b>2.3</b> Resources on R</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html"><i class="fa fa-check"></i><b>3</b> Importing data - base R</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#using-base-r"><i class="fa fa-check"></i><b>3.1</b> Using base R</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#tab-delimited-data-with-a-header-and-using-standard-decimal-points"><i class="fa fa-check"></i><b>3.1.1</b> Tab-delimited data with a header and using standard decimal points</a></li>
+<li class="chapter" data-level="3.1.2" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#non-standard-decimal-points"><i class="fa fa-check"></i><b>3.1.2</b> Non-standard decimal points</a></li>
+<li class="chapter" data-level="3.1.3" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#comma-separated-data-with-a-header-and-using-standard-decimal-points"><i class="fa fa-check"></i><b>3.1.3</b> Comma-separated data with a header and using standard decimal points</a></li>
+<li class="chapter" data-level="3.1.4" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#tables-without-headers"><i class="fa fa-check"></i><b>3.1.4</b> Tables without headers</a></li>
+<li class="chapter" data-level="3.1.5" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#additional-lines"><i class="fa fa-check"></i><b>3.1.5</b> Additional lines</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#further-methods"><i class="fa fa-check"></i><b>3.2</b> Further methods</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#excel-files"><i class="fa fa-check"></i><b>3.2.1</b> Excel files</a></li>
+<li class="chapter" data-level="3.2.2" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#reading-from-urls"><i class="fa fa-check"></i><b>3.2.2</b> Reading from URLs</a></li>
+<li class="chapter" data-level="3.2.3" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#reading-from-the-clipboard"><i class="fa fa-check"></i><b>3.2.3</b> Reading from the clipboard</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="intro-to-the-tidyverse.html"><a href="intro-to-the-tidyverse.html"><i class="fa fa-check"></i><b>4</b> Intro to the {tidyverse}</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="intro-to-the-tidyverse.html"><a href="intro-to-the-tidyverse.html#why-tidyverse"><i class="fa fa-check"></i><b>4.1</b> Why <code>{tidyverse}</code>?</a></li>
+<li class="chapter" data-level="4.2" data-path="intro-to-the-tidyverse.html"><a href="intro-to-the-tidyverse.html#reading-data-from-excel"><i class="fa fa-check"></i><b>4.2</b> Reading data from excel</a></li>
+<li class="chapter" data-level="4.3" data-path="intro-to-the-tidyverse.html"><a href="intro-to-the-tidyverse.html#the-pipe-operator"><i class="fa fa-check"></i><b>4.3</b> The pipe operator</a></li>
+<li class="chapter" data-level="4.4" data-path="intro-to-the-tidyverse.html"><a href="intro-to-the-tidyverse.html#resources-on-tidyverse"><i class="fa fa-check"></i><b>4.4</b> Resources on tidyverse</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html"><i class="fa fa-check"></i><b>5</b> Introduction to scatter plots in base R</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#set-up"><i class="fa fa-check"></i><b>5.1</b> Set up</a></li>
+<li class="chapter" data-level="5.2" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#formatting-plots"><i class="fa fa-check"></i><b>5.2</b> Formatting plots</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#defaults"><i class="fa fa-check"></i><b>5.2.1</b> Defaults</a></li>
+<li class="chapter" data-level="5.2.2" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#margins"><i class="fa fa-check"></i><b>5.2.2</b> Margins</a></li>
+<li class="chapter" data-level="5.2.3" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#plot-borders"><i class="fa fa-check"></i><b>5.2.3</b> Plot borders</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#axes"><i class="fa fa-check"></i><b>5.3</b> Axes</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#axis-marks"><i class="fa fa-check"></i><b>5.3.1</b> Axis marks</a></li>
+<li class="chapter" data-level="5.3.2" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#axis-labels"><i class="fa fa-check"></i><b>5.3.2</b> Axis labels</a></li>
+<li class="chapter" data-level="5.3.3" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#scales-and-ranges"><i class="fa fa-check"></i><b>5.3.3</b> Scales and ranges</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#points"><i class="fa fa-check"></i><b>5.4</b> Points</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#shapes"><i class="fa fa-check"></i><b>5.4.1</b> Shapes</a></li>
+<li class="chapter" data-level="5.4.2" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#colour"><i class="fa fa-check"></i><b>5.4.2</b> Colour</a></li>
+<li class="chapter" data-level="5.4.3" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#size"><i class="fa fa-check"></i><b>5.4.3</b> Size</a></li>
+<li class="chapter" data-level="5.4.4" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#multiple-sets-of-points"><i class="fa fa-check"></i><b>5.4.4</b> Multiple sets of points</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#legends"><i class="fa fa-check"></i><b>5.5</b> Legends</a></li>
+<li class="chapter" data-level="5.6" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#lines"><i class="fa fa-check"></i><b>5.6</b> Lines</a>
+<ul>
+<li class="chapter" data-level="5.6.1" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#histogram-style-lines"><i class="fa fa-check"></i><b>5.6.1</b> Histogram-style lines</a></li>
+<li class="chapter" data-level="5.6.2" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#lines-between-points"><i class="fa fa-check"></i><b>5.6.2</b> Lines between points</a></li>
+<li class="chapter" data-level="5.6.3" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#lines-through-the-plot"><i class="fa fa-check"></i><b>5.6.3</b> Lines through the plot</a></li>
+<li class="chapter" data-level="5.6.4" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#trend-lines"><i class="fa fa-check"></i><b>5.6.4</b> Trend lines</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html"><i class="fa fa-check"></i><b>6</b> Introduction to scatter plots in R/ggplot2</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#setup"><i class="fa fa-check"></i><b>6.1</b> Setup</a></li>
+<li class="chapter" data-level="6.2" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#scatterplots"><i class="fa fa-check"></i><b>6.2</b> Scatterplots</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#defaults-1"><i class="fa fa-check"></i><b>6.2.1</b> Defaults</a></li>
+<li class="chapter" data-level="6.2.2" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#themes"><i class="fa fa-check"></i><b>6.2.2</b> Themes</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#intermezzo-plots-as-objects"><i class="fa fa-check"></i><b>6.3</b> Intermezzo: Plots as objects</a></li>
+<li class="chapter" data-level="6.4" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#modifying-plots"><i class="fa fa-check"></i><b>6.4</b> Modifying plots</a>
+<ul>
+<li class="chapter" data-level="6.4.1" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#axis-labels-1"><i class="fa fa-check"></i><b>6.4.1</b> Axis labels</a></li>
+<li class="chapter" data-level="6.4.2" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#scales-and-ranges-1"><i class="fa fa-check"></i><b>6.4.2</b> Scales and ranges</a></li>
+<li class="chapter" data-level="6.4.3" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#aesthetics-geometries"><i class="fa fa-check"></i><b>6.4.3</b> Aesthetics &amp; Geometries</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#legends-1"><i class="fa fa-check"></i><b>6.5</b> Legends</a></li>
+<li class="chapter" data-level="6.6" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#lines-and-trends"><i class="fa fa-check"></i><b>6.6</b> Lines and trends</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html"><i class="fa fa-check"></i><b>7</b> Summarizing distributions in base R</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#setup-1"><i class="fa fa-check"></i><b>7.1</b> Setup</a></li>
+<li class="chapter" data-level="7.2" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#the-data"><i class="fa fa-check"></i><b>7.2</b> The data</a></li>
+<li class="chapter" data-level="7.3" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#just-the-mean-barplots"><i class="fa fa-check"></i><b>7.3</b> Just the mean: Barplots</a>
+<ul>
+<li class="chapter" data-level="7.3.1" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#simple-barplots"><i class="fa fa-check"></i><b>7.3.1</b> Simple barplots</a></li>
+<li class="chapter" data-level="7.3.2" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#barplots-with-error-bars"><i class="fa fa-check"></i><b>7.3.2</b> Barplots with error bars</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#medians-quartiles-and-outliers-boxplots"><i class="fa fa-check"></i><b>7.4</b> Medians, quartiles, and outliers: Boxplots</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#basic-boxplots"><i class="fa fa-check"></i><b>7.4.1</b> Basic boxplots</a></li>
+<li class="chapter" data-level="7.4.2" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#adding-points-on-top"><i class="fa fa-check"></i><b>7.4.2</b> Adding points on top</a></li>
+<li class="chapter" data-level="7.4.3" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#adding-lines-between-points"><i class="fa fa-check"></i><b>7.4.3</b> Adding lines between points</a></li>
+<li class="chapter" data-level="7.4.4" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#half-boxes"><i class="fa fa-check"></i><b>7.4.4</b> Half-boxes</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#histograms"><i class="fa fa-check"></i><b>7.5</b> Histograms</a></li>
+<li class="chapter" data-level="7.6" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#density-plots"><i class="fa fa-check"></i><b>7.6</b> Density plots</a></li>
+<li class="chapter" data-level="7.7" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#violinplots"><i class="fa fa-check"></i><b>7.7</b> Violinplots</a></li>
+<li class="chapter" data-level="7.8" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#beanplots"><i class="fa fa-check"></i><b>7.8</b> Beanplots</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html"><i class="fa fa-check"></i><b>8</b> Distributions &amp; ggplot2</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#setup-and-data"><i class="fa fa-check"></i><b>8.1</b> Setup and data</a></li>
+<li class="chapter" data-level="8.2" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#multiple-distributions"><i class="fa fa-check"></i><b>8.2</b> Multiple distributions</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#plotting-the-data"><i class="fa fa-check"></i><b>8.2.1</b> Plotting the data</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#boxplots"><i class="fa fa-check"></i><b>8.3</b> Boxplots</a></li>
+<li class="chapter" data-level="8.4" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#violinplots-1"><i class="fa fa-check"></i><b>8.4</b> Violinplots</a></li>
+<li class="chapter" data-level="8.5" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#facets-splitting-into-multiple-plots"><i class="fa fa-check"></i><b>8.5</b> Facets: Splitting into multiple plots</a></li>
+<li class="chapter" data-level="8.6" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#a-single-distribution"><i class="fa fa-check"></i><b>8.6</b> A single distribution</a>
+<ul>
+<li class="chapter" data-level="8.6.1" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#a-single-violinplot"><i class="fa fa-check"></i><b>8.6.1</b> A single violinplot</a></li>
+<li class="chapter" data-level="8.6.2" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#density-plot"><i class="fa fa-check"></i><b>8.6.2</b> Density plot</a></li>
+<li class="chapter" data-level="8.6.3" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#histogram"><i class="fa fa-check"></i><b>8.6.3</b> Histogram</a></li>
+</ul></li>
+<li class="chapter" data-level="8.7" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#two-distributions"><i class="fa fa-check"></i><b>8.7</b> Two distributions</a>
+<ul>
+<li class="chapter" data-level="8.7.1" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#histogram-density"><i class="fa fa-check"></i><b>8.7.1</b> Histogram &amp; Density</a></li>
+<li class="chapter" data-level="8.7.2" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#splitting-into-two-plots"><i class="fa fa-check"></i><b>8.7.2</b> Splitting into two plots</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html"><i class="fa fa-check"></i><b>9</b> Heatmaps <em>et al.</em> - base R</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#setup-2"><i class="fa fa-check"></i><b>9.1</b> Setup</a></li>
+<li class="chapter" data-level="9.2" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#loading-data"><i class="fa fa-check"></i><b>9.2</b> Loading data</a></li>
+<li class="chapter" data-level="9.3" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#basic-heatmaps"><i class="fa fa-check"></i><b>9.3</b> Basic heatmaps</a>
+<ul>
+<li class="chapter" data-level="9.3.1" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#a-simple-heatmap"><i class="fa fa-check"></i><b>9.3.1</b> A simple heatmap</a></li>
+<li class="chapter" data-level="9.3.2" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#scaling"><i class="fa fa-check"></i><b>9.3.2</b> Scaling</a></li>
+<li class="chapter" data-level="9.3.3" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#colour-schemes"><i class="fa fa-check"></i><b>9.3.3</b> Colour schemes</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#decorating-heatmaps"><i class="fa fa-check"></i><b>9.4</b> Decorating heatmaps</a>
+<ul>
+<li class="chapter" data-level="9.4.1" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#dendrograms"><i class="fa fa-check"></i><b>9.4.1</b> Dendrograms</a></li>
+<li class="chapter" data-level="9.4.2" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#ordering-features-and-samples"><i class="fa fa-check"></i><b>9.4.2</b> Ordering features and samples</a></li>
+<li class="chapter" data-level="9.4.3" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#adding-attributes"><i class="fa fa-check"></i><b>9.4.3</b> Adding attributes</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="venn-euler-and-upset-diagrams.html"><a href="venn-euler-and-upset-diagrams.html"><i class="fa fa-check"></i><b>10</b> Venn, Euler, and upSet diagrams</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="venn-euler-and-upset-diagrams.html"><a href="venn-euler-and-upset-diagrams.html#setup-and-data-1"><i class="fa fa-check"></i><b>10.1</b> Setup and data</a></li>
+<li class="chapter" data-level="10.2" data-path="venn-euler-and-upset-diagrams.html"><a href="venn-euler-and-upset-diagrams.html#venn-diagrams"><i class="fa fa-check"></i><b>10.2</b> Venn diagrams</a></li>
+<li class="chapter" data-level="10.3" data-path="venn-euler-and-upset-diagrams.html"><a href="venn-euler-and-upset-diagrams.html#euler-diagrams"><i class="fa fa-check"></i><b>10.3</b> Euler diagrams</a></li>
+<li class="chapter" data-level="10.4" data-path="venn-euler-and-upset-diagrams.html"><a href="venn-euler-and-upset-diagrams.html#upset-plots"><i class="fa fa-check"></i><b>10.4</b> UpSet plots</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html"><i class="fa fa-check"></i><b>11</b> Visualizing networks with igraph</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#setup-3"><i class="fa fa-check"></i><b>11.1</b> Setup</a></li>
+<li class="chapter" data-level="11.2" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#network-representations"><i class="fa fa-check"></i><b>11.2</b> Network representations</a>
+<ul>
+<li class="chapter" data-level="11.2.1" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#network-formats-edgelist"><i class="fa fa-check"></i><b>11.2.1</b> Network formats: edgelist</a></li>
+<li class="chapter" data-level="11.2.2" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#network-formats-adjacency-matrix"><i class="fa fa-check"></i><b>11.2.2</b> Network formats: adjacency matrix</a></li>
+</ul></li>
+<li class="chapter" data-level="11.3" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#network-visualization"><i class="fa fa-check"></i><b>11.3</b> Network visualization</a>
+<ul>
+<li class="chapter" data-level="11.3.1" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#layouts"><i class="fa fa-check"></i><b>11.3.1</b> Layouts</a></li>
+<li class="chapter" data-level="11.3.2" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#node-labels"><i class="fa fa-check"></i><b>11.3.2</b> Node labels</a></li>
+<li class="chapter" data-level="11.3.3" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#node-shapes-and-sizes"><i class="fa fa-check"></i><b>11.3.3</b> Node shapes and sizes</a></li>
+<li class="chapter" data-level="11.3.4" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#edge-appearance"><i class="fa fa-check"></i><b>11.3.4</b> Edge appearance</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/a-h-b/R_base_vis_course" target="blank">Rendered with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Visualization in R workshop</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="distributions-ggplot2" class="section level1" number="8">
+<h1><span class="header-section-number">Chapter 8</span> Distributions &amp; ggplot2</h1>
+<div id="setup-and-data" class="section level2" number="8.1">
+<h2><span class="header-section-number">8.1</span> Setup and data</h2>
+<p>Let’s load the <code>{tidyverse}</code> package, which includes the <code>{ggplot2}</code> package that we will use for plotting:</p>
+<div class="sourceCode" id="cb195"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb195-1"><a href="distributions-ggplot2.html#cb195-1" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(tidyverse)</span></code></pre></div>
+<p>For the first set of visualizations, we use the ChickWeight data set that comes with R. Let’s look at the first few lines:</p>
+<div class="sourceCode" id="cb196"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb196-1"><a href="distributions-ggplot2.html#cb196-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ChickWeight)</span></code></pre></div>
+<pre><code>## Grouped Data: weight ~ Time | Chick
+##   weight Time Chick Diet Treat
+## 1     42    0     1    1     1
+## 2     51    2     1    1     1
+## 3     59    4     1    1     1
+## 4     64    6     1    1     1
+## 5     76    8     1    1     1
+## 6     93   10     1    1     1</code></pre>
+<p>It can be useful to look at the last lines as well:</p>
+<div class="sourceCode" id="cb198"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb198-1"><a href="distributions-ggplot2.html#cb198-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(ChickWeight)</span></code></pre></div>
+<pre><code>## Grouped Data: weight ~ Time | Chick
+##     weight Time Chick Diet Treat
+## 573    155   12    50    4 2-3-4
+## 574    175   14    50    4 2-3-4
+## 575    205   16    50    4 2-3-4
+## 576    234   18    50    4 2-3-4
+## 577    264   20    50    4 2-3-4
+## 578    264   21    50    4 2-3-4</code></pre>
+<p>To summarize the dataset:</p>
+<div class="sourceCode" id="cb200"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb200-1"><a href="distributions-ggplot2.html#cb200-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ChickWeight) <span class="co">#dataset is present in the workspace with the dataset name</span></span></code></pre></div>
+<pre><code>##      weight           Time           Chick     Diet       Treat          
+##  Min.   : 35.0   Min.   : 0.00   13     : 12   1:220   Length:578        
+##  1st Qu.: 63.0   1st Qu.: 4.00   9      : 12   2:120   Class :character  
+##  Median :103.0   Median :10.00   20     : 12   3:120   Mode  :character  
+##  Mean   :121.8   Mean   :10.72   10     : 12   4:118                     
+##  3rd Qu.:163.8   3rd Qu.:16.00   17     : 12                             
+##  Max.   :373.0   Max.   :21.00   19     : 12                             
+##                                  (Other):506</code></pre>
+</div>
+<div id="multiple-distributions" class="section level2" number="8.2">
+<h2><span class="header-section-number">8.2</span> Multiple distributions</h2>
+<div id="plotting-the-data" class="section level3" number="8.2.1">
+<h3><span class="header-section-number">8.2.1</span> Plotting the data</h3>
+<p>You see that you have 4 columns, most importantly weight. There are 3 columns with ‘metadata’: the Time that a chick weighed, which Chick, and its Diet. Let’s plot the weight versus Time:</p>
+<div class="sourceCode" id="cb202"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb202-1"><a href="distributions-ggplot2.html#cb202-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>weight)) <span class="sc">+</span></span>
+<span id="cb202-2"><a href="distributions-ggplot2.html#cb202-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/chickweight-scatterAll-1.png" width="672" /></p>
+<p>Let’s change the defauklt theme to set the background of the plot panel to white:</p>
+<div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb203-1"><a href="distributions-ggplot2.html#cb203-1" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_light</span>(<span class="at">base_size =</span> <span class="dv">14</span>))</span></code></pre></div>
+<p>The points are overlapping. To reduce overlap, we can introduce random displacement, also known as jitter. The <code>width</code> can be used to control the amount of jitter:</p>
+<div class="sourceCode" id="cb204"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb204-1"><a href="distributions-ggplot2.html#cb204-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>weight)) <span class="sc">+</span></span>
+<span id="cb204-2"><a href="distributions-ggplot2.html#cb204-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
+<p>Since there is still overlap, the dots can be made more transparent:</p>
+<div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb205-1"><a href="distributions-ggplot2.html#cb205-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>weight)) <span class="sc">+</span></span>
+<span id="cb205-2"><a href="distributions-ggplot2.html#cb205-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.25</span>, <span class="at">alpha=</span><span class="fl">0.5</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
+</div>
+</div>
+<div id="boxplots" class="section level2" number="8.3">
+<h2><span class="header-section-number">8.3</span> Boxplots</h2>
+<p>There are several ways to summarize the distribution of the data. The most common are barplots, boxplots and violinplots. The barplot is an over simplication of the data that only depicts the average. This type of summary should be avoided, see <a href="https://doi.org/10.1371/journal.pbio.1002128">here</a> for more about that. Boxplots and violinplots are better suited as summaries.</p>
+<p>In a boxplot, the values that are depicted by default are:</p>
+<ul>
+<li>the median (big bar in the middle = the 50th percentile)</li>
+<li>the 25th and 75 percentiles (ends of the box = quartiles)</li>
+<li>the whiskers extend to the last points within 1.5 * IQR from the quartiles (IQR is the interquartile range, i.e. the range between the box’s ends)</li>
+<li>all points that lie outside are plotted as points (outliers)</li>
+</ul>
+<p>Here we go:</p>
+<div class="sourceCode" id="cb206"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb206-1"><a href="distributions-ggplot2.html#cb206-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>weight)) <span class="sc">+</span> <span class="fu">geom_boxplot</span>()</span></code></pre></div>
+<pre><code>## Warning: Continuous x aesthetic -- did you forget aes(group=...)?</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-38-1.png" width="672" /></p>
+<p>In the plot above, all data is used for the summary, so we should indicate that we want to group the data by time:</p>
+<div class="sourceCode" id="cb208"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb208-1"><a href="distributions-ggplot2.html#cb208-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>weight, <span class="at">group=</span>Time)) <span class="sc">+</span> <span class="fu">geom_boxplot</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-39-1.png" width="672" /></p>
+<p>Since different data distribution can give rise to the same boxplot, it is still useful to plot the data:</p>
+<div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb209-1"><a href="distributions-ggplot2.html#cb209-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>weight, <span class="at">group=</span>Time)) <span class="sc">+</span></span>
+<span id="cb209-2"><a href="distributions-ggplot2.html#cb209-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.25</span>, <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb209-3"><a href="distributions-ggplot2.html#cb209-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-40-1.png" width="672" /></p>
+<p>The boxplot is now on top of the data. This can be solved by changing the order of the the layers or by changing the fill color of the boxplot:</p>
+<div class="sourceCode" id="cb210"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb210-1"><a href="distributions-ggplot2.html#cb210-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>weight, <span class="at">group=</span>Time)) <span class="sc">+</span></span>
+<span id="cb210-2"><a href="distributions-ggplot2.html#cb210-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.25</span>, <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb210-3"><a href="distributions-ggplot2.html#cb210-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill=</span><span class="cn">NA</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-41-1.png" width="672" /></p>
+<p>One other thing needs to be fixed. The outliers are plotted twice. Once as a jittered dot and once as outlier of the boxplot. To remove the outlier from the boxplot we use:</p>
+<div class="sourceCode" id="cb211"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb211-1"><a href="distributions-ggplot2.html#cb211-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>weight, <span class="at">group=</span>Time)) <span class="sc">+</span></span>
+<span id="cb211-2"><a href="distributions-ggplot2.html#cb211-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.25</span>, <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb211-3"><a href="distributions-ggplot2.html#cb211-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill=</span><span class="cn">NA</span>, <span class="at">outlier.shape =</span> <span class="cn">NA</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-42-1.png" width="672" /></p>
+<p>This graph looks a bit funny, since the Time points are not equally spaced. There is a difference of 2 for almost all, execpt for the last two time points which are 20 and 21. When there is continuous data on the x-axis (e.g. time, length, concentration) it makes sense to use those data for the x-axis position. However, we could also treat the x-axis data as labels or categories (instead of numbers). This would result in equal spacing, although the values are not equally spaced. To do this, we need to convert the Time data to a ‘factor.’ This can be done in the dataset or directly in the ggplot command as shown below:</p>
+<div class="sourceCode" id="cb212"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb212-1"><a href="distributions-ggplot2.html#cb212-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span><span class="fu">as.factor</span>(Time), <span class="at">y=</span>weight, <span class="at">group=</span>Time)) <span class="sc">+</span></span>
+<span id="cb212-2"><a href="distributions-ggplot2.html#cb212-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.25</span>, <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb212-3"><a href="distributions-ggplot2.html#cb212-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill=</span><span class="cn">NA</span>, <span class="at">outlier.shape =</span> <span class="cn">NA</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-43-1.png" width="672" /></p>
+<p>Another explanation of discrete versus quantitative data on the x-axis with ggplot example code <a href="https://joachimgoedhart.github.io/DataViz-protocols/plotting-the-data.html#discrete-conditions">can be found here</a>.</p>
+<p>The boxplot is a summary of the data that shows the midpoint of the data (median = middle line), the middle 50% of the data (the box) and the extremes with the whiskers. The exact defenition can vary between the different whiskers, to it’s a good idea to check that. From the <a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html"><code>geom_boxplot()</code> webpage</a>: “The upper whisker extends from the hinge to the largest value no further than 1.5 * IQR from the hinge (where IQR is the inter-quartile range, or distance between the first and third quartiles). The lower whisker extends from the hinge to the smallest value at most 1.5 * IQR of the hinge. Data beyond the end of the whiskers are called”outlying” points and are plotted individually.”</p>
+</div>
+<div id="violinplots-1" class="section level2" number="8.4">
+<h2><span class="header-section-number">8.4</span> Violinplots</h2>
+<p>To better summarize the distribution, a violinplot can be displayed:</p>
+<div class="sourceCode" id="cb213"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb213-1"><a href="distributions-ggplot2.html#cb213-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>weight, <span class="at">group=</span>Time)) <span class="sc">+</span> <span class="fu">geom_violin</span>(<span class="at">scale =</span> <span class="st">&quot;width&quot;</span>, <span class="at">fill=</span><span class="st">&quot;grey&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-44-1.png" width="672" /></p>
+<p>If desired the quantiles can be displayed. These can be user-defined and here we use the quartiles that corresponds to the horizontal lines that define the boxplot. So the middle line is the median:</p>
+<div class="sourceCode" id="cb214"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb214-1"><a href="distributions-ggplot2.html#cb214-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>weight, <span class="at">group=</span>Time)) <span class="sc">+</span></span>
+<span id="cb214-2"><a href="distributions-ggplot2.html#cb214-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">scale =</span> <span class="st">&quot;width&quot;</span>, <span class="at">fill=</span><span class="st">&quot;grey&quot;</span>, <span class="at">draw_quantiles =</span> <span class="fu">c</span>(<span class="fl">0.25</span>,<span class="fl">0.5</span>,<span class="fl">0.75</span>))</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-45-1.png" width="672" /></p>
+<p>Another option is to combine a boxplot with a violinplot to display the quartiles:</p>
+<div class="sourceCode" id="cb215"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb215-1"><a href="distributions-ggplot2.html#cb215-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>weight, <span class="at">group=</span>Time)) <span class="sc">+</span></span>
+<span id="cb215-2"><a href="distributions-ggplot2.html#cb215-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">scale =</span> <span class="st">&quot;width&quot;</span>, <span class="at">fill=</span><span class="st">&quot;grey&quot;</span>) <span class="sc">+</span></span>
+<span id="cb215-3"><a href="distributions-ggplot2.html#cb215-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill=</span><span class="st">&quot;white&quot;</span>, <span class="at">outlier.shape =</span> <span class="cn">NA</span>, <span class="at">width=</span><span class="fl">0.2</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-46-1.png" width="672" /></p>
+<p>To combine the violinplot with the data:</p>
+<div class="sourceCode" id="cb216"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb216-1"><a href="distributions-ggplot2.html#cb216-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>weight, <span class="at">group=</span>Time)) <span class="sc">+</span></span>
+<span id="cb216-2"><a href="distributions-ggplot2.html#cb216-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">scale =</span> <span class="st">&quot;width&quot;</span>, <span class="at">fill=</span><span class="st">&quot;grey&quot;</span>) <span class="sc">+</span></span>
+<span id="cb216-3"><a href="distributions-ggplot2.html#cb216-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.25</span>, <span class="at">alpha=</span><span class="fl">0.5</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-47-1.png" width="672" /></p>
+<p>The data are acquired for different Diets so we can map that data to different colors:</p>
+<div class="sourceCode" id="cb217"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb217-1"><a href="distributions-ggplot2.html#cb217-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>weight, <span class="at">group=</span>Time)) <span class="sc">+</span></span>
+<span id="cb217-2"><a href="distributions-ggplot2.html#cb217-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">scale =</span> <span class="st">&quot;width&quot;</span>, <span class="at">fill=</span><span class="st">&quot;grey&quot;</span>) <span class="sc">+</span></span>
+<span id="cb217-3"><a href="distributions-ggplot2.html#cb217-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.25</span>, <span class="at">alpha=</span><span class="fl">0.5</span>, <span class="fu">aes</span>(<span class="at">color=</span>Diet))</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-48-1.png" width="672" /></p>
+</div>
+<div id="facets-splitting-into-multiple-plots" class="section level2" number="8.5">
+<h2><span class="header-section-number">8.5</span> Facets: Splitting into multiple plots</h2>
+<p>Let’s say we want to compare the weight for different diets. In ggplot there is a way to ‘split’ the data and show it in multiple graphs. The simplest function is <code>facet_wrap()</code> and let’s see how that works:</p>
+<div class="sourceCode" id="cb218"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb218-1"><a href="distributions-ggplot2.html#cb218-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>weight, <span class="at">group=</span>Time)) <span class="sc">+</span></span>
+<span id="cb218-2"><a href="distributions-ggplot2.html#cb218-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">scale =</span> <span class="st">&quot;width&quot;</span>, <span class="at">fill=</span><span class="st">&quot;grey&quot;</span>) <span class="sc">+</span></span>
+<span id="cb218-3"><a href="distributions-ggplot2.html#cb218-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.25</span>, <span class="at">alpha=</span><span class="fl">0.5</span>, <span class="fu">aes</span>(<span class="at">color=</span>Diet)) <span class="sc">+</span></span>
+<span id="cb218-4"><a href="distributions-ggplot2.html#cb218-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Diet)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-49-1.png" width="672" /></p>
+<p>The <code>facet_wrap()</code> function calculates the optimal layout, but it can be defined by ncol (or nrow):</p>
+<div class="sourceCode" id="cb219"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb219-1"><a href="distributions-ggplot2.html#cb219-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>weight, <span class="at">group=</span>Time)) <span class="sc">+</span></span>
+<span id="cb219-2"><a href="distributions-ggplot2.html#cb219-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">scale =</span> <span class="st">&quot;width&quot;</span>, <span class="at">fill=</span><span class="st">&quot;grey&quot;</span>) <span class="sc">+</span></span>
+<span id="cb219-3"><a href="distributions-ggplot2.html#cb219-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.25</span>, <span class="at">alpha=</span><span class="fl">0.5</span>, <span class="fu">aes</span>(<span class="at">color=</span>Diet)) <span class="sc">+</span></span>
+<span id="cb219-4"><a href="distributions-ggplot2.html#cb219-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Diet, <span class="at">ncol =</span> <span class="dv">4</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-50-1.png" width="672" /></p>
+<p>The use of <code>facet_wrap()</code> is particularly powerful when the data has several conditions. Another, similar function, is <code>facet_grid()</code> which allows splitting the data according to two parameters:</p>
+<div class="sourceCode" id="cb220"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb220-1"><a href="distributions-ggplot2.html#cb220-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>weight, <span class="at">group=</span>Time)) <span class="sc">+</span></span>
+<span id="cb220-2"><a href="distributions-ggplot2.html#cb220-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">scale =</span> <span class="st">&quot;width&quot;</span>, <span class="at">fill=</span><span class="st">&quot;grey&quot;</span>) <span class="sc">+</span></span>
+<span id="cb220-3"><a href="distributions-ggplot2.html#cb220-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.25</span>, <span class="at">alpha=</span><span class="fl">0.5</span>, <span class="fu">aes</span>(<span class="at">color=</span>Diet)) <span class="sc">+</span></span>
+<span id="cb220-4"><a href="distributions-ggplot2.html#cb220-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(Diet<span class="sc">~</span>Time, <span class="at">scales =</span> <span class="st">&quot;free_x&quot;</span>) <span class="sc">+</span></span>
+<span id="cb220-5"><a href="distributions-ggplot2.html#cb220-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_blank</span>()) <span class="co">#Removes the Time labels from the x-axis</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-51-1.png" width="672" /></p>
+<p>In the example here, it may not be the best idea to split the Time in different plots, but it illustrates how <code>facet_grid()</code> can be used.</p>
+</div>
+<div id="a-single-distribution" class="section level2" number="8.6">
+<h2><span class="header-section-number">8.6</span> A single distribution</h2>
+<p>Let’s have a look at the combined data of the first and last week from diet 3. This can be achieved in multiple ways. For instance we can generate a new dataframe. But we can also filter the data and feed it directly into ggplot with the pipe operator:</p>
+<div class="sourceCode" id="cb221"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb221-1"><a href="distributions-ggplot2.html#cb221-1" aria-hidden="true" tabindex="-1"></a>ChickWeight <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Diet<span class="sc">==</span><span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb221-2"><a href="distributions-ggplot2.html#cb221-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Time <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">16</span>,<span class="dv">18</span>,<span class="dv">20</span>,<span class="dv">21</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb221-3"><a href="distributions-ggplot2.html#cb221-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>Diet, <span class="at">y=</span>weight)) <span class="sc">+</span></span>
+<span id="cb221-4"><a href="distributions-ggplot2.html#cb221-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">scale =</span> <span class="st">&quot;width&quot;</span>, <span class="at">fill=</span><span class="st">&quot;grey90&quot;</span>) <span class="sc">+</span></span>
+<span id="cb221-5"><a href="distributions-ggplot2.html#cb221-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.25</span>, <span class="at">alpha=</span><span class="dv">1</span>, <span class="at">size=</span><span class="dv">5</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-52-1.png" width="672" /></p>
+<p>To generate a new dataframe:</p>
+<div class="sourceCode" id="cb222"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb222-1"><a href="distributions-ggplot2.html#cb222-1" aria-hidden="true" tabindex="-1"></a>ChickWeight_sub <span class="ot">&lt;-</span> ChickWeight <span class="sc">%&gt;%</span></span>
+<span id="cb222-2"><a href="distributions-ggplot2.html#cb222-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Diet<span class="sc">==</span><span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb222-3"><a href="distributions-ggplot2.html#cb222-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Time <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">16</span>,<span class="dv">18</span>,<span class="dv">20</span>,<span class="dv">21</span>))</span></code></pre></div>
+<div id="a-single-violinplot" class="section level3" number="8.6.1">
+<h3><span class="header-section-number">8.6.1</span> A single violinplot</h3>
+<p>Since we have combined data from the first and last week, we see a bimodal distribution. This is nicely visualized with the violinplot. The violinplot shows the distribution of the data between the two extremes. The violinplot shows the <em>estimated</em> density distribution of the data. This ranges from the minimal to the maximal value of the data. To extrapolate the distribution we can use <code>trim=FALSE</code>:</p>
+<div class="sourceCode" id="cb223"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb223-1"><a href="distributions-ggplot2.html#cb223-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ChickWeight_sub, <span class="fu">aes</span>(<span class="at">x=</span>Diet, <span class="at">y=</span>weight)) <span class="sc">+</span></span>
+<span id="cb223-2"><a href="distributions-ggplot2.html#cb223-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">scale =</span> <span class="st">&quot;width&quot;</span>, <span class="at">fill=</span><span class="st">&quot;grey90&quot;</span>, <span class="at">trim =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb223-3"><a href="distributions-ggplot2.html#cb223-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.25</span>, <span class="at">alpha=</span><span class="dv">1</span>, <span class="at">size=</span><span class="dv">5</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-54-1.png" width="672" /></p>
+</div>
+<div id="density-plot" class="section level3" number="8.6.2">
+<h3><span class="header-section-number">8.6.2</span> Density plot</h3>
+<p>The violinplot is much like a smoothened hisogram. We can plot one side of the violinplot and in this case it is called a density plot:</p>
+<div class="sourceCode" id="cb224"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb224-1"><a href="distributions-ggplot2.html#cb224-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ChickWeight_sub, <span class="fu">aes</span>(<span class="at">y=</span>weight)) <span class="sc">+</span></span>
+<span id="cb224-2"><a href="distributions-ggplot2.html#cb224-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">fill=</span><span class="st">&quot;grey90&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-55-1.png" width="672" /></p>
+<p>These plots are typically rotated 90 degrees:</p>
+<div class="sourceCode" id="cb225"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb225-1"><a href="distributions-ggplot2.html#cb225-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ChickWeight_sub, <span class="fu">aes</span>(<span class="at">x=</span>weight)) <span class="sc">+</span></span>
+<span id="cb225-2"><a href="distributions-ggplot2.html#cb225-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">fill=</span><span class="st">&quot;grey90&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-56-1.png" width="672" /></p>
+<p>To add the data we can use <code>geom_rug()</code>:</p>
+<div class="sourceCode" id="cb226"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb226-1"><a href="distributions-ggplot2.html#cb226-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ChickWeight_sub, <span class="fu">aes</span>(<span class="at">x=</span>weight)) <span class="sc">+</span></span>
+<span id="cb226-2"><a href="distributions-ggplot2.html#cb226-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">fill=</span><span class="st">&quot;grey90&quot;</span>) <span class="sc">+</span></span>
+<span id="cb226-3"><a href="distributions-ggplot2.html#cb226-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rug</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-57-1.png" width="672" /></p>
+</div>
+<div id="histogram" class="section level3" number="8.6.3">
+<h3><span class="header-section-number">8.6.3</span> Histogram</h3>
+<p>To display these data as a histogram instead:</p>
+<div class="sourceCode" id="cb227"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb227-1"><a href="distributions-ggplot2.html#cb227-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ChickWeight_sub, <span class="fu">aes</span>(<span class="at">x=</span>weight)) <span class="sc">+</span></span>
+<span id="cb227-2"><a href="distributions-ggplot2.html#cb227-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>()</span></code></pre></div>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-58-1.png" width="672" /></p>
+<p>And we can combine them:</p>
+<div class="sourceCode" id="cb229"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb229-1"><a href="distributions-ggplot2.html#cb229-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ChickWeight_sub, <span class="fu">aes</span>(<span class="at">x=</span>weight)) <span class="sc">+</span></span>
+<span id="cb229-2"><a href="distributions-ggplot2.html#cb229-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>() <span class="sc">+</span> <span class="fu">geom_density</span>()</span></code></pre></div>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-59-1.png" width="672" /></p>
+<p>The density estimate is invisible, since it has a different amplitude. To solve this:</p>
+<div class="sourceCode" id="cb231"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb231-1"><a href="distributions-ggplot2.html#cb231-1" aria-hidden="true" tabindex="-1"></a><span class="co"># From: https://stackoverflow.com/questions/37404002/geom-density-to-match-geom-histogram-binwitdh</span></span>
+<span id="cb231-2"><a href="distributions-ggplot2.html#cb231-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ChickWeight_sub, <span class="fu">aes</span>(<span class="at">x=</span>weight)) <span class="sc">+</span></span>
+<span id="cb231-3"><a href="distributions-ggplot2.html#cb231-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">10</span>, <span class="at">fill=</span><span class="st">&quot;grey80&quot;</span>) <span class="sc">+</span></span>
+<span id="cb231-4"><a href="distributions-ggplot2.html#cb231-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="dv">10</span><span class="sc">*</span>..count..), <span class="at">fill=</span><span class="st">&quot;black&quot;</span>, <span class="at">alpha=</span><span class="fl">0.5</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-60-1.png" width="672" /></p>
+<p>One thing that is not so nice is the margin between the plot and the axis. To remove the margin:</p>
+<div class="sourceCode" id="cb232"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb232-1"><a href="distributions-ggplot2.html#cb232-1" aria-hidden="true" tabindex="-1"></a><span class="co"># From: https://stackoverflow.com/questions/37404002/geom-density-to-match-geom-histogram-binwitdh</span></span>
+<span id="cb232-2"><a href="distributions-ggplot2.html#cb232-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ChickWeight_sub, <span class="fu">aes</span>(<span class="at">x=</span>weight)) <span class="sc">+</span></span>
+<span id="cb232-3"><a href="distributions-ggplot2.html#cb232-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">10</span>, <span class="at">fill=</span><span class="st">&quot;grey80&quot;</span>) <span class="sc">+</span></span>
+<span id="cb232-4"><a href="distributions-ggplot2.html#cb232-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="dv">10</span><span class="sc">*</span>..count..), <span class="at">fill=</span><span class="st">&quot;black&quot;</span>, <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb232-5"><a href="distributions-ggplot2.html#cb232-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="cn">NA</span>))</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-61-1.png" width="672" /></p>
+<p>To further improve this, we can set the maximal value of the x-axis:</p>
+<div class="sourceCode" id="cb233"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb233-1"><a href="distributions-ggplot2.html#cb233-1" aria-hidden="true" tabindex="-1"></a><span class="co"># From: https://stackoverflow.com/questions/37404002/geom-density-to-match-geom-histogram-binwitdh</span></span>
+<span id="cb233-2"><a href="distributions-ggplot2.html#cb233-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ChickWeight_sub, <span class="fu">aes</span>(<span class="at">x=</span>weight)) <span class="sc">+</span></span>
+<span id="cb233-3"><a href="distributions-ggplot2.html#cb233-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">10</span>, <span class="at">fill=</span><span class="st">&quot;grey80&quot;</span>) <span class="sc">+</span></span>
+<span id="cb233-4"><a href="distributions-ggplot2.html#cb233-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="dv">10</span><span class="sc">*</span>..count..), <span class="at">fill=</span><span class="st">&quot;black&quot;</span>, <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb233-5"><a href="distributions-ggplot2.html#cb233-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="cn">NA</span>), <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">11</span>))</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-62-1.png" width="672" /></p>
+</div>
+</div>
+<div id="two-distributions" class="section level2" number="8.7">
+<h2><span class="header-section-number">8.7</span> Two distributions</h2>
+<div id="histogram-density" class="section level3" number="8.7.1">
+<h3><span class="header-section-number">8.7.1</span> Histogram &amp; Density</h3>
+<p>It is possible to overlay multiple histograms and/or density curves:</p>
+<div class="sourceCode" id="cb234"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb234-1"><a href="distributions-ggplot2.html#cb234-1" aria-hidden="true" tabindex="-1"></a>ChickWeight <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Diet <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb234-2"><a href="distributions-ggplot2.html#cb234-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Time <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">16</span>,<span class="dv">18</span>,<span class="dv">20</span>,<span class="dv">21</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb234-3"><a href="distributions-ggplot2.html#cb234-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>weight, <span class="at">fill=</span>Diet)) <span class="sc">+</span></span>
+<span id="cb234-4"><a href="distributions-ggplot2.html#cb234-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">10</span>) <span class="sc">+</span></span>
+<span id="cb234-5"><a href="distributions-ggplot2.html#cb234-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="dv">10</span><span class="sc">*</span>..count..), <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb234-6"><a href="distributions-ggplot2.html#cb234-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="cn">NA</span>), <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">21</span>))</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-63-1.png" width="672" /></p>
+<p>By default the histograms are stacked (unlike the density plot), making it difficult to compare them. This can be solved and requires tranparancy because they partially overlap.</p>
+<div class="sourceCode" id="cb235"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb235-1"><a href="distributions-ggplot2.html#cb235-1" aria-hidden="true" tabindex="-1"></a>ChickWeight <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Diet <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb235-2"><a href="distributions-ggplot2.html#cb235-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Time <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">16</span>,<span class="dv">18</span>,<span class="dv">20</span>,<span class="dv">21</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb235-3"><a href="distributions-ggplot2.html#cb235-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>weight, <span class="at">fill=</span>Diet)) <span class="sc">+</span></span>
+<span id="cb235-4"><a href="distributions-ggplot2.html#cb235-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">10</span>, <span class="at">alpha=</span><span class="fl">0.8</span>, <span class="at">position=</span><span class="st">&quot;identity&quot;</span>) <span class="sc">+</span></span>
+<span id="cb235-5"><a href="distributions-ggplot2.html#cb235-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="dv">10</span><span class="sc">*</span>..count..), <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb235-6"><a href="distributions-ggplot2.html#cb235-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="cn">NA</span>), <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">11</span>))</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-64-1.png" width="672" /></p>
+</div>
+<div id="splitting-into-two-plots" class="section level3" number="8.7.2">
+<h3><span class="header-section-number">8.7.2</span> Splitting into two plots</h3>
+<p>However, overlaying histograms is usually not a great idea as this generates a cluttered plot. One way to solve this is by splitting the data with <code>facet_wrap()</code>. We can use <code>labeller</code> to use both the parameter as its value for labeling the plots. In this case the legend can be removed as it is redundant, allowing more space for the data:</p>
+<div class="sourceCode" id="cb236"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb236-1"><a href="distributions-ggplot2.html#cb236-1" aria-hidden="true" tabindex="-1"></a>ChickWeight <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Diet <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb236-2"><a href="distributions-ggplot2.html#cb236-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Time <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">16</span>,<span class="dv">18</span>,<span class="dv">20</span>,<span class="dv">21</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb236-3"><a href="distributions-ggplot2.html#cb236-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>weight, <span class="at">fill=</span>Diet)) <span class="sc">+</span></span>
+<span id="cb236-4"><a href="distributions-ggplot2.html#cb236-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">10</span>, <span class="at">alpha=</span><span class="fl">0.8</span>, <span class="at">position=</span><span class="st">&quot;identity&quot;</span>) <span class="sc">+</span></span>
+<span id="cb236-5"><a href="distributions-ggplot2.html#cb236-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="dv">10</span><span class="sc">*</span>..count..), <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb236-6"><a href="distributions-ggplot2.html#cb236-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="cn">NA</span>), <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">11</span>)) <span class="sc">+</span></span>
+<span id="cb236-7"><a href="distributions-ggplot2.html#cb236-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Diet, <span class="at">labeller =</span> label_both) <span class="sc">+</span></span>
+<span id="cb236-8"><a href="distributions-ggplot2.html#cb236-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-65-1.png" width="672" /></p>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="summarizing-distributions-in-base-r.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="heatmaps-et-al.---base-r.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/06_distributions_ggplot2.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf", "_main.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

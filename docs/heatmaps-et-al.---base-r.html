@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 9 Heatmaps et al. - base R | Visualization in R workshop</title>
+  <meta name="description" content="<p>This is a collection of markdown files used during a workshop of the Science
+Park Study group at University of Amsterdam, 14th September 2022</p>" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 9 Heatmaps et al. - base R | Visualization in R workshop" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="<p>This is a collection of markdown files used during a workshop of the Science
+Park Study group at University of Amsterdam, 14th September 2022</p>" />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 9 Heatmaps et al. - base R | Visualization in R workshop" />
+  
+  <meta name="twitter:description" content="<p>This is a collection of markdown files used during a workshop of the Science
+Park Study group at University of Amsterdam, 14th September 2022</p>" />
+  
+
+<meta name="author" content="Anna Heintz-Buschart and Joachim Goedhart" />
+
+
+<meta name="date" content="2022-09-14" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="distributions-ggplot2.html"/>
+<link rel="next" href="venn-euler-and-upset-diagrams.html"/>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Visualization in R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> About</a></li>
+<li class="chapter" data-level="2" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html"><i class="fa fa-check"></i><b>2</b> Hello World - base R</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html#welcome"><i class="fa fa-check"></i><b>2.1</b> Welcome</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html#interacting-with-r"><i class="fa fa-check"></i><b>2.1.1</b> Interacting with R</a></li>
+<li class="chapter" data-level="2.1.2" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html#chunks"><i class="fa fa-check"></i><b>2.1.2</b> Chunks</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html#test-knitting"><i class="fa fa-check"></i><b>2.2</b> Test ‘knitting’</a></li>
+<li class="chapter" data-level="2.3" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html#resources-on-r"><i class="fa fa-check"></i><b>2.3</b> Resources on R</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html"><i class="fa fa-check"></i><b>3</b> Importing data - base R</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#using-base-r"><i class="fa fa-check"></i><b>3.1</b> Using base R</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#tab-delimited-data-with-a-header-and-using-standard-decimal-points"><i class="fa fa-check"></i><b>3.1.1</b> Tab-delimited data with a header and using standard decimal points</a></li>
+<li class="chapter" data-level="3.1.2" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#non-standard-decimal-points"><i class="fa fa-check"></i><b>3.1.2</b> Non-standard decimal points</a></li>
+<li class="chapter" data-level="3.1.3" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#comma-separated-data-with-a-header-and-using-standard-decimal-points"><i class="fa fa-check"></i><b>3.1.3</b> Comma-separated data with a header and using standard decimal points</a></li>
+<li class="chapter" data-level="3.1.4" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#tables-without-headers"><i class="fa fa-check"></i><b>3.1.4</b> Tables without headers</a></li>
+<li class="chapter" data-level="3.1.5" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#additional-lines"><i class="fa fa-check"></i><b>3.1.5</b> Additional lines</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#further-methods"><i class="fa fa-check"></i><b>3.2</b> Further methods</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#excel-files"><i class="fa fa-check"></i><b>3.2.1</b> Excel files</a></li>
+<li class="chapter" data-level="3.2.2" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#reading-from-urls"><i class="fa fa-check"></i><b>3.2.2</b> Reading from URLs</a></li>
+<li class="chapter" data-level="3.2.3" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#reading-from-the-clipboard"><i class="fa fa-check"></i><b>3.2.3</b> Reading from the clipboard</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="intro-to-the-tidyverse.html"><a href="intro-to-the-tidyverse.html"><i class="fa fa-check"></i><b>4</b> Intro to the {tidyverse}</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="intro-to-the-tidyverse.html"><a href="intro-to-the-tidyverse.html#why-tidyverse"><i class="fa fa-check"></i><b>4.1</b> Why <code>{tidyverse}</code>?</a></li>
+<li class="chapter" data-level="4.2" data-path="intro-to-the-tidyverse.html"><a href="intro-to-the-tidyverse.html#reading-data-from-excel"><i class="fa fa-check"></i><b>4.2</b> Reading data from excel</a></li>
+<li class="chapter" data-level="4.3" data-path="intro-to-the-tidyverse.html"><a href="intro-to-the-tidyverse.html#the-pipe-operator"><i class="fa fa-check"></i><b>4.3</b> The pipe operator</a></li>
+<li class="chapter" data-level="4.4" data-path="intro-to-the-tidyverse.html"><a href="intro-to-the-tidyverse.html#resources-on-tidyverse"><i class="fa fa-check"></i><b>4.4</b> Resources on tidyverse</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html"><i class="fa fa-check"></i><b>5</b> Introduction to scatter plots in base R</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#set-up"><i class="fa fa-check"></i><b>5.1</b> Set up</a></li>
+<li class="chapter" data-level="5.2" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#formatting-plots"><i class="fa fa-check"></i><b>5.2</b> Formatting plots</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#defaults"><i class="fa fa-check"></i><b>5.2.1</b> Defaults</a></li>
+<li class="chapter" data-level="5.2.2" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#margins"><i class="fa fa-check"></i><b>5.2.2</b> Margins</a></li>
+<li class="chapter" data-level="5.2.3" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#plot-borders"><i class="fa fa-check"></i><b>5.2.3</b> Plot borders</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#axes"><i class="fa fa-check"></i><b>5.3</b> Axes</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#axis-marks"><i class="fa fa-check"></i><b>5.3.1</b> Axis marks</a></li>
+<li class="chapter" data-level="5.3.2" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#axis-labels"><i class="fa fa-check"></i><b>5.3.2</b> Axis labels</a></li>
+<li class="chapter" data-level="5.3.3" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#scales-and-ranges"><i class="fa fa-check"></i><b>5.3.3</b> Scales and ranges</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#points"><i class="fa fa-check"></i><b>5.4</b> Points</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#shapes"><i class="fa fa-check"></i><b>5.4.1</b> Shapes</a></li>
+<li class="chapter" data-level="5.4.2" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#colour"><i class="fa fa-check"></i><b>5.4.2</b> Colour</a></li>
+<li class="chapter" data-level="5.4.3" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#size"><i class="fa fa-check"></i><b>5.4.3</b> Size</a></li>
+<li class="chapter" data-level="5.4.4" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#multiple-sets-of-points"><i class="fa fa-check"></i><b>5.4.4</b> Multiple sets of points</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#legends"><i class="fa fa-check"></i><b>5.5</b> Legends</a></li>
+<li class="chapter" data-level="5.6" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#lines"><i class="fa fa-check"></i><b>5.6</b> Lines</a>
+<ul>
+<li class="chapter" data-level="5.6.1" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#histogram-style-lines"><i class="fa fa-check"></i><b>5.6.1</b> Histogram-style lines</a></li>
+<li class="chapter" data-level="5.6.2" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#lines-between-points"><i class="fa fa-check"></i><b>5.6.2</b> Lines between points</a></li>
+<li class="chapter" data-level="5.6.3" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#lines-through-the-plot"><i class="fa fa-check"></i><b>5.6.3</b> Lines through the plot</a></li>
+<li class="chapter" data-level="5.6.4" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#trend-lines"><i class="fa fa-check"></i><b>5.6.4</b> Trend lines</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html"><i class="fa fa-check"></i><b>6</b> Introduction to scatter plots in R/ggplot2</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#setup"><i class="fa fa-check"></i><b>6.1</b> Setup</a></li>
+<li class="chapter" data-level="6.2" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#scatterplots"><i class="fa fa-check"></i><b>6.2</b> Scatterplots</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#defaults-1"><i class="fa fa-check"></i><b>6.2.1</b> Defaults</a></li>
+<li class="chapter" data-level="6.2.2" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#themes"><i class="fa fa-check"></i><b>6.2.2</b> Themes</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#intermezzo-plots-as-objects"><i class="fa fa-check"></i><b>6.3</b> Intermezzo: Plots as objects</a></li>
+<li class="chapter" data-level="6.4" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#modifying-plots"><i class="fa fa-check"></i><b>6.4</b> Modifying plots</a>
+<ul>
+<li class="chapter" data-level="6.4.1" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#axis-labels-1"><i class="fa fa-check"></i><b>6.4.1</b> Axis labels</a></li>
+<li class="chapter" data-level="6.4.2" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#scales-and-ranges-1"><i class="fa fa-check"></i><b>6.4.2</b> Scales and ranges</a></li>
+<li class="chapter" data-level="6.4.3" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#aesthetics-geometries"><i class="fa fa-check"></i><b>6.4.3</b> Aesthetics &amp; Geometries</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#legends-1"><i class="fa fa-check"></i><b>6.5</b> Legends</a></li>
+<li class="chapter" data-level="6.6" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#lines-and-trends"><i class="fa fa-check"></i><b>6.6</b> Lines and trends</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html"><i class="fa fa-check"></i><b>7</b> Summarizing distributions in base R</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#setup-1"><i class="fa fa-check"></i><b>7.1</b> Setup</a></li>
+<li class="chapter" data-level="7.2" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#the-data"><i class="fa fa-check"></i><b>7.2</b> The data</a></li>
+<li class="chapter" data-level="7.3" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#just-the-mean-barplots"><i class="fa fa-check"></i><b>7.3</b> Just the mean: Barplots</a>
+<ul>
+<li class="chapter" data-level="7.3.1" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#simple-barplots"><i class="fa fa-check"></i><b>7.3.1</b> Simple barplots</a></li>
+<li class="chapter" data-level="7.3.2" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#barplots-with-error-bars"><i class="fa fa-check"></i><b>7.3.2</b> Barplots with error bars</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#medians-quartiles-and-outliers-boxplots"><i class="fa fa-check"></i><b>7.4</b> Medians, quartiles, and outliers: Boxplots</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#basic-boxplots"><i class="fa fa-check"></i><b>7.4.1</b> Basic boxplots</a></li>
+<li class="chapter" data-level="7.4.2" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#adding-points-on-top"><i class="fa fa-check"></i><b>7.4.2</b> Adding points on top</a></li>
+<li class="chapter" data-level="7.4.3" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#adding-lines-between-points"><i class="fa fa-check"></i><b>7.4.3</b> Adding lines between points</a></li>
+<li class="chapter" data-level="7.4.4" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#half-boxes"><i class="fa fa-check"></i><b>7.4.4</b> Half-boxes</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#histograms"><i class="fa fa-check"></i><b>7.5</b> Histograms</a></li>
+<li class="chapter" data-level="7.6" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#density-plots"><i class="fa fa-check"></i><b>7.6</b> Density plots</a></li>
+<li class="chapter" data-level="7.7" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#violinplots"><i class="fa fa-check"></i><b>7.7</b> Violinplots</a></li>
+<li class="chapter" data-level="7.8" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#beanplots"><i class="fa fa-check"></i><b>7.8</b> Beanplots</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html"><i class="fa fa-check"></i><b>8</b> Distributions &amp; ggplot2</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#setup-and-data"><i class="fa fa-check"></i><b>8.1</b> Setup and data</a></li>
+<li class="chapter" data-level="8.2" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#multiple-distributions"><i class="fa fa-check"></i><b>8.2</b> Multiple distributions</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#plotting-the-data"><i class="fa fa-check"></i><b>8.2.1</b> Plotting the data</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#boxplots"><i class="fa fa-check"></i><b>8.3</b> Boxplots</a></li>
+<li class="chapter" data-level="8.4" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#violinplots-1"><i class="fa fa-check"></i><b>8.4</b> Violinplots</a></li>
+<li class="chapter" data-level="8.5" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#facets-splitting-into-multiple-plots"><i class="fa fa-check"></i><b>8.5</b> Facets: Splitting into multiple plots</a></li>
+<li class="chapter" data-level="8.6" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#a-single-distribution"><i class="fa fa-check"></i><b>8.6</b> A single distribution</a>
+<ul>
+<li class="chapter" data-level="8.6.1" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#a-single-violinplot"><i class="fa fa-check"></i><b>8.6.1</b> A single violinplot</a></li>
+<li class="chapter" data-level="8.6.2" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#density-plot"><i class="fa fa-check"></i><b>8.6.2</b> Density plot</a></li>
+<li class="chapter" data-level="8.6.3" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#histogram"><i class="fa fa-check"></i><b>8.6.3</b> Histogram</a></li>
+</ul></li>
+<li class="chapter" data-level="8.7" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#two-distributions"><i class="fa fa-check"></i><b>8.7</b> Two distributions</a>
+<ul>
+<li class="chapter" data-level="8.7.1" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#histogram-density"><i class="fa fa-check"></i><b>8.7.1</b> Histogram &amp; Density</a></li>
+<li class="chapter" data-level="8.7.2" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#splitting-into-two-plots"><i class="fa fa-check"></i><b>8.7.2</b> Splitting into two plots</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html"><i class="fa fa-check"></i><b>9</b> Heatmaps <em>et al.</em> - base R</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#setup-2"><i class="fa fa-check"></i><b>9.1</b> Setup</a></li>
+<li class="chapter" data-level="9.2" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#loading-data"><i class="fa fa-check"></i><b>9.2</b> Loading data</a></li>
+<li class="chapter" data-level="9.3" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#basic-heatmaps"><i class="fa fa-check"></i><b>9.3</b> Basic heatmaps</a>
+<ul>
+<li class="chapter" data-level="9.3.1" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#a-simple-heatmap"><i class="fa fa-check"></i><b>9.3.1</b> A simple heatmap</a></li>
+<li class="chapter" data-level="9.3.2" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#scaling"><i class="fa fa-check"></i><b>9.3.2</b> Scaling</a></li>
+<li class="chapter" data-level="9.3.3" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#colour-schemes"><i class="fa fa-check"></i><b>9.3.3</b> Colour schemes</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#decorating-heatmaps"><i class="fa fa-check"></i><b>9.4</b> Decorating heatmaps</a>
+<ul>
+<li class="chapter" data-level="9.4.1" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#dendrograms"><i class="fa fa-check"></i><b>9.4.1</b> Dendrograms</a></li>
+<li class="chapter" data-level="9.4.2" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#ordering-features-and-samples"><i class="fa fa-check"></i><b>9.4.2</b> Ordering features and samples</a></li>
+<li class="chapter" data-level="9.4.3" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#adding-attributes"><i class="fa fa-check"></i><b>9.4.3</b> Adding attributes</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="venn-euler-and-upset-diagrams.html"><a href="venn-euler-and-upset-diagrams.html"><i class="fa fa-check"></i><b>10</b> Venn, Euler, and upSet diagrams</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="venn-euler-and-upset-diagrams.html"><a href="venn-euler-and-upset-diagrams.html#setup-and-data-1"><i class="fa fa-check"></i><b>10.1</b> Setup and data</a></li>
+<li class="chapter" data-level="10.2" data-path="venn-euler-and-upset-diagrams.html"><a href="venn-euler-and-upset-diagrams.html#venn-diagrams"><i class="fa fa-check"></i><b>10.2</b> Venn diagrams</a></li>
+<li class="chapter" data-level="10.3" data-path="venn-euler-and-upset-diagrams.html"><a href="venn-euler-and-upset-diagrams.html#euler-diagrams"><i class="fa fa-check"></i><b>10.3</b> Euler diagrams</a></li>
+<li class="chapter" data-level="10.4" data-path="venn-euler-and-upset-diagrams.html"><a href="venn-euler-and-upset-diagrams.html#upset-plots"><i class="fa fa-check"></i><b>10.4</b> UpSet plots</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html"><i class="fa fa-check"></i><b>11</b> Visualizing networks with igraph</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#setup-3"><i class="fa fa-check"></i><b>11.1</b> Setup</a></li>
+<li class="chapter" data-level="11.2" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#network-representations"><i class="fa fa-check"></i><b>11.2</b> Network representations</a>
+<ul>
+<li class="chapter" data-level="11.2.1" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#network-formats-edgelist"><i class="fa fa-check"></i><b>11.2.1</b> Network formats: edgelist</a></li>
+<li class="chapter" data-level="11.2.2" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#network-formats-adjacency-matrix"><i class="fa fa-check"></i><b>11.2.2</b> Network formats: adjacency matrix</a></li>
+</ul></li>
+<li class="chapter" data-level="11.3" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#network-visualization"><i class="fa fa-check"></i><b>11.3</b> Network visualization</a>
+<ul>
+<li class="chapter" data-level="11.3.1" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#layouts"><i class="fa fa-check"></i><b>11.3.1</b> Layouts</a></li>
+<li class="chapter" data-level="11.3.2" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#node-labels"><i class="fa fa-check"></i><b>11.3.2</b> Node labels</a></li>
+<li class="chapter" data-level="11.3.3" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#node-shapes-and-sizes"><i class="fa fa-check"></i><b>11.3.3</b> Node shapes and sizes</a></li>
+<li class="chapter" data-level="11.3.4" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#edge-appearance"><i class="fa fa-check"></i><b>11.3.4</b> Edge appearance</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/a-h-b/R_base_vis_course" target="blank">Rendered with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Visualization in R workshop</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="heatmaps-et-al.---base-r" class="section level1" number="9">
+<h1><span class="header-section-number">Chapter 9</span> Heatmaps <em>et al.</em> - base R</h1>
+<div id="setup-2" class="section level2" number="9.1">
+<h2><span class="header-section-number">9.1</span> Setup</h2>
+<p>In this chapter, we take a look at R for visualizing data matrices.</p>
+<div class="sourceCode" id="cb237"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb237-1"><a href="heatmaps-et-al.---base-r.html#cb237-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">require</span>(RColorBrewer)){</span>
+<span id="cb237-2"><a href="heatmaps-et-al.---base-r.html#cb237-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">&quot;RColorBrewer&quot;</span>,<span class="at">repos =</span> <span class="st">&quot;http://cran.us.r-project.org&quot;</span>)</span>
+<span id="cb237-3"><a href="heatmaps-et-al.---base-r.html#cb237-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(RColorBrewer)</span>
+<span id="cb237-4"><a href="heatmaps-et-al.---base-r.html#cb237-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb237-5"><a href="heatmaps-et-al.---base-r.html#cb237-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">require</span>(gplots)){</span>
+<span id="cb237-6"><a href="heatmaps-et-al.---base-r.html#cb237-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">&quot;gplots&quot;</span>,<span class="at">repos =</span> <span class="st">&quot;http://cran.us.r-project.org&quot;</span>)</span>
+<span id="cb237-7"><a href="heatmaps-et-al.---base-r.html#cb237-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(gplots)</span>
+<span id="cb237-8"><a href="heatmaps-et-al.---base-r.html#cb237-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb237-9"><a href="heatmaps-et-al.---base-r.html#cb237-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">require</span>(gtools)){</span>
+<span id="cb237-10"><a href="heatmaps-et-al.---base-r.html#cb237-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">&quot;gtools&quot;</span>,<span class="at">repos =</span> <span class="st">&quot;http://cran.us.r-project.org&quot;</span>)</span>
+<span id="cb237-11"><a href="heatmaps-et-al.---base-r.html#cb237-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(gtools)</span>
+<span id="cb237-12"><a href="heatmaps-et-al.---base-r.html#cb237-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>## Loading required package: gtools</code></pre>
+<p>Heatmaps are a commonly used visualization tool for large data matrices,
+where you’d have many features (e.g. gene’s expression values, microbial
+abundances, metabolite levels…) measured over a bunch of samples.</p>
+</div>
+<div id="loading-data" class="section level2" number="9.2">
+<h2><span class="header-section-number">9.2</span> Loading data</h2>
+<p>In this example, we’ll work with a metabolomics dataset from a <a href="https://gut.bmj.com/content/69/8/1404">study on
+gastectomy</a>, processed for a
+<a href="https://doi.org/10.1186/s40168-021-01149-z">meta-analysis</a>. There is
+also some metadata available.</p>
+<div class="sourceCode" id="cb239"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb239-1"><a href="heatmaps-et-al.---base-r.html#cb239-1" aria-hidden="true" tabindex="-1"></a>metabo <span class="ot">&lt;-</span> <span class="fu">read.delim</span>(<span class="st">&quot;../datasets/ERAWIJANTARI_metab.tsv&quot;</span>,<span class="at">row.names=</span><span class="dv">1</span>) <span class="co">#data</span></span>
+<span id="cb239-2"><a href="heatmaps-et-al.---base-r.html#cb239-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(metabo) <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">&quot;^X&quot;</span>,<span class="st">&quot;&quot;</span>,<span class="fu">colnames</span>(metabo))</span>
+<span id="cb239-3"><a href="heatmaps-et-al.---base-r.html#cb239-3" aria-hidden="true" tabindex="-1"></a>metabo <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(metabo)</span>
+<span id="cb239-4"><a href="heatmaps-et-al.---base-r.html#cb239-4" aria-hidden="true" tabindex="-1"></a>metabo_log <span class="ot">&lt;-</span> <span class="fu">log10</span>(metabo)</span>
+<span id="cb239-5"><a href="heatmaps-et-al.---base-r.html#cb239-5" aria-hidden="true" tabindex="-1"></a>metaD <span class="ot">&lt;-</span> <span class="fu">read.delim</span>(<span class="st">&quot;../datasets/ERAWIJANTARI_metaD.tsv&quot;</span>) <span class="co">#metadata</span></span>
+<span id="cb239-6"><a href="heatmaps-et-al.---base-r.html#cb239-6" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(<span class="fu">colnames</span>(metabo) <span class="sc">==</span> metaD<span class="sc">$</span>Sample) <span class="co">#check that samples match in data matrices</span></span></code></pre></div>
+<pre><code>## [1] TRUE</code></pre>
+<p>With 96 samples and 211 metabolites, this is not a huge data set. But
+it’s awkward to analyse and visualize bit by bit. A heatmap can give a
+quick overview.</p>
+</div>
+<div id="basic-heatmaps" class="section level2" number="9.3">
+<h2><span class="header-section-number">9.3</span> Basic heatmaps</h2>
+<div id="a-simple-heatmap" class="section level3" number="9.3.1">
+<h3><span class="header-section-number">9.3.1</span> A simple heatmap</h3>
+<p>Here’s how the default heatmap looks:</p>
+<div class="sourceCode" id="cb241"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb241-1"><a href="heatmaps-et-al.---base-r.html#cb241-1" aria-hidden="true" tabindex="-1"></a><span class="fu">heatmap</span>(metabo)</span></code></pre></div>
+<p><img src="_main_files/figure-html/07heatmapBasic-1.png" width="672" /></p>
+<p>Every column represents one sample, every row represents a metabolite.
+Let’s for a moment ignore that there are too many datapoints to plot all
+the labels - indeed, let’s ignore the labels for now:</p>
+<div class="sourceCode" id="cb242"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb242-1"><a href="heatmaps-et-al.---base-r.html#cb242-1" aria-hidden="true" tabindex="-1"></a><span class="fu">heatmap</span>(metabo,</span>
+<span id="cb242-2"><a href="heatmaps-et-al.---base-r.html#cb242-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">labRow =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no rownames</span></span>
+<span id="cb242-3"><a href="heatmaps-et-al.---base-r.html#cb242-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">labCol =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no colnames</span></span>
+<span id="cb242-4"><a href="heatmaps-et-al.---base-r.html#cb242-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">margins =</span> <span class="fu">c</span>(<span class="fl">0.5</span>,<span class="fl">0.5</span>)) <span class="co"># remove the white space around</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/07heatmapBasic-text-1.png" width="672" /></p>
+</div>
+<div id="scaling" class="section level3" number="9.3.2">
+<h3><span class="header-section-number">9.3.2</span> Scaling</h3>
+<p>What this simple visualization does not tell you is what the colours
+mean - we’ll come back to that later - but the darker colours are higher
+values. You see that there are some high values for all metabolites.
+When you think about it, this must mean that something was done to our
+data, because you would never find all metabolites at a similar level.
+This is true, the default setting for a heatmap is to scale <strong>by row</strong>.
+This means that the average value per row has the middle colour, and the
+further a value is away from the average, the lighter or darker it will
+be. How light or dark? scaling takes the distribution into account, so
+all values that are one standard deviation higher than its row’s average
+have the same colour. You can turn scaling off:</p>
+<div class="sourceCode" id="cb243"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb243-1"><a href="heatmaps-et-al.---base-r.html#cb243-1" aria-hidden="true" tabindex="-1"></a><span class="fu">heatmap</span>(metabo,</span>
+<span id="cb243-2"><a href="heatmaps-et-al.---base-r.html#cb243-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">scale =</span> <span class="st">&quot;none&quot;</span>, <span class="co"># no scaling!</span></span>
+<span id="cb243-3"><a href="heatmaps-et-al.---base-r.html#cb243-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">labRow =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no rownames</span></span>
+<span id="cb243-4"><a href="heatmaps-et-al.---base-r.html#cb243-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">labCol =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no colnames</span></span>
+<span id="cb243-5"><a href="heatmaps-et-al.---base-r.html#cb243-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">margins =</span> <span class="fu">c</span>(<span class="fl">0.5</span>,<span class="fl">0.5</span>)) <span class="co"># remove the white space around</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/07heatmapBasic-noScale-1.png" width="672" /></p>
+<p>Now, you’ve lost most information, except that you can see that there
+are really very few metabolites with a high value. It’s not useful not
+to scale for this kind of data, but if all your rows have similar
+values, it can be better. You can see this, if you use the
+log-transformed version of the data set, where all values sit somewhere
+between -1 and 6:</p>
+<p>You could also scale by column:</p>
+<div class="sourceCode" id="cb244"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb244-1"><a href="heatmaps-et-al.---base-r.html#cb244-1" aria-hidden="true" tabindex="-1"></a><span class="fu">heatmap</span>(metabo_log,</span>
+<span id="cb244-2"><a href="heatmaps-et-al.---base-r.html#cb244-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">scale =</span> <span class="st">&quot;none&quot;</span>, <span class="co"># no scaling!</span></span>
+<span id="cb244-3"><a href="heatmaps-et-al.---base-r.html#cb244-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">labRow =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no rownames</span></span>
+<span id="cb244-4"><a href="heatmaps-et-al.---base-r.html#cb244-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">labCol =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no colnames</span></span>
+<span id="cb244-5"><a href="heatmaps-et-al.---base-r.html#cb244-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">margins =</span> <span class="fu">c</span>(<span class="fl">0.5</span>,<span class="fl">0.5</span>)) <span class="co"># remove the white space around</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/07heatmapBasic-log-noScale-1.png" width="672" /></p>
+<p>Instant patterns! <em>As an exercise, plot the heatmap for this data set
+with row scaling (<code>scale = "row"</code>)</em>.</p>
+<p>When comparing no scaling and row-scaling, you see that no scaling
+emphasizes the absolute values, while row-scaling emphasizes differences
+between samples. It depends on your question which visualization is
+appropriate.</p>
+<div class="sourceCode" id="cb245"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb245-1"><a href="heatmaps-et-al.---base-r.html#cb245-1" aria-hidden="true" tabindex="-1"></a><span class="fu">heatmap</span>(metabo_log,</span>
+<span id="cb245-2"><a href="heatmaps-et-al.---base-r.html#cb245-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">scale =</span> <span class="st">&quot;col&quot;</span>, <span class="co"># column scaling!</span></span>
+<span id="cb245-3"><a href="heatmaps-et-al.---base-r.html#cb245-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">labRow =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no rownames</span></span>
+<span id="cb245-4"><a href="heatmaps-et-al.---base-r.html#cb245-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">labCol =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no colnames</span></span>
+<span id="cb245-5"><a href="heatmaps-et-al.---base-r.html#cb245-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">margins =</span> <span class="fu">c</span>(<span class="fl">0.5</span>,<span class="fl">0.5</span>)) <span class="co"># remove the white space around</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/07heatmapBasic-log-colScale-1.png" width="672" /></p>
+<p>Now some of the columns which were lighter before cannot be
+distinguished anymore. So, you see, scaling is important for the visual
+impression.</p>
+<p>Generally, we would <em>recommend</em> that you transform and normalize (and
+potentially scale/centre) your data set appropriately, before you
+visualize it. That way, your analyses are performed correctly and on the
+thing you see. What exactly is “appropriate” depends on your data set.
+Here, we’re just learning visualization, so we’ll stick with the
+un-normalized, un-scaled/centred (but log-transformed) data.</p>
+</div>
+<div id="colour-schemes" class="section level3" number="9.3.3">
+<h3><span class="header-section-number">9.3.3</span> Colour schemes</h3>
+<p>A lot of the information in heatmaps comes from the colours. So it’s
+important to choose good colors. Generally speaking, if the data is not
+centred/scaled, use light colours for low values and darker colours for
+high values. If you are plotting a scaled/centred data set, it’s good
+practice to have a neutral color (black or whiteish) in the middle and
+stronger colours for the extremes:</p>
+<div class="sourceCode" id="cb246"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb246-1"><a href="heatmaps-et-al.---base-r.html#cb246-1" aria-hidden="true" tabindex="-1"></a><span class="fu">heatmap</span>(metabo_log,</span>
+<span id="cb246-2"><a href="heatmaps-et-al.---base-r.html#cb246-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">col =</span> <span class="fu">hcl.colors</span>(<span class="dv">12</span>,<span class="st">&quot;RdYlBu&quot;</span>, <span class="at">rev =</span> <span class="cn">TRUE</span>), <span class="co">#diverging palette</span></span>
+<span id="cb246-3"><a href="heatmaps-et-al.---base-r.html#cb246-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">scale =</span> <span class="st">&quot;row&quot;</span>, <span class="co"># row scaling!</span></span>
+<span id="cb246-4"><a href="heatmaps-et-al.---base-r.html#cb246-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">labRow =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no rownames</span></span>
+<span id="cb246-5"><a href="heatmaps-et-al.---base-r.html#cb246-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">labCol =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no colnames</span></span>
+<span id="cb246-6"><a href="heatmaps-et-al.---base-r.html#cb246-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">margins =</span> <span class="fu">c</span>(<span class="fl">0.5</span>,<span class="fl">0.5</span>)) <span class="co"># remove the white space around</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/07heatmapBasic-log-rowScale-colours-1.png" width="672" /></p>
+<p>It would be nice to have a colour bar here. So, let’s use a bit more
+fancy function - which also centers the colours:</p>
+<div class="sourceCode" id="cb247"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb247-1"><a href="heatmaps-et-al.---base-r.html#cb247-1" aria-hidden="true" tabindex="-1"></a><span class="fu">heatmap.2</span>(metabo_log,</span>
+<span id="cb247-2"><a href="heatmaps-et-al.---base-r.html#cb247-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">col =</span> <span class="fu">hcl.colors</span>(<span class="dv">13</span>,<span class="st">&quot;RdYlBu&quot;</span>, <span class="at">rev =</span> <span class="cn">TRUE</span>), <span class="co">#diverging palette</span></span>
+<span id="cb247-3"><a href="heatmaps-et-al.---base-r.html#cb247-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">scale =</span> <span class="st">&quot;row&quot;</span>, <span class="co"># row scaling!</span></span>
+<span id="cb247-4"><a href="heatmaps-et-al.---base-r.html#cb247-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">labRow =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no rownames</span></span>
+<span id="cb247-5"><a href="heatmaps-et-al.---base-r.html#cb247-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">labCol =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no colnames</span></span>
+<span id="cb247-6"><a href="heatmaps-et-al.---base-r.html#cb247-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">margins =</span> <span class="fu">c</span>(<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co"># remove the white space around</span></span>
+<span id="cb247-7"><a href="heatmaps-et-al.---base-r.html#cb247-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">trace =</span> <span class="st">&quot;none&quot;</span>, <span class="co">#don&#39;t plot a trace</span></span>
+<span id="cb247-8"><a href="heatmaps-et-al.---base-r.html#cb247-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">density.info =</span> <span class="st">&quot;none&quot;</span>) <span class="co">#don&#39;t overlay a histogram in the colour bar</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/07heatmap2-log-rowScale-colours-1.png" width="672" /></p>
+<p>13 colour steps were not really enough (R’s base <code>heatmap</code> function uses
+only 12…), so here we set it to 255, giving a smooth colour scale:</p>
+<div class="sourceCode" id="cb248"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb248-1"><a href="heatmaps-et-al.---base-r.html#cb248-1" aria-hidden="true" tabindex="-1"></a><span class="fu">heatmap.2</span>(metabo_log,</span>
+<span id="cb248-2"><a href="heatmaps-et-al.---base-r.html#cb248-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">col =</span> <span class="fu">hcl.colors</span>(<span class="dv">255</span>,<span class="st">&quot;RdYlBu&quot;</span>, <span class="at">rev =</span> <span class="cn">TRUE</span>), <span class="co">#diverging palette - 255 colours!</span></span>
+<span id="cb248-3"><a href="heatmaps-et-al.---base-r.html#cb248-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">scale =</span> <span class="st">&quot;row&quot;</span>, <span class="co"># row scaling</span></span>
+<span id="cb248-4"><a href="heatmaps-et-al.---base-r.html#cb248-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">labRow =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no rownames</span></span>
+<span id="cb248-5"><a href="heatmaps-et-al.---base-r.html#cb248-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">labCol =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no colnames</span></span>
+<span id="cb248-6"><a href="heatmaps-et-al.---base-r.html#cb248-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">margins =</span> <span class="fu">c</span>(<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co"># remove the white space around</span></span>
+<span id="cb248-7"><a href="heatmaps-et-al.---base-r.html#cb248-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">trace =</span> <span class="st">&quot;none&quot;</span>, <span class="co">#don&#39;t plot a trace</span></span>
+<span id="cb248-8"><a href="heatmaps-et-al.---base-r.html#cb248-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">density.info =</span> <span class="st">&quot;none&quot;</span>) <span class="co">#don&#39;t overlay a histogram in the colour bar</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/07heatmap2-log-rowScale-MoreColours-1.png" width="672" /></p>
+<p>This would be the un-scaled image:</p>
+<div class="sourceCode" id="cb249"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb249-1"><a href="heatmaps-et-al.---base-r.html#cb249-1" aria-hidden="true" tabindex="-1"></a><span class="fu">heatmap.2</span>(metabo_log,</span>
+<span id="cb249-2"><a href="heatmaps-et-al.---base-r.html#cb249-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">hcl.colors</span>(<span class="dv">255</span>,<span class="st">&quot;YlGnBu&quot;</span>, <span class="at">rev =</span> <span class="cn">TRUE</span>), <span class="co">#single colour palette! - 255 colours</span></span>
+<span id="cb249-3"><a href="heatmaps-et-al.---base-r.html#cb249-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">symbreaks =</span> F, <span class="co">#colours are not centred around 0</span></span>
+<span id="cb249-4"><a href="heatmaps-et-al.---base-r.html#cb249-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">scale =</span> <span class="st">&quot;none&quot;</span>, <span class="co"># no scaling!</span></span>
+<span id="cb249-5"><a href="heatmaps-et-al.---base-r.html#cb249-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">labRow =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no rownames</span></span>
+<span id="cb249-6"><a href="heatmaps-et-al.---base-r.html#cb249-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">labCol =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no colnames</span></span>
+<span id="cb249-7"><a href="heatmaps-et-al.---base-r.html#cb249-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">margins =</span> <span class="fu">c</span>(<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co"># remove the white space around</span></span>
+<span id="cb249-8"><a href="heatmaps-et-al.---base-r.html#cb249-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">trace =</span> <span class="st">&quot;none&quot;</span>, <span class="co">#don&#39;t plot a trace</span></span>
+<span id="cb249-9"><a href="heatmaps-et-al.---base-r.html#cb249-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">density.info =</span> <span class="st">&quot;none&quot;</span>) <span class="co">#don&#39;t overlay a histogram in the colour bar</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/07heatmap2-log-noScale-MoreColours-1.png" width="672" /></p>
+<p>The colour key is a bit buggy, but Fortunately, it’s R, so we can change
+the function. Here’s the code (not displayed in the .html).</p>
+</div>
+</div>
+<div id="decorating-heatmaps" class="section level2" number="9.4">
+<h2><span class="header-section-number">9.4</span> Decorating heatmaps</h2>
+<div id="dendrograms" class="section level3" number="9.4.1">
+<h3><span class="header-section-number">9.4.1</span> Dendrograms</h3>
+<p>The other thing that determines the impression of heatmaps is the order
+of the features and the samples. By default, R tries to make the picture
+as clear as possible. This is achieved by re-ordering the features and
+samples using dendrograms. Let’s take a look at our heatmap without the
+dendrogram and ordering:</p>
+<div class="sourceCode" id="cb250"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb250-1"><a href="heatmaps-et-al.---base-r.html#cb250-1" aria-hidden="true" tabindex="-1"></a><span class="fu">heatmap.2a</span>(metabo_log,</span>
+<span id="cb250-2"><a href="heatmaps-et-al.---base-r.html#cb250-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">dendrogram =</span> <span class="st">&quot;none&quot;</span>, <span class="co">#no dendrogram plotted</span></span>
+<span id="cb250-3"><a href="heatmaps-et-al.---base-r.html#cb250-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">Rowv =</span> F, <span class="co">#no sorting for rows</span></span>
+<span id="cb250-4"><a href="heatmaps-et-al.---base-r.html#cb250-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">Colv =</span> F, <span class="co">#no sorting for columns</span></span>
+<span id="cb250-5"><a href="heatmaps-et-al.---base-r.html#cb250-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">hcl.colors</span>(<span class="dv">255</span>,<span class="st">&quot;YlGnBu&quot;</span>, <span class="at">rev =</span> <span class="cn">TRUE</span>), <span class="co">#single colour palette - 255 colours</span></span>
+<span id="cb250-6"><a href="heatmaps-et-al.---base-r.html#cb250-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">symbreaks =</span> F, <span class="co">#colours are not centred around 0</span></span>
+<span id="cb250-7"><a href="heatmaps-et-al.---base-r.html#cb250-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">scale =</span> <span class="st">&quot;none&quot;</span>, <span class="co"># no scaling!</span></span>
+<span id="cb250-8"><a href="heatmaps-et-al.---base-r.html#cb250-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">labRow =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no rownames</span></span>
+<span id="cb250-9"><a href="heatmaps-et-al.---base-r.html#cb250-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">labCol =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no colnames</span></span>
+<span id="cb250-10"><a href="heatmaps-et-al.---base-r.html#cb250-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">margins =</span> <span class="fu">c</span>(<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co"># remove the white space around</span></span>
+<span id="cb250-11"><a href="heatmaps-et-al.---base-r.html#cb250-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">trace =</span> <span class="st">&quot;none&quot;</span>, <span class="co">#don&#39;t plot a trace</span></span>
+<span id="cb250-12"><a href="heatmaps-et-al.---base-r.html#cb250-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">density.info =</span> <span class="st">&quot;none&quot;</span>) <span class="co">#don&#39;t overlay a histogram in the colour bar</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/07heatmap2-log-noScale-noDend-1.png" width="672" /></p>
+<p>It’s hard to believe that these are the same values, right?</p>
+<p>The default dendrogram is based on Euclidean distances, which are
+hierarchically clustered using complete linkage. You can supply your own
+dendrograms, based on your choice of distance:</p>
+<div class="sourceCode" id="cb251"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb251-1"><a href="heatmaps-et-al.---base-r.html#cb251-1" aria-hidden="true" tabindex="-1"></a><span class="fu">heatmap.2a</span>(metabo_log,</span>
+<span id="cb251-2"><a href="heatmaps-et-al.---base-r.html#cb251-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">dendrogram =</span> <span class="st">&quot;both&quot;</span>, <span class="co">#both dendrograms plotted</span></span>
+<span id="cb251-3"><a href="heatmaps-et-al.---base-r.html#cb251-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">Rowv =</span> <span class="fu">as.dendrogram</span>(<span class="fu">hclust</span>(<span class="fu">dist</span>(metabo_log,<span class="st">&quot;minkowski&quot;</span>),</span>
+<span id="cb251-4"><a href="heatmaps-et-al.---base-r.html#cb251-4" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;ward.D2&quot;</span>)), <span class="co">#custom</span></span>
+<span id="cb251-5"><a href="heatmaps-et-al.---base-r.html#cb251-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">Colv =</span> <span class="fu">as.dendrogram</span>(<span class="fu">hclust</span>(<span class="fu">dist</span>(<span class="fu">t</span>(metabo_log)),</span>
+<span id="cb251-6"><a href="heatmaps-et-al.---base-r.html#cb251-6" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;ward.D2&quot;</span>)), <span class="co">#custom dendrogram</span></span>
+<span id="cb251-7"><a href="heatmaps-et-al.---base-r.html#cb251-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">hcl.colors</span>(<span class="dv">255</span>,<span class="st">&quot;YlGnBu&quot;</span>, <span class="at">rev =</span> <span class="cn">TRUE</span>), <span class="co">#single colour palette - 255 colours</span></span>
+<span id="cb251-8"><a href="heatmaps-et-al.---base-r.html#cb251-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">symbreaks =</span> F, <span class="co">#colours are not centred around 0</span></span>
+<span id="cb251-9"><a href="heatmaps-et-al.---base-r.html#cb251-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">scale =</span> <span class="st">&quot;none&quot;</span>, <span class="co"># no scaling!</span></span>
+<span id="cb251-10"><a href="heatmaps-et-al.---base-r.html#cb251-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">labRow =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no rownames</span></span>
+<span id="cb251-11"><a href="heatmaps-et-al.---base-r.html#cb251-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">labCol =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no colnames</span></span>
+<span id="cb251-12"><a href="heatmaps-et-al.---base-r.html#cb251-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">margins =</span> <span class="fu">c</span>(<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co"># remove the white space around</span></span>
+<span id="cb251-13"><a href="heatmaps-et-al.---base-r.html#cb251-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">trace =</span> <span class="st">&quot;none&quot;</span>, <span class="co">#don&#39;t plot a trace</span></span>
+<span id="cb251-14"><a href="heatmaps-et-al.---base-r.html#cb251-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">density.info =</span> <span class="st">&quot;none&quot;</span>) <span class="co">#don&#39;t overlay a histogram in the colour bar</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/07heatmap2-log-noScale-customDend-1.png" width="672" /></p>
+<p>The choice of distance is up to you and depends on your data and what
+you consider ‘different.’ Most fields of research have (more or less
+justified) standards. *Try out some of the options you can find under
+<code>?dist</code> and <code>?hclust</code> to see effects.</p>
+</div>
+<div id="ordering-features-and-samples" class="section level3" number="9.4.2">
+<h3><span class="header-section-number">9.4.2</span> Ordering features and samples</h3>
+<p>We’ve already seen the power of sorting. Next to ordering you data based
+on clustering (you might call this ‘unsupervised’), you can have
+pre-defined groups (especially for samples). You can also visualize
+those:</p>
+<div class="sourceCode" id="cb252"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb252-1"><a href="heatmaps-et-al.---base-r.html#cb252-1" aria-hidden="true" tabindex="-1"></a><span class="fu">heatmap.2a</span>(metabo_log[,<span class="fu">order</span>(metaD<span class="sc">$</span>Status,metaD<span class="sc">$</span>Gender,metaD<span class="sc">$</span>BMI)],<span class="co"># custom order using metadata: by study group, gender, and BMI</span></span>
+<span id="cb252-2"><a href="heatmaps-et-al.---base-r.html#cb252-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">dendrogram =</span> <span class="st">&quot;row&quot;</span>, <span class="co"># row dendrogram plotted</span></span>
+<span id="cb252-3"><a href="heatmaps-et-al.---base-r.html#cb252-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">Colv =</span> <span class="cn">NULL</span>, </span>
+<span id="cb252-4"><a href="heatmaps-et-al.---base-r.html#cb252-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">hcl.colors</span>(<span class="dv">255</span>,<span class="st">&quot;YlGnBu&quot;</span>, <span class="at">rev =</span> <span class="cn">TRUE</span>), <span class="co">#single colour palette - 255 colours</span></span>
+<span id="cb252-5"><a href="heatmaps-et-al.---base-r.html#cb252-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">symbreaks =</span> F, <span class="co">#colours are not centred around 0</span></span>
+<span id="cb252-6"><a href="heatmaps-et-al.---base-r.html#cb252-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">scale =</span> <span class="st">&quot;none&quot;</span>, <span class="co"># no scaling!</span></span>
+<span id="cb252-7"><a href="heatmaps-et-al.---base-r.html#cb252-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">labRow =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no rownames</span></span>
+<span id="cb252-8"><a href="heatmaps-et-al.---base-r.html#cb252-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">labCol =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no colnames</span></span>
+<span id="cb252-9"><a href="heatmaps-et-al.---base-r.html#cb252-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">margins =</span> <span class="fu">c</span>(<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co"># remove the white space around</span></span>
+<span id="cb252-10"><a href="heatmaps-et-al.---base-r.html#cb252-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">trace =</span> <span class="st">&quot;none&quot;</span>, <span class="co">#don&#39;t plot a trace</span></span>
+<span id="cb252-11"><a href="heatmaps-et-al.---base-r.html#cb252-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">density.info =</span> <span class="st">&quot;none&quot;</span>) <span class="co">#don&#39;t overlay a histogram in the colour bar</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/07heatmap2-log-noScale-sampleOrd-1.png" width="672" /></p>
+<p>Some structure is still visible. So, this looks like some of the
+metabolites behave a bit differently in the samples on the left than on
+the right. But the most obvious differences between samples we seemed to
+see before may be due to something else. We can indicate the separation
+of groups with vertical lines:</p>
+<div class="sourceCode" id="cb253"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb253-1"><a href="heatmaps-et-al.---base-r.html#cb253-1" aria-hidden="true" tabindex="-1"></a><span class="fu">heatmap.2a</span>(metabo_log[,<span class="fu">order</span>(metaD<span class="sc">$</span>Status,metaD<span class="sc">$</span>Gender,metaD<span class="sc">$</span>BMI)],<span class="co"># custom order using metadata: by study group, gender, and BMI</span></span>
+<span id="cb253-2"><a href="heatmaps-et-al.---base-r.html#cb253-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">dendrogram =</span> <span class="st">&quot;row&quot;</span>, <span class="co"># row dendrogram plotted</span></span>
+<span id="cb253-3"><a href="heatmaps-et-al.---base-r.html#cb253-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">Colv =</span> <span class="cn">NULL</span>, <span class="co"># no sorting (except above)</span></span>
+<span id="cb253-4"><a href="heatmaps-et-al.---base-r.html#cb253-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">colsep =</span> <span class="fu">cumsum</span>(<span class="fu">c</span>(<span class="fu">t</span>(<span class="fu">table</span>(metaD<span class="sc">$</span>Status,metaD<span class="sc">$</span>Gender)))), <span class="co">#counting the grouping from above!</span></span>
+<span id="cb253-5"><a href="heatmaps-et-al.---base-r.html#cb253-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">col =</span> <span class="fu">hcl.colors</span>(<span class="dv">255</span>,<span class="st">&quot;YlGnBu&quot;</span>, <span class="at">rev =</span> <span class="cn">TRUE</span>), <span class="co">#single colour palette - 255 colours</span></span>
+<span id="cb253-6"><a href="heatmaps-et-al.---base-r.html#cb253-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">symbreaks =</span> F, <span class="co">#colours are not centred around 0</span></span>
+<span id="cb253-7"><a href="heatmaps-et-al.---base-r.html#cb253-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">scale =</span> <span class="st">&quot;none&quot;</span>, <span class="co"># no scaling!</span></span>
+<span id="cb253-8"><a href="heatmaps-et-al.---base-r.html#cb253-8" aria-hidden="true" tabindex="-1"></a>          <span class="at">labRow =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no rownames</span></span>
+<span id="cb253-9"><a href="heatmaps-et-al.---base-r.html#cb253-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">labCol =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no colnames</span></span>
+<span id="cb253-10"><a href="heatmaps-et-al.---base-r.html#cb253-10" aria-hidden="true" tabindex="-1"></a>          <span class="at">margins =</span> <span class="fu">c</span>(<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co"># remove the white space around</span></span>
+<span id="cb253-11"><a href="heatmaps-et-al.---base-r.html#cb253-11" aria-hidden="true" tabindex="-1"></a>          <span class="at">trace =</span> <span class="st">&quot;none&quot;</span>, <span class="co">#don&#39;t plot a trace</span></span>
+<span id="cb253-12"><a href="heatmaps-et-al.---base-r.html#cb253-12" aria-hidden="true" tabindex="-1"></a>          <span class="at">density.info =</span> <span class="st">&quot;none&quot;</span>) <span class="co">#don&#39;t overlay a histogram in the colour bar</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/07heatmap2-log-noScale-sampleOrdL-1.png" width="672" /></p>
+</div>
+<div id="adding-attributes" class="section level3" number="9.4.3">
+<h3><span class="header-section-number">9.4.3</span> Adding attributes</h3>
+<p>We can add some sample information to the heatmap using colours for a
+similar effect:</p>
+<div class="sourceCode" id="cb254"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb254-1"><a href="heatmaps-et-al.---base-r.html#cb254-1" aria-hidden="true" tabindex="-1"></a><span class="fu">heatmap.2a</span>(metabo_log,</span>
+<span id="cb254-2"><a href="heatmaps-et-al.---base-r.html#cb254-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">ColSideColors =</span> <span class="fu">c</span>(<span class="st">&quot;purple&quot;</span>,<span class="st">&quot;green&quot;</span>)[<span class="fu">as.numeric</span>(<span class="fu">as.factor</span>(metaD<span class="sc">$</span>Status))],</span>
+<span id="cb254-3"><a href="heatmaps-et-al.---base-r.html#cb254-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">dendrogram =</span> <span class="st">&quot;both&quot;</span>, <span class="co">#both dendrograms plotted</span></span>
+<span id="cb254-4"><a href="heatmaps-et-al.---base-r.html#cb254-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">hcl.colors</span>(<span class="dv">255</span>,<span class="st">&quot;YlGnBu&quot;</span>, <span class="at">rev =</span> <span class="cn">TRUE</span>), <span class="co">#single colour palette - 255 colours</span></span>
+<span id="cb254-5"><a href="heatmaps-et-al.---base-r.html#cb254-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">symbreaks =</span> F, <span class="co">#colours are not centred around 0</span></span>
+<span id="cb254-6"><a href="heatmaps-et-al.---base-r.html#cb254-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">scale =</span> <span class="st">&quot;none&quot;</span>, <span class="co"># no scaling</span></span>
+<span id="cb254-7"><a href="heatmaps-et-al.---base-r.html#cb254-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">labRow =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no rownames</span></span>
+<span id="cb254-8"><a href="heatmaps-et-al.---base-r.html#cb254-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">labCol =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no colnames</span></span>
+<span id="cb254-9"><a href="heatmaps-et-al.---base-r.html#cb254-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">margins =</span> <span class="fu">c</span>(<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co"># remove the white space around</span></span>
+<span id="cb254-10"><a href="heatmaps-et-al.---base-r.html#cb254-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">trace =</span> <span class="st">&quot;none&quot;</span>, <span class="co">#don&#39;t plot a trace</span></span>
+<span id="cb254-11"><a href="heatmaps-et-al.---base-r.html#cb254-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">density.info =</span> <span class="st">&quot;none&quot;</span>) <span class="co">#don&#39;t overlay a histogram in the colour bar</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/07heatmap2-log-noScale-colSide-1.png" width="672" /></p>
+<p>Our improved <code>heatmap.2a</code> also takes multiple attributes for colour
+codes.</p>
+<div class="sourceCode" id="cb255"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb255-1"><a href="heatmaps-et-al.---base-r.html#cb255-1" aria-hidden="true" tabindex="-1"></a><span class="fu">heatmap.2a</span>(metabo_log,</span>
+<span id="cb255-2"><a href="heatmaps-et-al.---base-r.html#cb255-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">ColSideColors =</span> <span class="fu">rbind</span>(<span class="fu">c</span>(<span class="st">&quot;pink&quot;</span>,<span class="st">&quot;lightblue&quot;</span>)[<span class="fu">as.numeric</span>(<span class="fu">as.factor</span>(metaD<span class="sc">$</span>Gender))],</span>
+<span id="cb255-3"><a href="heatmaps-et-al.---base-r.html#cb255-3" aria-hidden="true" tabindex="-1"></a>                                <span class="fu">brewer.pal</span>(<span class="dv">7</span>,<span class="st">&quot;Set3&quot;</span>)[<span class="fu">as.numeric</span>(<span class="fu">as.factor</span>(metaD<span class="sc">$</span>Gastric.acid.medication))],</span>
+<span id="cb255-4"><a href="heatmaps-et-al.---base-r.html#cb255-4" aria-hidden="true" tabindex="-1"></a>                                <span class="fu">c</span>(<span class="st">&quot;purple&quot;</span>,<span class="st">&quot;green&quot;</span>)[<span class="fu">as.numeric</span>(<span class="fu">as.factor</span>(metaD<span class="sc">$</span>Status))]),</span>
+<span id="cb255-5"><a href="heatmaps-et-al.---base-r.html#cb255-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">dendrogram =</span> <span class="st">&quot;both&quot;</span>, <span class="co">#both dendrograms plotted</span></span>
+<span id="cb255-6"><a href="heatmaps-et-al.---base-r.html#cb255-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">hcl.colors</span>(<span class="dv">255</span>,<span class="st">&quot;YlGnBu&quot;</span>, <span class="at">rev =</span> <span class="cn">TRUE</span>), <span class="co">#single colour palette - 255 colours</span></span>
+<span id="cb255-7"><a href="heatmaps-et-al.---base-r.html#cb255-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">symbreaks =</span> F, <span class="co">#colours are not centred around 0</span></span>
+<span id="cb255-8"><a href="heatmaps-et-al.---base-r.html#cb255-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">scale =</span> <span class="st">&quot;none&quot;</span>, <span class="co"># no scaling</span></span>
+<span id="cb255-9"><a href="heatmaps-et-al.---base-r.html#cb255-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">labRow =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no rownames</span></span>
+<span id="cb255-10"><a href="heatmaps-et-al.---base-r.html#cb255-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">labCol =</span> <span class="st">&quot;&quot;</span>, <span class="co"># no colnames</span></span>
+<span id="cb255-11"><a href="heatmaps-et-al.---base-r.html#cb255-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">margins =</span> <span class="fu">c</span>(<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co"># remove the white space around</span></span>
+<span id="cb255-12"><a href="heatmaps-et-al.---base-r.html#cb255-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">trace =</span> <span class="st">&quot;none&quot;</span>, <span class="co">#don&#39;t plot a trace</span></span>
+<span id="cb255-13"><a href="heatmaps-et-al.---base-r.html#cb255-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">density.info =</span> <span class="st">&quot;none&quot;</span>) <span class="co">#don&#39;t overlay a histogram in the colour bar</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/07heatmap2-log-noScale-colSideM-1.png" width="672" /></p>
+<p>There are more options to tweak. Take a look at <code>?heatmap.2</code> to see
+them.</p>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="distributions-ggplot2.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="venn-euler-and-upset-diagrams.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/07_heatmaps_base.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf", "_main.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

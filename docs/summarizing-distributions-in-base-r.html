@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 7 Summarizing distributions in base R | Visualization in R workshop</title>
+  <meta name="description" content="<p>This is a collection of markdown files used during a workshop of the Science
+Park Study group at University of Amsterdam, 14th September 2022</p>" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 7 Summarizing distributions in base R | Visualization in R workshop" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="<p>This is a collection of markdown files used during a workshop of the Science
+Park Study group at University of Amsterdam, 14th September 2022</p>" />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 7 Summarizing distributions in base R | Visualization in R workshop" />
+  
+  <meta name="twitter:description" content="<p>This is a collection of markdown files used during a workshop of the Science
+Park Study group at University of Amsterdam, 14th September 2022</p>" />
+  
+
+<meta name="author" content="Anna Heintz-Buschart and Joachim Goedhart" />
+
+
+<meta name="date" content="2022-09-14" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="introduction-to-scatter-plots-in-rggplot2.html"/>
+<link rel="next" href="distributions-ggplot2.html"/>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Visualization in R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> About</a></li>
+<li class="chapter" data-level="2" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html"><i class="fa fa-check"></i><b>2</b> Hello World - base R</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html#welcome"><i class="fa fa-check"></i><b>2.1</b> Welcome</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html#interacting-with-r"><i class="fa fa-check"></i><b>2.1.1</b> Interacting with R</a></li>
+<li class="chapter" data-level="2.1.2" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html#chunks"><i class="fa fa-check"></i><b>2.1.2</b> Chunks</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html#test-knitting"><i class="fa fa-check"></i><b>2.2</b> Test ‘knitting’</a></li>
+<li class="chapter" data-level="2.3" data-path="hello-world---base-r.html"><a href="hello-world---base-r.html#resources-on-r"><i class="fa fa-check"></i><b>2.3</b> Resources on R</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html"><i class="fa fa-check"></i><b>3</b> Importing data - base R</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#using-base-r"><i class="fa fa-check"></i><b>3.1</b> Using base R</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#tab-delimited-data-with-a-header-and-using-standard-decimal-points"><i class="fa fa-check"></i><b>3.1.1</b> Tab-delimited data with a header and using standard decimal points</a></li>
+<li class="chapter" data-level="3.1.2" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#non-standard-decimal-points"><i class="fa fa-check"></i><b>3.1.2</b> Non-standard decimal points</a></li>
+<li class="chapter" data-level="3.1.3" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#comma-separated-data-with-a-header-and-using-standard-decimal-points"><i class="fa fa-check"></i><b>3.1.3</b> Comma-separated data with a header and using standard decimal points</a></li>
+<li class="chapter" data-level="3.1.4" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#tables-without-headers"><i class="fa fa-check"></i><b>3.1.4</b> Tables without headers</a></li>
+<li class="chapter" data-level="3.1.5" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#additional-lines"><i class="fa fa-check"></i><b>3.1.5</b> Additional lines</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#further-methods"><i class="fa fa-check"></i><b>3.2</b> Further methods</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#excel-files"><i class="fa fa-check"></i><b>3.2.1</b> Excel files</a></li>
+<li class="chapter" data-level="3.2.2" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#reading-from-urls"><i class="fa fa-check"></i><b>3.2.2</b> Reading from URLs</a></li>
+<li class="chapter" data-level="3.2.3" data-path="importing-data---base-r.html"><a href="importing-data---base-r.html#reading-from-the-clipboard"><i class="fa fa-check"></i><b>3.2.3</b> Reading from the clipboard</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="intro-to-the-tidyverse.html"><a href="intro-to-the-tidyverse.html"><i class="fa fa-check"></i><b>4</b> Intro to the {tidyverse}</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="intro-to-the-tidyverse.html"><a href="intro-to-the-tidyverse.html#why-tidyverse"><i class="fa fa-check"></i><b>4.1</b> Why <code>{tidyverse}</code>?</a></li>
+<li class="chapter" data-level="4.2" data-path="intro-to-the-tidyverse.html"><a href="intro-to-the-tidyverse.html#reading-data-from-excel"><i class="fa fa-check"></i><b>4.2</b> Reading data from excel</a></li>
+<li class="chapter" data-level="4.3" data-path="intro-to-the-tidyverse.html"><a href="intro-to-the-tidyverse.html#the-pipe-operator"><i class="fa fa-check"></i><b>4.3</b> The pipe operator</a></li>
+<li class="chapter" data-level="4.4" data-path="intro-to-the-tidyverse.html"><a href="intro-to-the-tidyverse.html#resources-on-tidyverse"><i class="fa fa-check"></i><b>4.4</b> Resources on tidyverse</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html"><i class="fa fa-check"></i><b>5</b> Introduction to scatter plots in base R</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#set-up"><i class="fa fa-check"></i><b>5.1</b> Set up</a></li>
+<li class="chapter" data-level="5.2" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#formatting-plots"><i class="fa fa-check"></i><b>5.2</b> Formatting plots</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#defaults"><i class="fa fa-check"></i><b>5.2.1</b> Defaults</a></li>
+<li class="chapter" data-level="5.2.2" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#margins"><i class="fa fa-check"></i><b>5.2.2</b> Margins</a></li>
+<li class="chapter" data-level="5.2.3" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#plot-borders"><i class="fa fa-check"></i><b>5.2.3</b> Plot borders</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#axes"><i class="fa fa-check"></i><b>5.3</b> Axes</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#axis-marks"><i class="fa fa-check"></i><b>5.3.1</b> Axis marks</a></li>
+<li class="chapter" data-level="5.3.2" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#axis-labels"><i class="fa fa-check"></i><b>5.3.2</b> Axis labels</a></li>
+<li class="chapter" data-level="5.3.3" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#scales-and-ranges"><i class="fa fa-check"></i><b>5.3.3</b> Scales and ranges</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#points"><i class="fa fa-check"></i><b>5.4</b> Points</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#shapes"><i class="fa fa-check"></i><b>5.4.1</b> Shapes</a></li>
+<li class="chapter" data-level="5.4.2" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#colour"><i class="fa fa-check"></i><b>5.4.2</b> Colour</a></li>
+<li class="chapter" data-level="5.4.3" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#size"><i class="fa fa-check"></i><b>5.4.3</b> Size</a></li>
+<li class="chapter" data-level="5.4.4" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#multiple-sets-of-points"><i class="fa fa-check"></i><b>5.4.4</b> Multiple sets of points</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#legends"><i class="fa fa-check"></i><b>5.5</b> Legends</a></li>
+<li class="chapter" data-level="5.6" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#lines"><i class="fa fa-check"></i><b>5.6</b> Lines</a>
+<ul>
+<li class="chapter" data-level="5.6.1" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#histogram-style-lines"><i class="fa fa-check"></i><b>5.6.1</b> Histogram-style lines</a></li>
+<li class="chapter" data-level="5.6.2" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#lines-between-points"><i class="fa fa-check"></i><b>5.6.2</b> Lines between points</a></li>
+<li class="chapter" data-level="5.6.3" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#lines-through-the-plot"><i class="fa fa-check"></i><b>5.6.3</b> Lines through the plot</a></li>
+<li class="chapter" data-level="5.6.4" data-path="introduction-to-scatter-plots-in-base-r.html"><a href="introduction-to-scatter-plots-in-base-r.html#trend-lines"><i class="fa fa-check"></i><b>5.6.4</b> Trend lines</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html"><i class="fa fa-check"></i><b>6</b> Introduction to scatter plots in R/ggplot2</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#setup"><i class="fa fa-check"></i><b>6.1</b> Setup</a></li>
+<li class="chapter" data-level="6.2" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#scatterplots"><i class="fa fa-check"></i><b>6.2</b> Scatterplots</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#defaults-1"><i class="fa fa-check"></i><b>6.2.1</b> Defaults</a></li>
+<li class="chapter" data-level="6.2.2" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#themes"><i class="fa fa-check"></i><b>6.2.2</b> Themes</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#intermezzo-plots-as-objects"><i class="fa fa-check"></i><b>6.3</b> Intermezzo: Plots as objects</a></li>
+<li class="chapter" data-level="6.4" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#modifying-plots"><i class="fa fa-check"></i><b>6.4</b> Modifying plots</a>
+<ul>
+<li class="chapter" data-level="6.4.1" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#axis-labels-1"><i class="fa fa-check"></i><b>6.4.1</b> Axis labels</a></li>
+<li class="chapter" data-level="6.4.2" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#scales-and-ranges-1"><i class="fa fa-check"></i><b>6.4.2</b> Scales and ranges</a></li>
+<li class="chapter" data-level="6.4.3" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#aesthetics-geometries"><i class="fa fa-check"></i><b>6.4.3</b> Aesthetics &amp; Geometries</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#legends-1"><i class="fa fa-check"></i><b>6.5</b> Legends</a></li>
+<li class="chapter" data-level="6.6" data-path="introduction-to-scatter-plots-in-rggplot2.html"><a href="introduction-to-scatter-plots-in-rggplot2.html#lines-and-trends"><i class="fa fa-check"></i><b>6.6</b> Lines and trends</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html"><i class="fa fa-check"></i><b>7</b> Summarizing distributions in base R</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#setup-1"><i class="fa fa-check"></i><b>7.1</b> Setup</a></li>
+<li class="chapter" data-level="7.2" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#the-data"><i class="fa fa-check"></i><b>7.2</b> The data</a></li>
+<li class="chapter" data-level="7.3" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#just-the-mean-barplots"><i class="fa fa-check"></i><b>7.3</b> Just the mean: Barplots</a>
+<ul>
+<li class="chapter" data-level="7.3.1" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#simple-barplots"><i class="fa fa-check"></i><b>7.3.1</b> Simple barplots</a></li>
+<li class="chapter" data-level="7.3.2" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#barplots-with-error-bars"><i class="fa fa-check"></i><b>7.3.2</b> Barplots with error bars</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#medians-quartiles-and-outliers-boxplots"><i class="fa fa-check"></i><b>7.4</b> Medians, quartiles, and outliers: Boxplots</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#basic-boxplots"><i class="fa fa-check"></i><b>7.4.1</b> Basic boxplots</a></li>
+<li class="chapter" data-level="7.4.2" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#adding-points-on-top"><i class="fa fa-check"></i><b>7.4.2</b> Adding points on top</a></li>
+<li class="chapter" data-level="7.4.3" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#adding-lines-between-points"><i class="fa fa-check"></i><b>7.4.3</b> Adding lines between points</a></li>
+<li class="chapter" data-level="7.4.4" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#half-boxes"><i class="fa fa-check"></i><b>7.4.4</b> Half-boxes</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#histograms"><i class="fa fa-check"></i><b>7.5</b> Histograms</a></li>
+<li class="chapter" data-level="7.6" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#density-plots"><i class="fa fa-check"></i><b>7.6</b> Density plots</a></li>
+<li class="chapter" data-level="7.7" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#violinplots"><i class="fa fa-check"></i><b>7.7</b> Violinplots</a></li>
+<li class="chapter" data-level="7.8" data-path="summarizing-distributions-in-base-r.html"><a href="summarizing-distributions-in-base-r.html#beanplots"><i class="fa fa-check"></i><b>7.8</b> Beanplots</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html"><i class="fa fa-check"></i><b>8</b> Distributions &amp; ggplot2</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#setup-and-data"><i class="fa fa-check"></i><b>8.1</b> Setup and data</a></li>
+<li class="chapter" data-level="8.2" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#multiple-distributions"><i class="fa fa-check"></i><b>8.2</b> Multiple distributions</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#plotting-the-data"><i class="fa fa-check"></i><b>8.2.1</b> Plotting the data</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#boxplots"><i class="fa fa-check"></i><b>8.3</b> Boxplots</a></li>
+<li class="chapter" data-level="8.4" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#violinplots-1"><i class="fa fa-check"></i><b>8.4</b> Violinplots</a></li>
+<li class="chapter" data-level="8.5" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#facets-splitting-into-multiple-plots"><i class="fa fa-check"></i><b>8.5</b> Facets: Splitting into multiple plots</a></li>
+<li class="chapter" data-level="8.6" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#a-single-distribution"><i class="fa fa-check"></i><b>8.6</b> A single distribution</a>
+<ul>
+<li class="chapter" data-level="8.6.1" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#a-single-violinplot"><i class="fa fa-check"></i><b>8.6.1</b> A single violinplot</a></li>
+<li class="chapter" data-level="8.6.2" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#density-plot"><i class="fa fa-check"></i><b>8.6.2</b> Density plot</a></li>
+<li class="chapter" data-level="8.6.3" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#histogram"><i class="fa fa-check"></i><b>8.6.3</b> Histogram</a></li>
+</ul></li>
+<li class="chapter" data-level="8.7" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#two-distributions"><i class="fa fa-check"></i><b>8.7</b> Two distributions</a>
+<ul>
+<li class="chapter" data-level="8.7.1" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#histogram-density"><i class="fa fa-check"></i><b>8.7.1</b> Histogram &amp; Density</a></li>
+<li class="chapter" data-level="8.7.2" data-path="distributions-ggplot2.html"><a href="distributions-ggplot2.html#splitting-into-two-plots"><i class="fa fa-check"></i><b>8.7.2</b> Splitting into two plots</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html"><i class="fa fa-check"></i><b>9</b> Heatmaps <em>et al.</em> - base R</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#setup-2"><i class="fa fa-check"></i><b>9.1</b> Setup</a></li>
+<li class="chapter" data-level="9.2" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#loading-data"><i class="fa fa-check"></i><b>9.2</b> Loading data</a></li>
+<li class="chapter" data-level="9.3" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#basic-heatmaps"><i class="fa fa-check"></i><b>9.3</b> Basic heatmaps</a>
+<ul>
+<li class="chapter" data-level="9.3.1" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#a-simple-heatmap"><i class="fa fa-check"></i><b>9.3.1</b> A simple heatmap</a></li>
+<li class="chapter" data-level="9.3.2" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#scaling"><i class="fa fa-check"></i><b>9.3.2</b> Scaling</a></li>
+<li class="chapter" data-level="9.3.3" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#colour-schemes"><i class="fa fa-check"></i><b>9.3.3</b> Colour schemes</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#decorating-heatmaps"><i class="fa fa-check"></i><b>9.4</b> Decorating heatmaps</a>
+<ul>
+<li class="chapter" data-level="9.4.1" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#dendrograms"><i class="fa fa-check"></i><b>9.4.1</b> Dendrograms</a></li>
+<li class="chapter" data-level="9.4.2" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#ordering-features-and-samples"><i class="fa fa-check"></i><b>9.4.2</b> Ordering features and samples</a></li>
+<li class="chapter" data-level="9.4.3" data-path="heatmaps-et-al.---base-r.html"><a href="heatmaps-et-al.---base-r.html#adding-attributes"><i class="fa fa-check"></i><b>9.4.3</b> Adding attributes</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="venn-euler-and-upset-diagrams.html"><a href="venn-euler-and-upset-diagrams.html"><i class="fa fa-check"></i><b>10</b> Venn, Euler, and upSet diagrams</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="venn-euler-and-upset-diagrams.html"><a href="venn-euler-and-upset-diagrams.html#setup-and-data-1"><i class="fa fa-check"></i><b>10.1</b> Setup and data</a></li>
+<li class="chapter" data-level="10.2" data-path="venn-euler-and-upset-diagrams.html"><a href="venn-euler-and-upset-diagrams.html#venn-diagrams"><i class="fa fa-check"></i><b>10.2</b> Venn diagrams</a></li>
+<li class="chapter" data-level="10.3" data-path="venn-euler-and-upset-diagrams.html"><a href="venn-euler-and-upset-diagrams.html#euler-diagrams"><i class="fa fa-check"></i><b>10.3</b> Euler diagrams</a></li>
+<li class="chapter" data-level="10.4" data-path="venn-euler-and-upset-diagrams.html"><a href="venn-euler-and-upset-diagrams.html#upset-plots"><i class="fa fa-check"></i><b>10.4</b> UpSet plots</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html"><i class="fa fa-check"></i><b>11</b> Visualizing networks with igraph</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#setup-3"><i class="fa fa-check"></i><b>11.1</b> Setup</a></li>
+<li class="chapter" data-level="11.2" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#network-representations"><i class="fa fa-check"></i><b>11.2</b> Network representations</a>
+<ul>
+<li class="chapter" data-level="11.2.1" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#network-formats-edgelist"><i class="fa fa-check"></i><b>11.2.1</b> Network formats: edgelist</a></li>
+<li class="chapter" data-level="11.2.2" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#network-formats-adjacency-matrix"><i class="fa fa-check"></i><b>11.2.2</b> Network formats: adjacency matrix</a></li>
+</ul></li>
+<li class="chapter" data-level="11.3" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#network-visualization"><i class="fa fa-check"></i><b>11.3</b> Network visualization</a>
+<ul>
+<li class="chapter" data-level="11.3.1" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#layouts"><i class="fa fa-check"></i><b>11.3.1</b> Layouts</a></li>
+<li class="chapter" data-level="11.3.2" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#node-labels"><i class="fa fa-check"></i><b>11.3.2</b> Node labels</a></li>
+<li class="chapter" data-level="11.3.3" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#node-shapes-and-sizes"><i class="fa fa-check"></i><b>11.3.3</b> Node shapes and sizes</a></li>
+<li class="chapter" data-level="11.3.4" data-path="visualizing-networks-with-igraph.html"><a href="visualizing-networks-with-igraph.html#edge-appearance"><i class="fa fa-check"></i><b>11.3.4</b> Edge appearance</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/a-h-b/R_base_vis_course" target="blank">Rendered with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Visualization in R workshop</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="summarizing-distributions-in-base-r" class="section level1" number="7">
+<h1><span class="header-section-number">Chapter 7</span> Summarizing distributions in base R</h1>
+<div id="setup-1" class="section level2" number="7.1">
+<h2><span class="header-section-number">7.1</span> Setup</h2>
+<p>In this chapter, we take a look at R functions in the base packages
+that can summarize values. We will use some additional packages for
+specialized functions.</p>
+<div class="sourceCode" id="cb139"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb139-1"><a href="summarizing-distributions-in-base-r.html#cb139-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">require</span>(vioplot)){</span>
+<span id="cb139-2"><a href="summarizing-distributions-in-base-r.html#cb139-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">&quot;vioplot&quot;</span>,<span class="at">repos =</span> <span class="st">&quot;http://cran.us.r-project.org&quot;</span>)</span>
+<span id="cb139-3"><a href="summarizing-distributions-in-base-r.html#cb139-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(vioplot)</span>
+<span id="cb139-4"><a href="summarizing-distributions-in-base-r.html#cb139-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>## Loading required package: vioplot</code></pre>
+<pre><code>## Loading required package: sm</code></pre>
+<pre><code>## Package &#39;sm&#39;, version 2.2-5.7: type help(sm) for summary information</code></pre>
+<pre><code>## Loading required package: zoo</code></pre>
+<pre><code>## 
+## Attaching package: &#39;zoo&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     as.Date, as.Date.numeric</code></pre>
+<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb146-1"><a href="summarizing-distributions-in-base-r.html#cb146-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">require</span>(beanplot)){</span>
+<span id="cb146-2"><a href="summarizing-distributions-in-base-r.html#cb146-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;beanplot&quot;</span>,<span class="at">repos =</span> <span class="st">&quot;http://cran.us.r-project.org&quot;</span>)</span>
+<span id="cb146-3"><a href="summarizing-distributions-in-base-r.html#cb146-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(beanplot)</span>
+<span id="cb146-4"><a href="summarizing-distributions-in-base-r.html#cb146-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>## Loading required package: beanplot</code></pre>
+<div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb148-1"><a href="summarizing-distributions-in-base-r.html#cb148-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">require</span>(RColorBrewer)){</span>
+<span id="cb148-2"><a href="summarizing-distributions-in-base-r.html#cb148-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">&quot;RColorBrewer&quot;</span>,<span class="at">repos =</span> <span class="st">&quot;http://cran.us.r-project.org&quot;</span>)</span>
+<span id="cb148-3"><a href="summarizing-distributions-in-base-r.html#cb148-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(RColorBrewer)</span>
+<span id="cb148-4"><a href="summarizing-distributions-in-base-r.html#cb148-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb148-5"><a href="summarizing-distributions-in-base-r.html#cb148-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">require</span>(gplots)){</span>
+<span id="cb148-6"><a href="summarizing-distributions-in-base-r.html#cb148-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">&quot;gplots&quot;</span>,<span class="at">repos =</span> <span class="st">&quot;http://cran.us.r-project.org&quot;</span>)</span>
+<span id="cb148-7"><a href="summarizing-distributions-in-base-r.html#cb148-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(gplots)</span>
+<span id="cb148-8"><a href="summarizing-distributions-in-base-r.html#cb148-8" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>## Loading required package: gplots</code></pre>
+<pre><code>## 
+## Attaching package: &#39;gplots&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     lowess</code></pre>
+</div>
+<div id="the-data" class="section level2" number="7.2">
+<h2><span class="header-section-number">7.2</span> The data</h2>
+<p>For the visualizations we use the ChickWeight data set that comes with
+R.</p>
+<div class="sourceCode" id="cb152"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb152-1"><a href="summarizing-distributions-in-base-r.html#cb152-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;ChickWeight&quot;</span>) <span class="co">#import like this is possible for R&#39;s inbuilt datasets</span></span>
+<span id="cb152-2"><a href="summarizing-distributions-in-base-r.html#cb152-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ChickWeight)</span></code></pre></div>
+<pre><code>## Grouped Data: weight ~ Time | Chick
+##   weight Time Chick Diet
+## 1     42    0     1    1
+## 2     51    2     1    1
+## 3     59    4     1    1
+## 4     64    6     1    1
+## 5     76    8     1    1
+## 6     93   10     1    1</code></pre>
+<div class="sourceCode" id="cb154"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb154-1"><a href="summarizing-distributions-in-base-r.html#cb154-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ChickWeight) <span class="co">#dataset is present in the workspace with the dataset name</span></span></code></pre></div>
+<pre><code>##      weight           Time           Chick     Diet   
+##  Min.   : 35.0   Min.   : 0.00   13     : 12   1:220  
+##  1st Qu.: 63.0   1st Qu.: 4.00   9      : 12   2:120  
+##  Median :103.0   Median :10.00   20     : 12   3:120  
+##  Mean   :121.8   Mean   :10.72   10     : 12   4:118  
+##  3rd Qu.:163.8   3rd Qu.:16.00   17     : 12          
+##  Max.   :373.0   Max.   :21.00   19     : 12          
+##                                  (Other):506</code></pre>
+<p>You see that you have 4 columns, most importantly weight. There are 3
+sets of ‘metadata’: when was a chick weighed, which chick, and what was
+the chick eating.</p>
+<p>Let’s plot all of the chick data.</p>
+<div class="sourceCode" id="cb156"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb156-1"><a href="summarizing-distributions-in-base-r.html#cb156-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ChickWeight<span class="sc">$</span>Time,</span>
+<span id="cb156-2"><a href="summarizing-distributions-in-base-r.html#cb156-2" aria-hidden="true" tabindex="-1"></a>     ChickWeight<span class="sc">$</span>weight,</span>
+<span id="cb156-3"><a href="summarizing-distributions-in-base-r.html#cb156-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">&quot;time point&quot;</span>,</span>
+<span id="cb156-4"><a href="summarizing-distributions-in-base-r.html#cb156-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;weight&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-scatterAll-1.png" width="672" /></p>
+<p>This is not very pretty and we’re missing some information. Let’s clean
+it up a bit:</p>
+<div class="sourceCode" id="cb157"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb157-1"><a href="summarizing-distributions-in-base-r.html#cb157-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co">#different margins</span></span>
+<span id="cb157-2"><a href="summarizing-distributions-in-base-r.html#cb157-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">tcl=</span><span class="sc">-</span><span class="fl">0.3</span>, <span class="co">#shorter tick marks</span></span>
+<span id="cb157-3"><a href="summarizing-distributions-in-base-r.html#cb157-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mgp=</span><span class="fu">c</span>(<span class="fl">1.9</span>,<span class="fl">0.5</span>,<span class="dv">0</span>)) <span class="co">#move axis labels</span></span>
+<span id="cb157-4"><a href="summarizing-distributions-in-base-r.html#cb157-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ChickWeight<span class="sc">$</span>Time,</span>
+<span id="cb157-5"><a href="summarizing-distributions-in-base-r.html#cb157-5" aria-hidden="true" tabindex="-1"></a>     ChickWeight<span class="sc">$</span>weight,</span>
+<span id="cb157-6"><a href="summarizing-distributions-in-base-r.html#cb157-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;time point&quot;</span>,</span>
+<span id="cb157-7"><a href="summarizing-distributions-in-base-r.html#cb157-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">&quot;weight&quot;</span>,</span>
+<span id="cb157-8"><a href="summarizing-distributions-in-base-r.html#cb157-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">cex.axis=</span><span class="fl">0.8</span>, <span class="co">#smaller axis annotation</span></span>
+<span id="cb157-9"><a href="summarizing-distributions-in-base-r.html#cb157-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch=</span><span class="dv">16</span>, <span class="co">#filled symbols</span></span>
+<span id="cb157-10"><a href="summarizing-distributions-in-base-r.html#cb157-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">col=</span><span class="fu">brewer.pal</span>(<span class="dv">4</span>,<span class="st">&quot;Dark2&quot;</span>)[<span class="fu">as.numeric</span>(<span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Diet))], <span class="co">#color by diet</span></span>
+<span id="cb157-11"><a href="summarizing-distributions-in-base-r.html#cb157-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">las=</span><span class="dv">1</span>, <span class="co">#all axis marks horizontal</span></span>
+<span id="cb157-12"><a href="summarizing-distributions-in-base-r.html#cb157-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">bty=</span><span class="st">&quot;l&quot;</span>) <span class="co">#just the x and y axis, no box</span></span>
+<span id="cb157-13"><a href="summarizing-distributions-in-base-r.html#cb157-13" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topleft&quot;</span>, <span class="co">#legend, position</span></span>
+<span id="cb157-14"><a href="summarizing-distributions-in-base-r.html#cb157-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">levels</span>(<span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Diet)), <span class="co">#names of diet</span></span>
+<span id="cb157-15"><a href="summarizing-distributions-in-base-r.html#cb157-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">pch=</span><span class="dv">16</span>, <span class="co">#filled points like plot</span></span>
+<span id="cb157-16"><a href="summarizing-distributions-in-base-r.html#cb157-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">col=</span><span class="fu">brewer.pal</span>(<span class="dv">4</span>,<span class="st">&quot;Dark2&quot;</span>), <span class="co">#colours like plot</span></span>
+<span id="cb157-17"><a href="summarizing-distributions-in-base-r.html#cb157-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;diet&quot;</span>, <span class="co">#legend title</span></span>
+<span id="cb157-18"><a href="summarizing-distributions-in-base-r.html#cb157-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">bty=</span><span class="st">&quot;n&quot;</span>) <span class="co">#no box around legend</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-scatterAll-nicer-1.png" width="672" /></p>
+<p>This looks nice, but the points are still overlapping, so we don’t see
+really well how they are distributed.</p>
+</div>
+<div id="just-the-mean-barplots" class="section level2" number="7.3">
+<h2><span class="header-section-number">7.3</span> Just the mean: Barplots</h2>
+<p>One of the simplest summary values you may want to plot is the mean. You
+can visualize the mean of different groups using bar plots. For now, we
+are ignoring the different diets. Let’s look at all chicks’ weights at
+time 0:</p>
+<div class="sourceCode" id="cb158"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb158-1"><a href="summarizing-distributions-in-base-r.html#cb158-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ChickWeight<span class="sc">$</span>weight[ChickWeight<span class="sc">$</span>Time<span class="sc">==</span><span class="dv">0</span>]) </span></code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   39.00   41.00   41.00   41.06   42.00   43.00</code></pre>
+<p>and at time 10:</p>
+<div class="sourceCode" id="cb160"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb160-1"><a href="summarizing-distributions-in-base-r.html#cb160-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ChickWeight<span class="sc">$</span>weight[ChickWeight<span class="sc">$</span>Time<span class="sc">==</span><span class="dv">10</span>]) </span></code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    51.0    93.0   109.0   107.8   124.0   163.0</code></pre>
+<p>We can calculate the mean chick weight per time point using the
+aggregate function, which will aggregate any set of values (here
+<code>ChickWeight$weight</code> i.e. the column with weights) according to a factor
+(here <code>list(ChickWeight$Time)</code> i.e. the time points) using a function of
+our choice (here <code>mean</code>).</p>
+<div class="sourceCode" id="cb162"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb162-1"><a href="summarizing-distributions-in-base-r.html#cb162-1" aria-hidden="true" tabindex="-1"></a>chickWeightTime <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(ChickWeight<span class="sc">$</span>weight,<span class="fu">list</span>(ChickWeight<span class="sc">$</span>Time),mean)</span>
+<span id="cb162-2"><a href="summarizing-distributions-in-base-r.html#cb162-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(chickWeightTime) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Time&quot;</span>,<span class="st">&quot;weight&quot;</span>) <span class="co">#clean up names</span></span>
+<span id="cb162-3"><a href="summarizing-distributions-in-base-r.html#cb162-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(chickWeightTime)</span></code></pre></div>
+<pre><code>##   Time    weight
+## 1    0  41.06000
+## 2    2  49.22000
+## 3    4  59.95918
+## 4    6  74.30612
+## 5    8  91.24490
+## 6   10 107.83673</code></pre>
+<p>We could plot as a scatter plot, since the time points are not
+categories but real values:</p>
+<div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb164-1"><a href="summarizing-distributions-in-base-r.html#cb164-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co">#different margins</span></span>
+<span id="cb164-2"><a href="summarizing-distributions-in-base-r.html#cb164-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">tcl=</span><span class="sc">-</span><span class="fl">0.3</span>, <span class="co">#shorter tick marks</span></span>
+<span id="cb164-3"><a href="summarizing-distributions-in-base-r.html#cb164-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mgp=</span><span class="fu">c</span>(<span class="fl">1.9</span>,<span class="fl">0.5</span>,<span class="dv">0</span>)) <span class="co">#move axis labels</span></span>
+<span id="cb164-4"><a href="summarizing-distributions-in-base-r.html#cb164-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(chickWeightTime<span class="sc">$</span>Time,</span>
+<span id="cb164-5"><a href="summarizing-distributions-in-base-r.html#cb164-5" aria-hidden="true" tabindex="-1"></a>     chickWeightTime<span class="sc">$</span>weight,</span>
+<span id="cb164-6"><a href="summarizing-distributions-in-base-r.html#cb164-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;time point&quot;</span>,</span>
+<span id="cb164-7"><a href="summarizing-distributions-in-base-r.html#cb164-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">&quot;weight&quot;</span>,</span>
+<span id="cb164-8"><a href="summarizing-distributions-in-base-r.html#cb164-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">cex.axis=</span><span class="fl">0.8</span>, <span class="co">#smaller axis annotation</span></span>
+<span id="cb164-9"><a href="summarizing-distributions-in-base-r.html#cb164-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch=</span><span class="dv">16</span>, <span class="co">#filled symbols</span></span>
+<span id="cb164-10"><a href="summarizing-distributions-in-base-r.html#cb164-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">las=</span><span class="dv">1</span>, <span class="co">#all axis marks horizontal</span></span>
+<span id="cb164-11"><a href="summarizing-distributions-in-base-r.html#cb164-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">bty=</span><span class="st">&quot;l&quot;</span>) <span class="co">#just the x and y axis, no box</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-scatterNice-1.png" width="672" /></p>
+<div id="simple-barplots" class="section level3" number="7.3.1">
+<h3><span class="header-section-number">7.3.1</span> Simple barplots</h3>
+<p>Now we plot the barplot:</p>
+<div class="sourceCode" id="cb165"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb165-1"><a href="summarizing-distributions-in-base-r.html#cb165-1" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(chickWeightTime<span class="sc">$</span>weight,</span>
+<span id="cb165-2"><a href="summarizing-distributions-in-base-r.html#cb165-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">names.arg =</span> chickWeightTime<span class="sc">$</span>Time,</span>
+<span id="cb165-3"><a href="summarizing-distributions-in-base-r.html#cb165-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">&quot;time point&quot;</span>,</span>
+<span id="cb165-4"><a href="summarizing-distributions-in-base-r.html#cb165-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;weight&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-barplot-1.png" width="672" /></p>
+<p>An important difference in the scatter plot and the bar plot is the
+y-axis default: scatter plot’s axes are scaled to the values, while the
+bar plot starts at 0 (if there are only positive data).</p>
+<p>While sort of informative, base R barplots tend to be rather ugly.
+Compared to scatterplots, they need a lot of tweaking to look kind of
+nice. Here are some options:</p>
+<div class="sourceCode" id="cb166"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb166-1"><a href="summarizing-distributions-in-base-r.html#cb166-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co">#different margins</span></span>
+<span id="cb166-2"><a href="summarizing-distributions-in-base-r.html#cb166-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">tcl=</span><span class="sc">-</span><span class="fl">0.3</span>, <span class="co">#shorter tick marks</span></span>
+<span id="cb166-3"><a href="summarizing-distributions-in-base-r.html#cb166-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mgp=</span><span class="fu">c</span>(<span class="fl">1.9</span>,<span class="fl">0.5</span>,<span class="dv">0</span>)) <span class="co">#move axis labels</span></span>
+<span id="cb166-4"><a href="summarizing-distributions-in-base-r.html#cb166-4" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(chickWeightTime<span class="sc">$</span>weight,</span>
+<span id="cb166-5"><a href="summarizing-distributions-in-base-r.html#cb166-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">names.arg =</span> chickWeightTime<span class="sc">$</span>Time,</span>
+<span id="cb166-6"><a href="summarizing-distributions-in-base-r.html#cb166-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">&quot;time point&quot;</span>,</span>
+<span id="cb166-7"><a href="summarizing-distributions-in-base-r.html#cb166-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;weight&quot;</span>,</span>
+<span id="cb166-8"><a href="summarizing-distributions-in-base-r.html#cb166-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">las =</span> <span class="dv">1</span>, <span class="co"># all letters horizontal</span></span>
+<span id="cb166-9"><a href="summarizing-distributions-in-base-r.html#cb166-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">1.1</span><span class="sc">*</span><span class="fu">max</span>(chickWeightTime<span class="sc">$</span>weight)), <span class="co">#y-axis that is longer than the longest bar</span></span>
+<span id="cb166-10"><a href="summarizing-distributions-in-base-r.html#cb166-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">yaxs =</span> <span class="st">&quot;r&quot;</span>,</span>
+<span id="cb166-11"><a href="summarizing-distributions-in-base-r.html#cb166-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">cex.axis =</span> <span class="fl">0.8</span>, <span class="co">#smaller y-axis annotation</span></span>
+<span id="cb166-12"><a href="summarizing-distributions-in-base-r.html#cb166-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">cex.names =</span> <span class="fl">0.8</span> <span class="co">#smaller x-axis annotation</span></span>
+<span id="cb166-13"><a href="summarizing-distributions-in-base-r.html#cb166-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-barplot-nicer-1.png" width="672" /></p>
+<p>Sometimes, you want the bar plot to look more like all other plots:</p>
+<div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb167-1"><a href="summarizing-distributions-in-base-r.html#cb167-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co">#different margins</span></span>
+<span id="cb167-2"><a href="summarizing-distributions-in-base-r.html#cb167-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">tcl=</span><span class="sc">-</span><span class="fl">0.3</span>, <span class="co">#shorter tick marks</span></span>
+<span id="cb167-3"><a href="summarizing-distributions-in-base-r.html#cb167-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mgp=</span><span class="fu">c</span>(<span class="fl">1.9</span>,<span class="fl">0.5</span>,<span class="dv">0</span>)) <span class="co">#move axis labels</span></span>
+<span id="cb167-4"><a href="summarizing-distributions-in-base-r.html#cb167-4" aria-hidden="true" tabindex="-1"></a>bars <span class="ot">&lt;-</span> <span class="fu">barplot</span>(chickWeightTime<span class="sc">$</span>weight,</span>
+<span id="cb167-5"><a href="summarizing-distributions-in-base-r.html#cb167-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">&quot;time point&quot;</span>,</span>
+<span id="cb167-6"><a href="summarizing-distributions-in-base-r.html#cb167-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;weight&quot;</span>,</span>
+<span id="cb167-7"><a href="summarizing-distributions-in-base-r.html#cb167-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">las =</span> <span class="dv">1</span>, <span class="co"># all letters horizontal</span></span>
+<span id="cb167-8"><a href="summarizing-distributions-in-base-r.html#cb167-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">1.1</span><span class="sc">*</span><span class="fu">max</span>(chickWeightTime<span class="sc">$</span>weight)), <span class="co">#y-axis that is longer than the longest bar</span></span>
+<span id="cb167-9"><a href="summarizing-distributions-in-base-r.html#cb167-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">yaxs =</span> <span class="st">&quot;i&quot;</span>, <span class="co">#x-axis to cut y axis at 0</span></span>
+<span id="cb167-10"><a href="summarizing-distributions-in-base-r.html#cb167-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">cex.axis =</span> <span class="fl">0.8</span>, <span class="co">#smaller y-axis annotation</span></span>
+<span id="cb167-11"><a href="summarizing-distributions-in-base-r.html#cb167-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">space =</span> <span class="fl">0.4</span>, <span class="co">#leaner bars</span></span>
+<span id="cb167-12"><a href="summarizing-distributions-in-base-r.html#cb167-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">col =</span>  <span class="st">&quot;grey30&quot;</span>, <span class="co">#color of the bars</span></span>
+<span id="cb167-13"><a href="summarizing-distributions-in-base-r.html#cb167-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">border =</span> <span class="cn">NA</span> <span class="co">#no borders on the bars</span></span>
+<span id="cb167-14"><a href="summarizing-distributions-in-base-r.html#cb167-14" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb167-15"><a href="summarizing-distributions-in-base-r.html#cb167-15" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="co">#add x-axis</span></span>
+<span id="cb167-16"><a href="summarizing-distributions-in-base-r.html#cb167-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">at =</span> bars[,<span class="dv">1</span>], <span class="co">#get mid points from plot function above</span></span>
+<span id="cb167-17"><a href="summarizing-distributions-in-base-r.html#cb167-17" aria-hidden="true" tabindex="-1"></a>     <span class="at">labels =</span> chickWeightTime<span class="sc">$</span>Time,</span>
+<span id="cb167-18"><a href="summarizing-distributions-in-base-r.html#cb167-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">cex.axis =</span> <span class="fl">0.8</span>) <span class="co">#smaller x-axis annotation</span></span>
+<span id="cb167-19"><a href="summarizing-distributions-in-base-r.html#cb167-19" aria-hidden="true" tabindex="-1"></a><span class="fu">box</span>(<span class="st">&quot;plot&quot;</span>,<span class="at">bty=</span><span class="st">&quot;l&quot;</span>) <span class="co">#add box (x-axis)</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-barplot-nicer2-1.png" width="672" /></p>
+</div>
+<div id="barplots-with-error-bars" class="section level3" number="7.3.2">
+<h3><span class="header-section-number">7.3.2</span> Barplots with error bars</h3>
+<p>Base R barplots are not designed to have automatic error bars.
+<code>barplot2</code> from the <code>gplots</code> package does the trick, though. First,
+let’s calculate the standard deviation (sd) of each mean:</p>
+<div class="sourceCode" id="cb168"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb168-1"><a href="summarizing-distributions-in-base-r.html#cb168-1" aria-hidden="true" tabindex="-1"></a>chickWeightTime<span class="sc">$</span>sd <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(ChickWeight<span class="sc">$</span>weight,<span class="fu">list</span>(ChickWeight<span class="sc">$</span>Time),sd)[,<span class="dv">2</span>]</span>
+<span id="cb168-2"><a href="summarizing-distributions-in-base-r.html#cb168-2" aria-hidden="true" tabindex="-1"></a><span class="co"># here, we calculate sd and just append it as another column (named sd) to the previous table</span></span>
+<span id="cb168-3"><a href="summarizing-distributions-in-base-r.html#cb168-3" aria-hidden="true" tabindex="-1"></a><span class="co"># we can do this, because the first two arguments of aggregate and the aggregated data.frame are the same as before, so the output will have the same order</span></span></code></pre></div>
+<p>Now, we plot as above, but with the <code>barplot2</code> function. This takes the
+arguments <code>ci.l</code> and <code>ci.u</code> which were originally conceived for
+confidence intervals (hence we still need to calculate where we want
+them to sit).</p>
+<div class="sourceCode" id="cb169"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb169-1"><a href="summarizing-distributions-in-base-r.html#cb169-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co">#different margins</span></span>
+<span id="cb169-2"><a href="summarizing-distributions-in-base-r.html#cb169-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">tcl=</span><span class="sc">-</span><span class="fl">0.3</span>, <span class="co">#shorter tick marks</span></span>
+<span id="cb169-3"><a href="summarizing-distributions-in-base-r.html#cb169-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mgp=</span><span class="fu">c</span>(<span class="fl">1.9</span>,<span class="fl">0.5</span>,<span class="dv">0</span>)) <span class="co">#move axis labels</span></span>
+<span id="cb169-4"><a href="summarizing-distributions-in-base-r.html#cb169-4" aria-hidden="true" tabindex="-1"></a>bars <span class="ot">&lt;-</span> <span class="fu">barplot2</span>(chickWeightTime<span class="sc">$</span>weight,</span>
+<span id="cb169-5"><a href="summarizing-distributions-in-base-r.html#cb169-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">&quot;time point&quot;</span>,</span>
+<span id="cb169-6"><a href="summarizing-distributions-in-base-r.html#cb169-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;weight&quot;</span>,</span>
+<span id="cb169-7"><a href="summarizing-distributions-in-base-r.html#cb169-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">las =</span> <span class="dv">1</span>, <span class="co"># all letters horizontal</span></span>
+<span id="cb169-8"><a href="summarizing-distributions-in-base-r.html#cb169-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">1.1</span><span class="sc">*</span><span class="fu">max</span>(chickWeightTime<span class="sc">$</span>weight <span class="sc">+</span> chickWeightTime<span class="sc">$</span>sd)), <span class="co">#y-axis that is longer than the longest bar, incl error</span></span>
+<span id="cb169-9"><a href="summarizing-distributions-in-base-r.html#cb169-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">yaxs =</span> <span class="st">&quot;i&quot;</span>, <span class="co">#x-axis to cut y axis at 0</span></span>
+<span id="cb169-10"><a href="summarizing-distributions-in-base-r.html#cb169-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">cex.axis =</span> <span class="fl">0.8</span>, <span class="co">#smaller y-axis annotation</span></span>
+<span id="cb169-11"><a href="summarizing-distributions-in-base-r.html#cb169-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">space =</span> <span class="fl">0.4</span>, <span class="co">#leaner bars</span></span>
+<span id="cb169-12"><a href="summarizing-distributions-in-base-r.html#cb169-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">col =</span>  <span class="st">&quot;grey30&quot;</span>, <span class="co">#color of the bars</span></span>
+<span id="cb169-13"><a href="summarizing-distributions-in-base-r.html#cb169-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">border =</span> <span class="cn">NA</span>, <span class="co">#no borders on the bars</span></span>
+<span id="cb169-14"><a href="summarizing-distributions-in-base-r.html#cb169-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.ci =</span> T, <span class="co">#error bars need to be enabled explicitly</span></span>
+<span id="cb169-15"><a href="summarizing-distributions-in-base-r.html#cb169-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">ci.l =</span> chickWeightTime<span class="sc">$</span>weight <span class="sc">-</span> chickWeightTime<span class="sc">$</span>sd, <span class="co"># lower error bar</span></span>
+<span id="cb169-16"><a href="summarizing-distributions-in-base-r.html#cb169-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">ci.u =</span> chickWeightTime<span class="sc">$</span>weight <span class="sc">+</span> chickWeightTime<span class="sc">$</span>sd <span class="co"># upper error bar</span></span>
+<span id="cb169-17"><a href="summarizing-distributions-in-base-r.html#cb169-17" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb169-18"><a href="summarizing-distributions-in-base-r.html#cb169-18" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="co">#add x-axis</span></span>
+<span id="cb169-19"><a href="summarizing-distributions-in-base-r.html#cb169-19" aria-hidden="true" tabindex="-1"></a>     <span class="at">at =</span> bars[,<span class="dv">1</span>], <span class="co">#get mid points from plot function above</span></span>
+<span id="cb169-20"><a href="summarizing-distributions-in-base-r.html#cb169-20" aria-hidden="true" tabindex="-1"></a>     <span class="at">labels =</span> chickWeightTime<span class="sc">$</span>Time,</span>
+<span id="cb169-21"><a href="summarizing-distributions-in-base-r.html#cb169-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">cex.axis =</span> <span class="fl">0.8</span>) <span class="co">#smaller x-axis annotation</span></span>
+<span id="cb169-22"><a href="summarizing-distributions-in-base-r.html#cb169-22" aria-hidden="true" tabindex="-1"></a><span class="fu">box</span>(<span class="st">&quot;plot&quot;</span>,<span class="at">bty=</span><span class="st">&quot;l&quot;</span>) <span class="co">#add box (x-axis)</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-barplot2-1.png" width="672" /></p>
+<p>There’s no standard for which value should be reflected by error bars.
+In many fields, mean ± standard deviation are common, but sometimes you
+also see mean ± standard error of the mean (sd devided by n). In other
+fields you’ll more commonly have a mean and a confidence interval, e.g.
+95%. Finally, you could plot medians and interquartile ranges. But then,
+you’ve got a poor man’s boxplot.</p>
+</div>
+</div>
+<div id="medians-quartiles-and-outliers-boxplots" class="section level2" number="7.4">
+<h2><span class="header-section-number">7.4</span> Medians, quartiles, and outliers: Boxplots</h2>
+<div id="basic-boxplots" class="section level3" number="7.4.1">
+<h3><span class="header-section-number">7.4.1</span> Basic boxplots</h3>
+<p>Boxplots have become the go-to visualization for many questions, because
+they give more information about data distribution than barplots. R
+calculates all the necessary summative values from the raw data, meaning
+we need to supply the whole data to the boxplot function (not the means
+as we did above). The values that are depicted by default are:</p>
+<ul>
+<li>the median (big bar in the middle = the 50th percentile)</li>
+<li>the 25th and 75 percentiles (ends of the box = quartiles)</li>
+<li>the whiskers extend to the last points within 1.5 * IQR from the
+quartiles (IQR is the interquartile range, i.e. the range between
+the box’s ends)</li>
+<li>all points that lie outside are plotted as points (outliers)</li>
+</ul>
+<p>Here we go:</p>
+<div class="sourceCode" id="cb170"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb170-1"><a href="summarizing-distributions-in-base-r.html#cb170-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(ChickWeight<span class="sc">$</span>weight <span class="sc">~</span> ChickWeight<span class="sc">$</span>Time,</span>
+<span id="cb170-2"><a href="summarizing-distributions-in-base-r.html#cb170-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">&quot;time point&quot;</span>,</span>
+<span id="cb170-3"><a href="summarizing-distributions-in-base-r.html#cb170-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;weight&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-boxplot-1.png" width="672" /></p>
+<p>The default is already quite informative. We can make it a bit more
+pretty, if necessary, e.g.:</p>
+<div class="sourceCode" id="cb171"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb171-1"><a href="summarizing-distributions-in-base-r.html#cb171-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co">#different margins</span></span>
+<span id="cb171-2"><a href="summarizing-distributions-in-base-r.html#cb171-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">tcl=</span><span class="sc">-</span><span class="fl">0.3</span>, <span class="co">#shorter tick marks</span></span>
+<span id="cb171-3"><a href="summarizing-distributions-in-base-r.html#cb171-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mgp=</span><span class="fu">c</span>(<span class="fl">1.9</span>,<span class="fl">0.5</span>,<span class="dv">0</span>)) <span class="co">#move axis labels</span></span>
+<span id="cb171-4"><a href="summarizing-distributions-in-base-r.html#cb171-4" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(ChickWeight<span class="sc">$</span>weight <span class="sc">~</span> ChickWeight<span class="sc">$</span>Time,</span>
+<span id="cb171-5"><a href="summarizing-distributions-in-base-r.html#cb171-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">&quot;time point&quot;</span>,</span>
+<span id="cb171-6"><a href="summarizing-distributions-in-base-r.html#cb171-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;weight&quot;</span>,</span>
+<span id="cb171-7"><a href="summarizing-distributions-in-base-r.html#cb171-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">cex.axis=</span><span class="fl">0.8</span>, <span class="co">#smaller axis annotation</span></span>
+<span id="cb171-8"><a href="summarizing-distributions-in-base-r.html#cb171-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">pch=</span><span class="dv">16</span>, <span class="co">#filled symbols</span></span>
+<span id="cb171-9"><a href="summarizing-distributions-in-base-r.html#cb171-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">las=</span><span class="dv">1</span>) <span class="co">#all axis marks horizontal</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-boxplot-nicer-1.png" width="672" /></p>
+<p>We can add the number of observations per box:</p>
+<div class="sourceCode" id="cb172"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb172-1"><a href="summarizing-distributions-in-base-r.html#cb172-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">1</span>,<span class="fl">0.5</span>), <span class="co">#different margins !</span></span>
+<span id="cb172-2"><a href="summarizing-distributions-in-base-r.html#cb172-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">tcl=</span><span class="sc">-</span><span class="fl">0.3</span>, <span class="co">#shorter tick marks</span></span>
+<span id="cb172-3"><a href="summarizing-distributions-in-base-r.html#cb172-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mgp=</span><span class="fu">c</span>(<span class="fl">1.9</span>,<span class="fl">0.5</span>,<span class="dv">0</span>)) <span class="co">#move axis labels</span></span>
+<span id="cb172-4"><a href="summarizing-distributions-in-base-r.html#cb172-4" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(ChickWeight<span class="sc">$</span>weight <span class="sc">~</span> ChickWeight<span class="sc">$</span>Time,</span>
+<span id="cb172-5"><a href="summarizing-distributions-in-base-r.html#cb172-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">&quot;time point&quot;</span>,</span>
+<span id="cb172-6"><a href="summarizing-distributions-in-base-r.html#cb172-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;weight&quot;</span>,</span>
+<span id="cb172-7"><a href="summarizing-distributions-in-base-r.html#cb172-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">cex.axis=</span><span class="fl">0.8</span>, <span class="co">#smaller axis annotation</span></span>
+<span id="cb172-8"><a href="summarizing-distributions-in-base-r.html#cb172-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">pch=</span><span class="dv">16</span>, <span class="co">#filled symbols</span></span>
+<span id="cb172-9"><a href="summarizing-distributions-in-base-r.html#cb172-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">las=</span><span class="dv">1</span>) <span class="co">#all axis marks horizontal</span></span>
+<span id="cb172-10"><a href="summarizing-distributions-in-base-r.html#cb172-10" aria-hidden="true" tabindex="-1"></a><span class="co">#numbers of observations:</span></span>
+<span id="cb172-11"><a href="summarizing-distributions-in-base-r.html#cb172-11" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">3</span>, <span class="co">#on a top axis</span></span>
+<span id="cb172-12"><a href="summarizing-distributions-in-base-r.html#cb172-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">at=</span><span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(<span class="fu">levels</span>(<span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Time))), <span class="co">#at the coordinates of the boxes</span></span>
+<span id="cb172-13"><a href="summarizing-distributions-in-base-r.html#cb172-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">labels=</span><span class="fu">table</span>(ChickWeight<span class="sc">$</span>Time), <span class="co">#numbers of observations per timepoints</span></span>
+<span id="cb172-14"><a href="summarizing-distributions-in-base-r.html#cb172-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">cex.axis=</span><span class="fl">0.8</span>, <span class="co">#smaller letters</span></span>
+<span id="cb172-15"><a href="summarizing-distributions-in-base-r.html#cb172-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">tcl=</span><span class="dv">0</span>, <span class="co">#no ticks</span></span>
+<span id="cb172-16"><a href="summarizing-distributions-in-base-r.html#cb172-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">mgp=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>)) <span class="co">#no distance to plot</span></span>
+<span id="cb172-17"><a href="summarizing-distributions-in-base-r.html#cb172-17" aria-hidden="true" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">&quot;N=&quot;</span>,<span class="co">#N= as axis label</span></span>
+<span id="cb172-18"><a href="summarizing-distributions-in-base-r.html#cb172-18" aria-hidden="true" tabindex="-1"></a>      <span class="dv">3</span>, <span class="co">#on top of the plot</span></span>
+<span id="cb172-19"><a href="summarizing-distributions-in-base-r.html#cb172-19" aria-hidden="true" tabindex="-1"></a>      <span class="dv">0</span>, <span class="co"># no distance to plot</span></span>
+<span id="cb172-20"><a href="summarizing-distributions-in-base-r.html#cb172-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="co">#smaller letters</span></span>
+<span id="cb172-21"><a href="summarizing-distributions-in-base-r.html#cb172-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">adj =</span> <span class="dv">0</span>) <span class="co">#at the left end of the axis</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-boxplot-nicerN-1.png" width="672" /></p>
+</div>
+<div id="adding-points-on-top" class="section level3" number="7.4.2">
+<h3><span class="header-section-number">7.4.2</span> Adding points on top</h3>
+<p>Now, we have a nice summary. However, it’s not visible whether the boxes
+are good approximations for the distribution of the data points. We can
+therefore add points to the boxes.</p>
+<div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb173-1"><a href="summarizing-distributions-in-base-r.html#cb173-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co">#different margins</span></span>
+<span id="cb173-2"><a href="summarizing-distributions-in-base-r.html#cb173-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">tcl=</span><span class="sc">-</span><span class="fl">0.3</span>, <span class="co">#shorter tick marks</span></span>
+<span id="cb173-3"><a href="summarizing-distributions-in-base-r.html#cb173-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mgp=</span><span class="fu">c</span>(<span class="fl">1.9</span>,<span class="fl">0.5</span>,<span class="dv">0</span>)) <span class="co">#move axis labels</span></span>
+<span id="cb173-4"><a href="summarizing-distributions-in-base-r.html#cb173-4" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(ChickWeight<span class="sc">$</span>weight <span class="sc">~</span> ChickWeight<span class="sc">$</span>Time,</span>
+<span id="cb173-5"><a href="summarizing-distributions-in-base-r.html#cb173-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">&quot;time point&quot;</span>,</span>
+<span id="cb173-6"><a href="summarizing-distributions-in-base-r.html#cb173-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;weight&quot;</span>,</span>
+<span id="cb173-7"><a href="summarizing-distributions-in-base-r.html#cb173-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">cex.axis=</span><span class="fl">0.8</span>, <span class="co">#smaller axis annotation</span></span>
+<span id="cb173-8"><a href="summarizing-distributions-in-base-r.html#cb173-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">pch=</span><span class="dv">16</span>, <span class="co">#filled symbols</span></span>
+<span id="cb173-9"><a href="summarizing-distributions-in-base-r.html#cb173-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">las=</span><span class="dv">1</span>) <span class="co">#all axis marks horizontal</span></span>
+<span id="cb173-10"><a href="summarizing-distributions-in-base-r.html#cb173-10" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="fu">as.numeric</span>(<span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Time)),<span class="co">#this uses the time like the boxplot does !</span></span>
+<span id="cb173-11"><a href="summarizing-distributions-in-base-r.html#cb173-11" aria-hidden="true" tabindex="-1"></a>  ChickWeight<span class="sc">$</span>weight, <span class="co">#the y-values</span></span>
+<span id="cb173-12"><a href="summarizing-distributions-in-base-r.html#cb173-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">cex=</span><span class="fl">0.6</span>, <span class="co">#make points a bit smaller</span></span>
+<span id="cb173-13"><a href="summarizing-distributions-in-base-r.html#cb173-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch=</span><span class="dv">16</span>) <span class="co">#fill points</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-boxplot-withPoints-1.png" width="672" /></p>
+<p>This is better, but the points are still overlapping. A simple way of
+dealing with that is to add a jitter. This is a random value which moves
+the points apart. We’re only applying it in x-direction (within a box),
+so the y-values are precise.</p>
+<div class="sourceCode" id="cb174"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb174-1"><a href="summarizing-distributions-in-base-r.html#cb174-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co">#different margins</span></span>
+<span id="cb174-2"><a href="summarizing-distributions-in-base-r.html#cb174-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">tcl=</span><span class="sc">-</span><span class="fl">0.3</span>, <span class="co">#shorter tick marks</span></span>
+<span id="cb174-3"><a href="summarizing-distributions-in-base-r.html#cb174-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mgp=</span><span class="fu">c</span>(<span class="fl">1.9</span>,<span class="fl">0.5</span>,<span class="dv">0</span>)) <span class="co">#move axis labels</span></span>
+<span id="cb174-4"><a href="summarizing-distributions-in-base-r.html#cb174-4" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(ChickWeight<span class="sc">$</span>weight <span class="sc">~</span> ChickWeight<span class="sc">$</span>Time,</span>
+<span id="cb174-5"><a href="summarizing-distributions-in-base-r.html#cb174-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">&quot;time point&quot;</span>,</span>
+<span id="cb174-6"><a href="summarizing-distributions-in-base-r.html#cb174-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;weight&quot;</span>,</span>
+<span id="cb174-7"><a href="summarizing-distributions-in-base-r.html#cb174-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">cex.axis=</span><span class="fl">0.8</span>, <span class="co">#smaller axis annotation</span></span>
+<span id="cb174-8"><a href="summarizing-distributions-in-base-r.html#cb174-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">pch=</span><span class="dv">16</span>, <span class="co">#filled symbols</span></span>
+<span id="cb174-9"><a href="summarizing-distributions-in-base-r.html#cb174-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">las=</span><span class="dv">1</span>, <span class="co">#all axis marks horizontal</span></span>
+<span id="cb174-10"><a href="summarizing-distributions-in-base-r.html#cb174-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">outline=</span>F) <span class="co">#don&#39;t plot outliers, because they are added later</span></span>
+<span id="cb174-11"><a href="summarizing-distributions-in-base-r.html#cb174-11" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="fu">jitter</span>(<span class="fu">as.numeric</span>(<span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Time)),<span class="at">amount =</span> <span class="fl">0.25</span>),<span class="co">#jitter added !</span></span>
+<span id="cb174-12"><a href="summarizing-distributions-in-base-r.html#cb174-12" aria-hidden="true" tabindex="-1"></a>  ChickWeight<span class="sc">$</span>weight, <span class="co">#the y-values</span></span>
+<span id="cb174-13"><a href="summarizing-distributions-in-base-r.html#cb174-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">cex=</span><span class="fl">0.6</span>, <span class="co">#make points a bit smaller</span></span>
+<span id="cb174-14"><a href="summarizing-distributions-in-base-r.html#cb174-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch=</span><span class="dv">16</span>) <span class="co">#fill points</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-boxplot-withJitter-1.png" width="672" /></p>
+<p>There are still some unfortunate collisions, but it’s much clearer.</p>
+<p>We can also sort the points to be more nicely arranged, but this is a
+bit more work. In the chunk below, we first define a function
+<code>smartJitter</code> which can do this in most situations.</p>
+<div class="sourceCode" id="cb175"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb175-1"><a href="summarizing-distributions-in-base-r.html#cb175-1" aria-hidden="true" tabindex="-1"></a>smartJitter <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">x=</span><span class="cn">NULL</span>,<span class="at">y=</span><span class="cn">NULL</span>,<span class="at">modelFrame=</span><span class="cn">NULL</span>,<span class="at">cex.point=</span><span class="fl">0.2</span>,<span class="at">boxwex=</span><span class="fl">0.8</span>){</span>
+<span id="cb175-2"><a href="summarizing-distributions-in-base-r.html#cb175-2" aria-hidden="true" tabindex="-1"></a>  pointheight <span class="ot">&lt;-</span> <span class="fu">abs</span>(<span class="fu">par</span>(<span class="st">&quot;usr&quot;</span>)[<span class="dv">4</span>]<span class="sc">-</span><span class="fu">par</span>(<span class="st">&quot;usr&quot;</span>)[<span class="dv">3</span>]) <span class="sc">/</span> ( <span class="fu">par</span>(<span class="st">&quot;pin&quot;</span>)[<span class="dv">2</span>]<span class="sc">*</span><span class="dv">72</span><span class="sc">/</span>(<span class="fu">par</span>(<span class="st">&quot;ps&quot;</span>)<span class="sc">*</span>cex.point) )</span>
+<span id="cb175-3"><a href="summarizing-distributions-in-base-r.html#cb175-3" aria-hidden="true" tabindex="-1"></a>  pointwidth <span class="ot">&lt;-</span> <span class="fu">abs</span>(<span class="fu">par</span>(<span class="st">&quot;usr&quot;</span>)[<span class="dv">2</span>]<span class="sc">-</span><span class="fu">par</span>(<span class="st">&quot;usr&quot;</span>)[<span class="dv">1</span>]) <span class="sc">/</span> ( <span class="fu">par</span>(<span class="st">&quot;pin&quot;</span>)[<span class="dv">1</span>]<span class="sc">*</span><span class="dv">72</span><span class="sc">/</span>(<span class="fu">par</span>(<span class="st">&quot;ps&quot;</span>)<span class="sc">*</span>cex.point) )</span>
+<span id="cb175-4"><a href="summarizing-distributions-in-base-r.html#cb175-4" aria-hidden="true" tabindex="-1"></a>  boxwidth <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="st">&quot;pin&quot;</span>)[<span class="dv">1</span>]<span class="sc">*</span><span class="dv">72</span><span class="sc">*</span>boxwex<span class="sc">/</span>(<span class="fu">par</span>(<span class="st">&quot;ps&quot;</span>)<span class="sc">*</span>cex.point) <span class="sc">/</span> <span class="fu">par</span>(<span class="st">&quot;xaxp&quot;</span>)[<span class="dv">2</span>]</span>
+<span id="cb175-5"><a href="summarizing-distributions-in-base-r.html#cb175-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(x) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.null</span>(y)){</span>
+<span id="cb175-6"><a href="summarizing-distributions-in-base-r.html#cb175-6" aria-hidden="true" tabindex="-1"></a>    dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="st">&quot;x&quot;</span><span class="ot">=</span>x,<span class="st">&quot;y&quot;</span><span class="ot">=</span>y,<span class="st">&quot;pos&quot;</span><span class="ot">=</span><span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(x),<span class="at">stringsAsFactors =</span> F)</span>
+<span id="cb175-7"><a href="summarizing-distributions-in-base-r.html#cb175-7" aria-hidden="true" tabindex="-1"></a>  }<span class="cf">else</span>{</span>
+<span id="cb175-8"><a href="summarizing-distributions-in-base-r.html#cb175-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(modelFrame)){</span>
+<span id="cb175-9"><a href="summarizing-distributions-in-base-r.html#cb175-9" aria-hidden="true" tabindex="-1"></a>      dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="st">&quot;x&quot;</span><span class="ot">=</span><span class="fu">as.numeric</span>(<span class="fu">as.factor</span>(modelFrame[,<span class="dv">2</span>])),</span>
+<span id="cb175-10"><a href="summarizing-distributions-in-base-r.html#cb175-10" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;y&quot;</span><span class="ot">=</span>modelFrame[,<span class="dv">1</span>],</span>
+<span id="cb175-11"><a href="summarizing-distributions-in-base-r.html#cb175-11" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;pos&quot;</span><span class="ot">=</span><span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(modelFrame),<span class="at">stringsAsFactors =</span> F)</span>
+<span id="cb175-12"><a href="summarizing-distributions-in-base-r.html#cb175-12" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb175-13"><a href="summarizing-distributions-in-base-r.html#cb175-13" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb175-14"><a href="summarizing-distributions-in-base-r.html#cb175-14" aria-hidden="true" tabindex="-1"></a>  datls <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(dat<span class="sc">$</span>y,<span class="fu">list</span>(dat<span class="sc">$</span>x),c,<span class="at">simplify =</span> F)<span class="sc">$</span>x</span>
+<span id="cb175-15"><a href="summarizing-distributions-in-base-r.html#cb175-15" aria-hidden="true" tabindex="-1"></a>  datps <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(dat<span class="sc">$</span>pos,<span class="fu">list</span>(dat<span class="sc">$</span>x),c,<span class="at">simplify =</span> F)<span class="sc">$</span>x</span>
+<span id="cb175-16"><a href="summarizing-distributions-in-base-r.html#cb175-16" aria-hidden="true" tabindex="-1"></a>  datl <span class="ot">&lt;-</span> <span class="fu">lapply</span>(datls,sort)</span>
+<span id="cb175-17"><a href="summarizing-distributions-in-base-r.html#cb175-17" aria-hidden="true" tabindex="-1"></a>  datr <span class="ot">&lt;-</span> <span class="fu">lapply</span>(datls,<span class="cf">function</span>(x) <span class="fu">rank</span>(x,<span class="at">ties.method =</span> <span class="st">&quot;last&quot;</span>))</span>
+<span id="cb175-18"><a href="summarizing-distributions-in-base-r.html#cb175-18" aria-hidden="true" tabindex="-1"></a>  dato <span class="ot">&lt;-</span> <span class="fu">lapply</span>(datls,order)</span>
+<span id="cb175-19"><a href="summarizing-distributions-in-base-r.html#cb175-19" aria-hidden="true" tabindex="-1"></a>  datops <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(dato), <span class="cf">function</span>(x) datps[[x]][dato[[x]]])</span>
+<span id="cb175-20"><a href="summarizing-distributions-in-base-r.html#cb175-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb175-21"><a href="summarizing-distributions-in-base-r.html#cb175-21" aria-hidden="true" tabindex="-1"></a>  binl <span class="ot">&lt;-</span> <span class="fu">lapply</span>(datl,</span>
+<span id="cb175-22"><a href="summarizing-distributions-in-base-r.html#cb175-22" aria-hidden="true" tabindex="-1"></a>                 <span class="cf">function</span>(x) <span class="fu">cut</span>(x,</span>
+<span id="cb175-23"><a href="summarizing-distributions-in-base-r.html#cb175-23" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">breaks=</span><span class="fu">max</span>(<span class="dv">2</span>,<span class="fu">round</span>(<span class="fu">abs</span>(<span class="fu">max</span>(x)<span class="sc">-</span><span class="fu">min</span>(x))<span class="sc">/</span>pointheight))))</span>
+<span id="cb175-24"><a href="summarizing-distributions-in-base-r.html#cb175-24" aria-hidden="true" tabindex="-1"></a>  xoffl <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">lapply</span>(binl,</span>
+<span id="cb175-25"><a href="summarizing-distributions-in-base-r.html#cb175-25" aria-hidden="true" tabindex="-1"></a>                         <span class="cf">function</span>(y){</span>
+<span id="cb175-26"><a href="summarizing-distributions-in-base-r.html#cb175-26" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">table</span>(y)[<span class="fu">table</span>(y)<span class="sc">&gt;</span><span class="dv">0</span>]</span>
+<span id="cb175-27"><a href="summarizing-distributions-in-base-r.html#cb175-27" aria-hidden="true" tabindex="-1"></a>                         }),</span>
+<span id="cb175-28"><a href="summarizing-distributions-in-base-r.html#cb175-28" aria-hidden="true" tabindex="-1"></a>                  <span class="cf">function</span>(x){</span>
+<span id="cb175-29"><a href="summarizing-distributions-in-base-r.html#cb175-29" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">unlist</span>(<span class="fu">sapply</span>(x,</span>
+<span id="cb175-30"><a href="summarizing-distributions-in-base-r.html#cb175-30" aria-hidden="true" tabindex="-1"></a>                                  <span class="cf">function</span>(z) {</span>
+<span id="cb175-31"><a href="summarizing-distributions-in-base-r.html#cb175-31" aria-hidden="true" tabindex="-1"></a>                                    <span class="fu">as.numeric</span>(<span class="fu">rbind</span>(<span class="fu">seq</span>(<span class="dv">0</span>,<span class="at">by=</span>pointwidth,<span class="at">length.out=</span>z<span class="sc">/</span><span class="dv">2</span>),</span>
+<span id="cb175-32"><a href="summarizing-distributions-in-base-r.html#cb175-32" aria-hidden="true" tabindex="-1"></a>                                                     <span class="sc">-</span><span class="fu">seq</span>(pointwidth,<span class="at">by=</span>pointwidth,</span>
+<span id="cb175-33"><a href="summarizing-distributions-in-base-r.html#cb175-33" aria-hidden="true" tabindex="-1"></a>                                                          <span class="at">length.out=</span>z<span class="sc">/</span><span class="dv">2</span>)))[<span class="dv">1</span><span class="sc">:</span>z]</span>
+<span id="cb175-34"><a href="summarizing-distributions-in-base-r.html#cb175-34" aria-hidden="true" tabindex="-1"></a>                                  }))})</span>
+<span id="cb175-35"><a href="summarizing-distributions-in-base-r.html#cb175-35" aria-hidden="true" tabindex="-1"></a>  xo <span class="ot">&lt;-</span> dat<span class="sc">$</span>x <span class="sc">+</span> <span class="fu">unlist</span>(xoffl)[<span class="fu">order</span>(<span class="fu">unlist</span>(datops))]</span>
+<span id="cb175-36"><a href="summarizing-distributions-in-base-r.html#cb175-36" aria-hidden="true" tabindex="-1"></a>  yo <span class="ot">&lt;-</span> <span class="fu">unlist</span>(datl)[<span class="fu">order</span>(<span class="fu">unlist</span>(datops))]</span>
+<span id="cb175-37"><a href="summarizing-distributions-in-base-r.html#cb175-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(xo,yo)</span>
+<span id="cb175-38"><a href="summarizing-distributions-in-base-r.html#cb175-38" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb175-39"><a href="summarizing-distributions-in-base-r.html#cb175-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb175-40"><a href="summarizing-distributions-in-base-r.html#cb175-40" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co">#different margins</span></span>
+<span id="cb175-41"><a href="summarizing-distributions-in-base-r.html#cb175-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">tcl=</span><span class="sc">-</span><span class="fl">0.3</span>, <span class="co">#shorter tick marks</span></span>
+<span id="cb175-42"><a href="summarizing-distributions-in-base-r.html#cb175-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">mgp=</span><span class="fu">c</span>(<span class="fl">1.9</span>,<span class="fl">0.5</span>,<span class="dv">0</span>))<span class="co">#move axis labels</span></span>
+<span id="cb175-43"><a href="summarizing-distributions-in-base-r.html#cb175-43" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(ChickWeight<span class="sc">$</span>weight <span class="sc">~</span> ChickWeight<span class="sc">$</span>Time,</span>
+<span id="cb175-44"><a href="summarizing-distributions-in-base-r.html#cb175-44" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">&quot;time point&quot;</span>,</span>
+<span id="cb175-45"><a href="summarizing-distributions-in-base-r.html#cb175-45" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;weight&quot;</span>,</span>
+<span id="cb175-46"><a href="summarizing-distributions-in-base-r.html#cb175-46" aria-hidden="true" tabindex="-1"></a>        <span class="at">cex.axis=</span><span class="fl">0.8</span>, <span class="co">#smaller axis annotation</span></span>
+<span id="cb175-47"><a href="summarizing-distributions-in-base-r.html#cb175-47" aria-hidden="true" tabindex="-1"></a>        <span class="at">pch=</span><span class="dv">16</span>, <span class="co">#filled symbols</span></span>
+<span id="cb175-48"><a href="summarizing-distributions-in-base-r.html#cb175-48" aria-hidden="true" tabindex="-1"></a>        <span class="at">las=</span><span class="dv">1</span>, <span class="co">#all axis marks horizontal</span></span>
+<span id="cb175-49"><a href="summarizing-distributions-in-base-r.html#cb175-49" aria-hidden="true" tabindex="-1"></a>        <span class="at">outline=</span>F) <span class="co">#don&#39;t plot outliers, because they are added later</span></span>
+<span id="cb175-50"><a href="summarizing-distributions-in-base-r.html#cb175-50" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="fu">smartJitter</span>(<span class="at">modelFrame=</span><span class="fu">model.frame</span>(ChickWeight<span class="sc">$</span>weight <span class="sc">~</span> ChickWeight<span class="sc">$</span>Time)),<span class="co"># swarms added!</span></span>
+<span id="cb175-51"><a href="summarizing-distributions-in-base-r.html#cb175-51" aria-hidden="true" tabindex="-1"></a>  <span class="at">cex=</span><span class="fl">0.45</span>, <span class="co">#make points a bit smaller</span></span>
+<span id="cb175-52"><a href="summarizing-distributions-in-base-r.html#cb175-52" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch=</span><span class="dv">16</span>) <span class="co">#fill points</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-boxplot-withSwarms-1.png" width="672" /></p>
+<p>Because the points are very close together at the early time points,
+they overlap with each other, but overall this is quite clean.</p>
+<p>Now, finally, we could add back the colours of the experimental groups.</p>
+<div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb176-1"><a href="summarizing-distributions-in-base-r.html#cb176-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co">#different margins</span></span>
+<span id="cb176-2"><a href="summarizing-distributions-in-base-r.html#cb176-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">tcl=</span><span class="sc">-</span><span class="fl">0.3</span>, <span class="co">#shorter tick marks</span></span>
+<span id="cb176-3"><a href="summarizing-distributions-in-base-r.html#cb176-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mgp=</span><span class="fu">c</span>(<span class="fl">1.9</span>,<span class="fl">0.5</span>,<span class="dv">0</span>))<span class="co">#move axis labels</span></span>
+<span id="cb176-4"><a href="summarizing-distributions-in-base-r.html#cb176-4" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(ChickWeight<span class="sc">$</span>weight <span class="sc">~</span> ChickWeight<span class="sc">$</span>Time,</span>
+<span id="cb176-5"><a href="summarizing-distributions-in-base-r.html#cb176-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">&quot;time point&quot;</span>,</span>
+<span id="cb176-6"><a href="summarizing-distributions-in-base-r.html#cb176-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;weight&quot;</span>,</span>
+<span id="cb176-7"><a href="summarizing-distributions-in-base-r.html#cb176-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">cex.axis=</span><span class="fl">0.8</span>, <span class="co">#smaller axis annotation</span></span>
+<span id="cb176-8"><a href="summarizing-distributions-in-base-r.html#cb176-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">pch=</span><span class="dv">16</span>, <span class="co">#filled symbols</span></span>
+<span id="cb176-9"><a href="summarizing-distributions-in-base-r.html#cb176-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">las=</span><span class="dv">1</span>, <span class="co">#all axis marks horizontal</span></span>
+<span id="cb176-10"><a href="summarizing-distributions-in-base-r.html#cb176-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">outline=</span>F) <span class="co">#don&#39;t plot outliers, because they are added later</span></span>
+<span id="cb176-11"><a href="summarizing-distributions-in-base-r.html#cb176-11" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="fu">smartJitter</span>(<span class="at">modelFrame=</span><span class="fu">model.frame</span>(ChickWeight<span class="sc">$</span>weight <span class="sc">~</span> ChickWeight<span class="sc">$</span>Time)),<span class="co">#jitter added</span></span>
+<span id="cb176-12"><a href="summarizing-distributions-in-base-r.html#cb176-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">cex=</span><span class="fl">0.45</span>, <span class="co">#make points a bit smaller</span></span>
+<span id="cb176-13"><a href="summarizing-distributions-in-base-r.html#cb176-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch=</span><span class="dv">16</span>,<span class="co">#fill points</span></span>
+<span id="cb176-14"><a href="summarizing-distributions-in-base-r.html#cb176-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">col=</span><span class="fu">brewer.pal</span>(<span class="dv">4</span>,<span class="st">&quot;Dark2&quot;</span>)[<span class="fu">as.numeric</span>(<span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Diet))]) <span class="co">#color by diet!</span></span>
+<span id="cb176-15"><a href="summarizing-distributions-in-base-r.html#cb176-15" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topleft&quot;</span>, <span class="co">#legend!, position</span></span>
+<span id="cb176-16"><a href="summarizing-distributions-in-base-r.html#cb176-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">levels</span>(<span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Diet)), <span class="co">#names of diet</span></span>
+<span id="cb176-17"><a href="summarizing-distributions-in-base-r.html#cb176-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">pch=</span><span class="dv">16</span>, <span class="co">#filled points like plot</span></span>
+<span id="cb176-18"><a href="summarizing-distributions-in-base-r.html#cb176-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">pt.cex =</span> <span class="fl">0.45</span>,</span>
+<span id="cb176-19"><a href="summarizing-distributions-in-base-r.html#cb176-19" aria-hidden="true" tabindex="-1"></a>       <span class="at">col=</span><span class="fu">brewer.pal</span>(<span class="dv">4</span>,<span class="st">&quot;Dark2&quot;</span>), <span class="co">#colours like plot</span></span>
+<span id="cb176-20"><a href="summarizing-distributions-in-base-r.html#cb176-20" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;diet&quot;</span>, <span class="co">#legend title</span></span>
+<span id="cb176-21"><a href="summarizing-distributions-in-base-r.html#cb176-21" aria-hidden="true" tabindex="-1"></a>       <span class="at">bty=</span><span class="st">&quot;n&quot;</span>) <span class="co">#no box around legend</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-boxplot-withSwarmsColours-1.png" width="672" /></p>
+</div>
+<div id="adding-lines-between-points" class="section level3" number="7.4.3">
+<h3><span class="header-section-number">7.4.3</span> Adding lines between points</h3>
+<p>The colours above already help with seeing the different trends in the
+diet treatments. We could also aid our audience with some lines. For
+this, we need to draw one set of lines per chick through all time
+points.</p>
+<div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb177-1"><a href="summarizing-distributions-in-base-r.html#cb177-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co">#different margins</span></span>
+<span id="cb177-2"><a href="summarizing-distributions-in-base-r.html#cb177-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">tcl=</span><span class="sc">-</span><span class="fl">0.3</span>, <span class="co">#shorter tick marks</span></span>
+<span id="cb177-3"><a href="summarizing-distributions-in-base-r.html#cb177-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mgp=</span><span class="fu">c</span>(<span class="fl">1.9</span>,<span class="fl">0.5</span>,<span class="dv">0</span>))<span class="co">#move axis labels</span></span>
+<span id="cb177-4"><a href="summarizing-distributions-in-base-r.html#cb177-4" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(ChickWeight<span class="sc">$</span>weight <span class="sc">~</span> ChickWeight<span class="sc">$</span>Time,</span>
+<span id="cb177-5"><a href="summarizing-distributions-in-base-r.html#cb177-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">&quot;time point&quot;</span>,</span>
+<span id="cb177-6"><a href="summarizing-distributions-in-base-r.html#cb177-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;weight&quot;</span>,</span>
+<span id="cb177-7"><a href="summarizing-distributions-in-base-r.html#cb177-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">cex.axis=</span><span class="fl">0.8</span>, <span class="co">#smaller axis annotation</span></span>
+<span id="cb177-8"><a href="summarizing-distributions-in-base-r.html#cb177-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">pch=</span><span class="dv">16</span>, <span class="co">#filled symbols</span></span>
+<span id="cb177-9"><a href="summarizing-distributions-in-base-r.html#cb177-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">las=</span><span class="dv">1</span>, <span class="co">#all axis marks horizontal</span></span>
+<span id="cb177-10"><a href="summarizing-distributions-in-base-r.html#cb177-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">outline=</span>F) <span class="co">#don&#39;t plot outliers, because they are added later</span></span>
+<span id="cb177-11"><a href="summarizing-distributions-in-base-r.html#cb177-11" aria-hidden="true" tabindex="-1"></a><span class="co">#lines:!</span></span>
+<span id="cb177-12"><a href="summarizing-distributions-in-base-r.html#cb177-12" aria-hidden="true" tabindex="-1"></a>quiet <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="fu">unique</span>(ChickWeight<span class="sc">$</span>Chick), <span class="co">#the quiet is a dirty trick to suppress console output</span></span>
+<span id="cb177-13"><a href="summarizing-distributions-in-base-r.html#cb177-13" aria-hidden="true" tabindex="-1"></a>       <span class="cf">function</span>(chick){ <span class="co">#per chcick, do</span></span>
+<span id="cb177-14"><a href="summarizing-distributions-in-base-r.html#cb177-14" aria-hidden="true" tabindex="-1"></a>         chickdiet <span class="ot">&lt;-</span> <span class="fu">unique</span>(<span class="fu">as.numeric</span>(<span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Diet))[ChickWeight<span class="sc">$</span>Chick<span class="sc">==</span>chick]) <span class="co">#which diet did our chick have?</span></span>
+<span id="cb177-15"><a href="summarizing-distributions-in-base-r.html#cb177-15" aria-hidden="true" tabindex="-1"></a>         <span class="fu">lines</span>(<span class="at">x =</span> <span class="fu">as.numeric</span>(<span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Time))[ChickWeight<span class="sc">$</span>Chick<span class="sc">==</span>chick], <span class="co">#time points for this chick</span></span>
+<span id="cb177-16"><a href="summarizing-distributions-in-base-r.html#cb177-16" aria-hidden="true" tabindex="-1"></a>               <span class="at">y =</span> ChickWeight<span class="sc">$</span>weight[ChickWeight<span class="sc">$</span>Chick<span class="sc">==</span>chick], <span class="co">#weights </span></span>
+<span id="cb177-17"><a href="summarizing-distributions-in-base-r.html#cb177-17" aria-hidden="true" tabindex="-1"></a>               <span class="at">lty=</span><span class="dv">1</span>, <span class="at">lwd=</span><span class="fl">0.3</span>, <span class="co">#thin lines</span></span>
+<span id="cb177-18"><a href="summarizing-distributions-in-base-r.html#cb177-18" aria-hidden="true" tabindex="-1"></a>               <span class="at">col=</span><span class="fu">brewer.pal</span>(<span class="dv">4</span>,<span class="st">&quot;Dark2&quot;</span>)[chickdiet]) <span class="co">#colour by diet</span></span>
+<span id="cb177-19"><a href="summarizing-distributions-in-base-r.html#cb177-19" aria-hidden="true" tabindex="-1"></a>       })</span>
+<span id="cb177-20"><a href="summarizing-distributions-in-base-r.html#cb177-20" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="fu">smartJitter</span>(<span class="at">modelFrame=</span><span class="fu">model.frame</span>(ChickWeight<span class="sc">$</span>weight <span class="sc">~</span> ChickWeight<span class="sc">$</span>Time)),<span class="co">#jitter added</span></span>
+<span id="cb177-21"><a href="summarizing-distributions-in-base-r.html#cb177-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">cex=</span><span class="fl">0.45</span>, <span class="co">#make points a bit smaller</span></span>
+<span id="cb177-22"><a href="summarizing-distributions-in-base-r.html#cb177-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch=</span><span class="dv">16</span>,<span class="co">#fill points</span></span>
+<span id="cb177-23"><a href="summarizing-distributions-in-base-r.html#cb177-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">col=</span><span class="fu">brewer.pal</span>(<span class="dv">4</span>,<span class="st">&quot;Dark2&quot;</span>)[<span class="fu">as.numeric</span>(<span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Diet))]) <span class="co">#color by diet</span></span>
+<span id="cb177-24"><a href="summarizing-distributions-in-base-r.html#cb177-24" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topleft&quot;</span>, <span class="co">#legend, position</span></span>
+<span id="cb177-25"><a href="summarizing-distributions-in-base-r.html#cb177-25" aria-hidden="true" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">levels</span>(<span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Diet)), <span class="co">#names of diet</span></span>
+<span id="cb177-26"><a href="summarizing-distributions-in-base-r.html#cb177-26" aria-hidden="true" tabindex="-1"></a>       <span class="at">pch=</span><span class="dv">16</span>, <span class="co">#filled points like plot</span></span>
+<span id="cb177-27"><a href="summarizing-distributions-in-base-r.html#cb177-27" aria-hidden="true" tabindex="-1"></a>       <span class="at">pt.cex =</span> <span class="fl">0.45</span>,</span>
+<span id="cb177-28"><a href="summarizing-distributions-in-base-r.html#cb177-28" aria-hidden="true" tabindex="-1"></a>       <span class="at">col=</span><span class="fu">brewer.pal</span>(<span class="dv">4</span>,<span class="st">&quot;Dark2&quot;</span>), <span class="co">#colours like plot</span></span>
+<span id="cb177-29"><a href="summarizing-distributions-in-base-r.html#cb177-29" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;diet&quot;</span>, <span class="co">#legend title</span></span>
+<span id="cb177-30"><a href="summarizing-distributions-in-base-r.html#cb177-30" aria-hidden="true" tabindex="-1"></a>       <span class="at">bty=</span><span class="st">&quot;n&quot;</span>) <span class="co">#no box around legend</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-boxplot-withSwarmsColoursAndLines-1.png" width="672" /></p>
+</div>
+<div id="half-boxes" class="section level3" number="7.4.4">
+<h3><span class="header-section-number">7.4.4</span> Half-boxes</h3>
+<p>In the previous examples, we split our data by one factor (time point)
+to make boxes. Sometimes, there is more than one factor of interest. For
+example, we could want to make one set of boxes for chicken with control
+diet (diet 1) and another set for the other diets.</p>
+<div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb178-1"><a href="summarizing-distributions-in-base-r.html#cb178-1" aria-hidden="true" tabindex="-1"></a><span class="co">#add a column saying whether we have the control or treatment</span></span>
+<span id="cb178-2"><a href="summarizing-distributions-in-base-r.html#cb178-2" aria-hidden="true" tabindex="-1"></a>ChickWeight<span class="sc">$</span>Treat <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="at">test =</span> ChickWeight<span class="sc">$</span>Diet <span class="sc">==</span> <span class="dv">1</span>, <span class="co">#assign a new vector, depending on whether diet is 1</span></span>
+<span id="cb178-3"><a href="summarizing-distributions-in-base-r.html#cb178-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">yes =</span> <span class="st">&quot;1&quot;</span>, <span class="co">#if yes, use 1</span></span>
+<span id="cb178-4"><a href="summarizing-distributions-in-base-r.html#cb178-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">no =</span> <span class="st">&quot;2-3-4&quot;</span>) <span class="co">#else, use 2-3-4</span></span></code></pre></div>
+<p>We can then use both the treatment and the time factor for plotting:</p>
+<div class="sourceCode" id="cb179"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb179-1"><a href="summarizing-distributions-in-base-r.html#cb179-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">3</span>,<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co">#different margins</span></span>
+<span id="cb179-2"><a href="summarizing-distributions-in-base-r.html#cb179-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">tcl=</span><span class="sc">-</span><span class="fl">0.3</span>, <span class="co">#shorter tick marks</span></span>
+<span id="cb179-3"><a href="summarizing-distributions-in-base-r.html#cb179-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mgp=</span><span class="fu">c</span>(<span class="fl">1.9</span>,<span class="fl">0.5</span>,<span class="dv">0</span>))<span class="co">#move axis labels</span></span>
+<span id="cb179-4"><a href="summarizing-distributions-in-base-r.html#cb179-4" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(ChickWeight<span class="sc">$</span>weight <span class="sc">~</span> ChickWeight<span class="sc">$</span>Treat <span class="sc">+</span> ChickWeight<span class="sc">$</span>Time, <span class="co">#both factors!</span></span>
+<span id="cb179-5"><a href="summarizing-distributions-in-base-r.html#cb179-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="co">#no x-axis label because the axis marks are too long</span></span>
+<span id="cb179-6"><a href="summarizing-distributions-in-base-r.html#cb179-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;weight&quot;</span>,</span>
+<span id="cb179-7"><a href="summarizing-distributions-in-base-r.html#cb179-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">cex.axis=</span><span class="fl">0.8</span>, <span class="co">#smaller axis annotation</span></span>
+<span id="cb179-8"><a href="summarizing-distributions-in-base-r.html#cb179-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">pch=</span><span class="dv">16</span>, <span class="co">#filled symbols</span></span>
+<span id="cb179-9"><a href="summarizing-distributions-in-base-r.html#cb179-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">las=</span><span class="dv">2</span>) <span class="co">#all axis marks orthogonal to the axis!</span></span>
+<span id="cb179-10"><a href="summarizing-distributions-in-base-r.html#cb179-10" aria-hidden="true" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">&quot;diet . timepoint&quot;</span>, <span class="co">#add axis label manually!</span></span>
+<span id="cb179-11"><a href="summarizing-distributions-in-base-r.html#cb179-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">side =</span> <span class="dv">1</span>, <span class="co">#to x-axis</span></span>
+<span id="cb179-12"><a href="summarizing-distributions-in-base-r.html#cb179-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">line =</span> <span class="fl">3.8</span>)  <span class="co"># a bit away</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-boxplot-twoFactors-1.png" width="672" /></p>
+<p>Here is a good moment to mention that you can also manipulate the width
+of the boxes, e.g. to indicate different group sizes:</p>
+<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="summarizing-distributions-in-base-r.html#cb180-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">3</span>,<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co">#different margins</span></span>
+<span id="cb180-2"><a href="summarizing-distributions-in-base-r.html#cb180-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">tcl=</span><span class="sc">-</span><span class="fl">0.3</span>, <span class="co">#shorter tick marks</span></span>
+<span id="cb180-3"><a href="summarizing-distributions-in-base-r.html#cb180-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mgp=</span><span class="fu">c</span>(<span class="fl">1.9</span>,<span class="fl">0.5</span>,<span class="dv">0</span>))<span class="co">#move axis labels</span></span>
+<span id="cb180-4"><a href="summarizing-distributions-in-base-r.html#cb180-4" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(ChickWeight<span class="sc">$</span>weight <span class="sc">~</span> ChickWeight<span class="sc">$</span>Treat <span class="sc">+</span> ChickWeight<span class="sc">$</span>Time,</span>
+<span id="cb180-5"><a href="summarizing-distributions-in-base-r.html#cb180-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb180-6"><a href="summarizing-distributions-in-base-r.html#cb180-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;weight&quot;</span>,</span>
+<span id="cb180-7"><a href="summarizing-distributions-in-base-r.html#cb180-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">cex.axis=</span><span class="fl">0.8</span>, <span class="co">#smaller axis annotation</span></span>
+<span id="cb180-8"><a href="summarizing-distributions-in-base-r.html#cb180-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">pch=</span><span class="dv">16</span>, <span class="co">#filled symbols</span></span>
+<span id="cb180-9"><a href="summarizing-distributions-in-base-r.html#cb180-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">las=</span><span class="dv">2</span>,<span class="co">#all axis marks orthogonal to the axis</span></span>
+<span id="cb180-10"><a href="summarizing-distributions-in-base-r.html#cb180-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">varwidth=</span>T) <span class="co">#box widths are proportional to square root of number of data points</span></span>
+<span id="cb180-11"><a href="summarizing-distributions-in-base-r.html#cb180-11" aria-hidden="true" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">&quot;diet . timepoint&quot;</span>,<span class="at">side =</span> <span class="dv">1</span>,<span class="at">line =</span> <span class="fl">3.8</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-boxplot-twoFactors-width-1.png" width="672" /></p>
+<p>Another option is to split the boxes per time point. This is not a
+standard R function, but can be done by slightly changing the standard
+boxplot function. This happens in the next chunk - the code is long, so
+it will not be reproduced in the knitted document.</p>
+<p>We plot both halves using information from the boxplot function:</p>
+<div class="sourceCode" id="cb181"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb181-1"><a href="summarizing-distributions-in-base-r.html#cb181-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co">#different margins</span></span>
+<span id="cb181-2"><a href="summarizing-distributions-in-base-r.html#cb181-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">tcl=</span><span class="sc">-</span><span class="fl">0.3</span>, <span class="co">#shorter tick marks</span></span>
+<span id="cb181-3"><a href="summarizing-distributions-in-base-r.html#cb181-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mgp=</span><span class="fu">c</span>(<span class="fl">1.9</span>,<span class="fl">0.5</span>,<span class="dv">0</span>))<span class="co">#move axis labels</span></span>
+<span id="cb181-4"><a href="summarizing-distributions-in-base-r.html#cb181-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb181-5"><a href="summarizing-distributions-in-base-r.html#cb181-5" aria-hidden="true" tabindex="-1"></a><span class="co">#left half of the boxes:</span></span>
+<span id="cb181-6"><a href="summarizing-distributions-in-base-r.html#cb181-6" aria-hidden="true" tabindex="-1"></a><span class="fu">bxpL</span>(<span class="fu">boxplot</span>(ChickWeight<span class="sc">$</span>weight[ChickWeight<span class="sc">$</span>Treat<span class="sc">==</span><span class="st">&quot;1&quot;</span>] <span class="sc">~</span> ChickWeight<span class="sc">$</span>Time[ChickWeight<span class="sc">$</span>Treat<span class="sc">==</span><span class="st">&quot;1&quot;</span>],</span>
+<span id="cb181-7"><a href="summarizing-distributions-in-base-r.html#cb181-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">plot=</span>F), <span class="co">#plot only diet 1</span></span>
+<span id="cb181-8"><a href="summarizing-distributions-in-base-r.html#cb181-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim=</span><span class="fu">c</span>(<span class="fu">min</span>(ChickWeight<span class="sc">$</span>weight),<span class="fu">max</span>(ChickWeight<span class="sc">$</span>weight)), <span class="co">#overall y-axis range </span></span>
+<span id="cb181-9"><a href="summarizing-distributions-in-base-r.html#cb181-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">whisklty=</span><span class="st">&quot;solid&quot;</span>, <span class="co">#whiskers</span></span>
+<span id="cb181-10"><a href="summarizing-distributions-in-base-r.html#cb181-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">axes=</span>F, <span class="co">#no axes (we add them later)</span></span>
+<span id="cb181-11"><a href="summarizing-distributions-in-base-r.html#cb181-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">&quot;time point&quot;</span>, <span class="co">#x axis label</span></span>
+<span id="cb181-12"><a href="summarizing-distributions-in-base-r.html#cb181-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span><span class="st">&quot;weight&quot;</span>,<span class="co">#y axis label</span></span>
+<span id="cb181-13"><a href="summarizing-distributions-in-base-r.html#cb181-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">bgcol=</span><span class="st">&quot;white&quot;</span>,<span class="co">#white box</span></span>
+<span id="cb181-14"><a href="summarizing-distributions-in-base-r.html#cb181-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">border=</span><span class="fu">brewer.pal</span>(<span class="dv">4</span>,<span class="st">&quot;Dark2&quot;</span>)[<span class="dv">1</span>], <span class="co">#green box</span></span>
+<span id="cb181-15"><a href="summarizing-distributions-in-base-r.html#cb181-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch=</span><span class="dv">16</span>, <span class="co">#filled outliers</span></span>
+<span id="cb181-16"><a href="summarizing-distributions-in-base-r.html#cb181-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">cex=</span><span class="fl">0.7</span>)  <span class="co">#slightly smaller points</span></span>
+<span id="cb181-17"><a href="summarizing-distributions-in-base-r.html#cb181-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb181-18"><a href="summarizing-distributions-in-base-r.html#cb181-18" aria-hidden="true" tabindex="-1"></a><span class="co">#right half of the boxes:</span></span>
+<span id="cb181-19"><a href="summarizing-distributions-in-base-r.html#cb181-19" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">new=</span>T) <span class="co">#to prevent starting a new plot</span></span>
+<span id="cb181-20"><a href="summarizing-distributions-in-base-r.html#cb181-20" aria-hidden="true" tabindex="-1"></a><span class="fu">bxpR</span>(<span class="fu">boxplot</span>(ChickWeight<span class="sc">$</span>weight[ChickWeight<span class="sc">$</span>Treat<span class="sc">!=</span><span class="st">&quot;1&quot;</span>] <span class="sc">~</span> ChickWeight<span class="sc">$</span>Time[ChickWeight<span class="sc">$</span>Treat<span class="sc">!=</span><span class="st">&quot;1&quot;</span>],</span>
+<span id="cb181-21"><a href="summarizing-distributions-in-base-r.html#cb181-21" aria-hidden="true" tabindex="-1"></a>             <span class="at">plot=</span>F), <span class="co">#plot the non-control diets</span></span>
+<span id="cb181-22"><a href="summarizing-distributions-in-base-r.html#cb181-22" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim=</span><span class="fu">c</span>(<span class="fu">min</span>(ChickWeight<span class="sc">$</span>weight),<span class="fu">max</span>(ChickWeight<span class="sc">$</span>weight)),<span class="co">#overall y-axis range same as above</span></span>
+<span id="cb181-23"><a href="summarizing-distributions-in-base-r.html#cb181-23" aria-hidden="true" tabindex="-1"></a>     <span class="at">whisklty=</span><span class="st">&quot;solid&quot;</span>,<span class="co">#whiskers</span></span>
+<span id="cb181-24"><a href="summarizing-distributions-in-base-r.html#cb181-24" aria-hidden="true" tabindex="-1"></a>     <span class="at">axes=</span>F, <span class="co">#no axes</span></span>
+<span id="cb181-25"><a href="summarizing-distributions-in-base-r.html#cb181-25" aria-hidden="true" tabindex="-1"></a>     <span class="at">bgcol=</span><span class="st">&quot;grey80&quot;</span>, <span class="co">#grey box</span></span>
+<span id="cb181-26"><a href="summarizing-distributions-in-base-r.html#cb181-26" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch=</span><span class="dv">16</span>, <span class="co">#filled outliers</span></span>
+<span id="cb181-27"><a href="summarizing-distributions-in-base-r.html#cb181-27" aria-hidden="true" tabindex="-1"></a>     <span class="at">cex=</span><span class="fl">0.7</span>)  <span class="co">#slightly smaller points</span></span>
+<span id="cb181-28"><a href="summarizing-distributions-in-base-r.html#cb181-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb181-29"><a href="summarizing-distributions-in-base-r.html#cb181-29" aria-hidden="true" tabindex="-1"></a><span class="co">#everything around:</span></span>
+<span id="cb181-30"><a href="summarizing-distributions-in-base-r.html#cb181-30" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="co">#x-axis</span></span>
+<span id="cb181-31"><a href="summarizing-distributions-in-base-r.html#cb181-31" aria-hidden="true" tabindex="-1"></a>     <span class="at">at=</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(<span class="fu">levels</span>(<span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Time)))), <span class="co">#in the middle of the boxes</span></span>
+<span id="cb181-32"><a href="summarizing-distributions-in-base-r.html#cb181-32" aria-hidden="true" tabindex="-1"></a>     <span class="at">lab=</span><span class="fu">levels</span>(<span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Time)), <span class="co">#with labels from timepoints</span></span>
+<span id="cb181-33"><a href="summarizing-distributions-in-base-r.html#cb181-33" aria-hidden="true" tabindex="-1"></a>     <span class="at">las=</span><span class="dv">1</span>, <span class="co">#horizontal letters</span></span>
+<span id="cb181-34"><a href="summarizing-distributions-in-base-r.html#cb181-34" aria-hidden="true" tabindex="-1"></a>     <span class="at">lwd=</span><span class="dv">0</span>, <span class="co">#no ticks</span></span>
+<span id="cb181-35"><a href="summarizing-distributions-in-base-r.html#cb181-35" aria-hidden="true" tabindex="-1"></a>     <span class="at">cex.axis=</span><span class="fl">0.8</span>) <span class="co">#slightly smaller letters</span></span>
+<span id="cb181-36"><a href="summarizing-distributions-in-base-r.html#cb181-36" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>, <span class="co">#y-axis</span></span>
+<span id="cb181-37"><a href="summarizing-distributions-in-base-r.html#cb181-37" aria-hidden="true" tabindex="-1"></a>     <span class="at">las=</span><span class="dv">1</span>, <span class="co">#horizontal letters</span></span>
+<span id="cb181-38"><a href="summarizing-distributions-in-base-r.html#cb181-38" aria-hidden="true" tabindex="-1"></a>     <span class="at">cex.axis=</span><span class="fl">0.8</span>) <span class="co">#slightly smaller letters</span></span>
+<span id="cb181-39"><a href="summarizing-distributions-in-base-r.html#cb181-39" aria-hidden="true" tabindex="-1"></a><span class="fu">box</span>(<span class="at">lwd=</span><span class="dv">1</span>) <span class="co">#frame around the plot</span></span>
+<span id="cb181-40"><a href="summarizing-distributions-in-base-r.html#cb181-40" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topleft&quot;</span>, <span class="co">#legend</span></span>
+<span id="cb181-41"><a href="summarizing-distributions-in-base-r.html#cb181-41" aria-hidden="true" tabindex="-1"></a>       <span class="at">legend=</span><span class="fu">c</span>(<span class="st">&quot;1&quot;</span>,<span class="st">&quot;2,3,4&quot;</span>), <span class="co">#words</span></span>
+<span id="cb181-42"><a href="summarizing-distributions-in-base-r.html#cb181-42" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;diet&quot;</span>, <span class="co">#title</span></span>
+<span id="cb181-43"><a href="summarizing-distributions-in-base-r.html#cb181-43" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill=</span><span class="fu">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;grey80&quot;</span>),<span class="co">#colours from boxes</span></span>
+<span id="cb181-44"><a href="summarizing-distributions-in-base-r.html#cb181-44" aria-hidden="true" tabindex="-1"></a>       <span class="at">border =</span> <span class="fu">c</span>(<span class="fu">brewer.pal</span>(<span class="dv">4</span>,<span class="st">&quot;Dark2&quot;</span>)[<span class="dv">1</span>],<span class="st">&quot;black&quot;</span>), <span class="co">#box colours</span></span>
+<span id="cb181-45"><a href="summarizing-distributions-in-base-r.html#cb181-45" aria-hidden="true" tabindex="-1"></a>       <span class="at">bty=</span><span class="st">&quot;n&quot;</span>)  <span class="co">#no box</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/05halfboxes-1.png" width="672" /></p>
+<p>We can also add the points and lines as before:</p>
+<div class="sourceCode" id="cb182"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb182-1"><a href="summarizing-distributions-in-base-r.html#cb182-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co">#different margins</span></span>
+<span id="cb182-2"><a href="summarizing-distributions-in-base-r.html#cb182-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">tcl=</span><span class="sc">-</span><span class="fl">0.3</span>, <span class="co">#shorter tick marks</span></span>
+<span id="cb182-3"><a href="summarizing-distributions-in-base-r.html#cb182-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mgp=</span><span class="fu">c</span>(<span class="fl">1.9</span>,<span class="fl">0.5</span>,<span class="dv">0</span>))<span class="co">#move axis labels</span></span>
+<span id="cb182-4"><a href="summarizing-distributions-in-base-r.html#cb182-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb182-5"><a href="summarizing-distributions-in-base-r.html#cb182-5" aria-hidden="true" tabindex="-1"></a><span class="co">#left half of the boxes:</span></span>
+<span id="cb182-6"><a href="summarizing-distributions-in-base-r.html#cb182-6" aria-hidden="true" tabindex="-1"></a><span class="fu">bxpL</span>(<span class="fu">boxplot</span>(ChickWeight<span class="sc">$</span>weight[ChickWeight<span class="sc">$</span>Treat<span class="sc">==</span><span class="st">&quot;1&quot;</span>] <span class="sc">~</span> ChickWeight<span class="sc">$</span>Time[ChickWeight<span class="sc">$</span>Treat<span class="sc">==</span><span class="st">&quot;1&quot;</span>],</span>
+<span id="cb182-7"><a href="summarizing-distributions-in-base-r.html#cb182-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">plot=</span>F), <span class="co">#plot only diet 1</span></span>
+<span id="cb182-8"><a href="summarizing-distributions-in-base-r.html#cb182-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">outline=</span>F, <span class="co">#no outliers (we add them later)</span></span>
+<span id="cb182-9"><a href="summarizing-distributions-in-base-r.html#cb182-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim=</span><span class="fu">c</span>(<span class="fu">min</span>(ChickWeight<span class="sc">$</span>weight),<span class="fu">max</span>(ChickWeight<span class="sc">$</span>weight)), <span class="co">#overall y-axis range </span></span>
+<span id="cb182-10"><a href="summarizing-distributions-in-base-r.html#cb182-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">whisklty=</span><span class="st">&quot;solid&quot;</span>, <span class="co">#whiskers</span></span>
+<span id="cb182-11"><a href="summarizing-distributions-in-base-r.html#cb182-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">axes=</span>F, <span class="co">#no axes (we add them later)</span></span>
+<span id="cb182-12"><a href="summarizing-distributions-in-base-r.html#cb182-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">&quot;time point&quot;</span>, <span class="co">#x axis label</span></span>
+<span id="cb182-13"><a href="summarizing-distributions-in-base-r.html#cb182-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span><span class="st">&quot;weight&quot;</span>,<span class="co">#y axis label</span></span>
+<span id="cb182-14"><a href="summarizing-distributions-in-base-r.html#cb182-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">bgcol=</span><span class="st">&quot;white&quot;</span>) <span class="co">#white box</span></span>
+<span id="cb182-15"><a href="summarizing-distributions-in-base-r.html#cb182-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb182-16"><a href="summarizing-distributions-in-base-r.html#cb182-16" aria-hidden="true" tabindex="-1"></a><span class="co">#right half of the boxes:</span></span>
+<span id="cb182-17"><a href="summarizing-distributions-in-base-r.html#cb182-17" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">new=</span>T) <span class="co">#to prevent starting a new plot</span></span>
+<span id="cb182-18"><a href="summarizing-distributions-in-base-r.html#cb182-18" aria-hidden="true" tabindex="-1"></a><span class="fu">bxpR</span>(<span class="fu">boxplot</span>(ChickWeight<span class="sc">$</span>weight[ChickWeight<span class="sc">$</span>Treat<span class="sc">!=</span><span class="st">&quot;1&quot;</span>] <span class="sc">~</span> ChickWeight<span class="sc">$</span>Time[ChickWeight<span class="sc">$</span>Treat<span class="sc">!=</span><span class="st">&quot;1&quot;</span>],</span>
+<span id="cb182-19"><a href="summarizing-distributions-in-base-r.html#cb182-19" aria-hidden="true" tabindex="-1"></a>             <span class="at">plot=</span>F), <span class="co">#plot the non-control diets</span></span>
+<span id="cb182-20"><a href="summarizing-distributions-in-base-r.html#cb182-20" aria-hidden="true" tabindex="-1"></a>     <span class="at">outline=</span>F, <span class="co">#no outliers (we add them later)</span></span>
+<span id="cb182-21"><a href="summarizing-distributions-in-base-r.html#cb182-21" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim=</span><span class="fu">c</span>(<span class="fu">min</span>(ChickWeight<span class="sc">$</span>weight),<span class="fu">max</span>(ChickWeight<span class="sc">$</span>weight)),<span class="co">#overall y-axis range same as above</span></span>
+<span id="cb182-22"><a href="summarizing-distributions-in-base-r.html#cb182-22" aria-hidden="true" tabindex="-1"></a>     <span class="at">whisklty=</span><span class="st">&quot;solid&quot;</span>,<span class="co">#whiskers</span></span>
+<span id="cb182-23"><a href="summarizing-distributions-in-base-r.html#cb182-23" aria-hidden="true" tabindex="-1"></a>     <span class="at">axes=</span>F, <span class="co">#no axes</span></span>
+<span id="cb182-24"><a href="summarizing-distributions-in-base-r.html#cb182-24" aria-hidden="true" tabindex="-1"></a>     <span class="at">bgcol=</span><span class="st">&quot;grey80&quot;</span>) <span class="co">#grey box</span></span>
+<span id="cb182-25"><a href="summarizing-distributions-in-base-r.html#cb182-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb182-26"><a href="summarizing-distributions-in-base-r.html#cb182-26" aria-hidden="true" tabindex="-1"></a><span class="co">#everything around:</span></span>
+<span id="cb182-27"><a href="summarizing-distributions-in-base-r.html#cb182-27" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="co">#x-axis</span></span>
+<span id="cb182-28"><a href="summarizing-distributions-in-base-r.html#cb182-28" aria-hidden="true" tabindex="-1"></a>     <span class="at">at=</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(<span class="fu">levels</span>(<span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Time)))), <span class="co">#in the middle of the boxes</span></span>
+<span id="cb182-29"><a href="summarizing-distributions-in-base-r.html#cb182-29" aria-hidden="true" tabindex="-1"></a>     <span class="at">lab=</span><span class="fu">levels</span>(<span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Time)), <span class="co">#with labels from timepoints</span></span>
+<span id="cb182-30"><a href="summarizing-distributions-in-base-r.html#cb182-30" aria-hidden="true" tabindex="-1"></a>     <span class="at">las=</span><span class="dv">1</span>, <span class="co">#horizontal letters</span></span>
+<span id="cb182-31"><a href="summarizing-distributions-in-base-r.html#cb182-31" aria-hidden="true" tabindex="-1"></a>     <span class="at">lwd=</span><span class="dv">0</span>, <span class="co">#no ticks</span></span>
+<span id="cb182-32"><a href="summarizing-distributions-in-base-r.html#cb182-32" aria-hidden="true" tabindex="-1"></a>     <span class="at">cex.axis=</span><span class="fl">0.8</span>) <span class="co">#slightly smaller letters</span></span>
+<span id="cb182-33"><a href="summarizing-distributions-in-base-r.html#cb182-33" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>,</span>
+<span id="cb182-34"><a href="summarizing-distributions-in-base-r.html#cb182-34" aria-hidden="true" tabindex="-1"></a>     <span class="at">las=</span><span class="dv">1</span>, <span class="co">#horizontal letters</span></span>
+<span id="cb182-35"><a href="summarizing-distributions-in-base-r.html#cb182-35" aria-hidden="true" tabindex="-1"></a>     <span class="at">cex.axis=</span><span class="fl">0.8</span>) <span class="co">#slightly smaller letters</span></span>
+<span id="cb182-36"><a href="summarizing-distributions-in-base-r.html#cb182-36" aria-hidden="true" tabindex="-1"></a><span class="fu">box</span>(<span class="at">lwd=</span><span class="dv">1</span>) <span class="co">#frame around the plot</span></span>
+<span id="cb182-37"><a href="summarizing-distributions-in-base-r.html#cb182-37" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topleft&quot;</span>, <span class="co">#legend</span></span>
+<span id="cb182-38"><a href="summarizing-distributions-in-base-r.html#cb182-38" aria-hidden="true" tabindex="-1"></a>       <span class="at">legend=</span><span class="fu">c</span>(<span class="st">&quot;1&quot;</span>,<span class="st">&quot;2,3,4&quot;</span>), <span class="co">#words</span></span>
+<span id="cb182-39"><a href="summarizing-distributions-in-base-r.html#cb182-39" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;diet&quot;</span>, <span class="co">#title</span></span>
+<span id="cb182-40"><a href="summarizing-distributions-in-base-r.html#cb182-40" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill=</span><span class="fu">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;grey80&quot;</span>),<span class="co">#colours from boxes</span></span>
+<span id="cb182-41"><a href="summarizing-distributions-in-base-r.html#cb182-41" aria-hidden="true" tabindex="-1"></a>       <span class="at">bty=</span><span class="st">&quot;n&quot;</span>)  <span class="co">#no box</span></span>
+<span id="cb182-42"><a href="summarizing-distributions-in-base-r.html#cb182-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb182-43"><a href="summarizing-distributions-in-base-r.html#cb182-43" aria-hidden="true" tabindex="-1"></a><span class="co">#lines (as before):</span></span>
+<span id="cb182-44"><a href="summarizing-distributions-in-base-r.html#cb182-44" aria-hidden="true" tabindex="-1"></a>quiet <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="fu">unique</span>(ChickWeight<span class="sc">$</span>Chick), <span class="co">#the quiet is a dirty trick to suppress console output</span></span>
+<span id="cb182-45"><a href="summarizing-distributions-in-base-r.html#cb182-45" aria-hidden="true" tabindex="-1"></a>       <span class="cf">function</span>(chick){ <span class="co">#per chcick, do</span></span>
+<span id="cb182-46"><a href="summarizing-distributions-in-base-r.html#cb182-46" aria-hidden="true" tabindex="-1"></a>         chickdiet <span class="ot">&lt;-</span> <span class="fu">unique</span>(<span class="fu">as.numeric</span>(<span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Diet))[ChickWeight<span class="sc">$</span>Chick<span class="sc">==</span>chick]) <span class="co">#which diet did our chick have?</span></span>
+<span id="cb182-47"><a href="summarizing-distributions-in-base-r.html#cb182-47" aria-hidden="true" tabindex="-1"></a>         <span class="fu">lines</span>(<span class="at">x =</span> <span class="fu">as.numeric</span>(<span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Time))[ChickWeight<span class="sc">$</span>Chick<span class="sc">==</span>chick]<span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.25</span>,<span class="fl">0.25</span>)[<span class="dv">1</span><span class="sc">+</span><span class="fu">as.numeric</span>(ChickWeight<span class="sc">$</span>Ctrl)[ChickWeight<span class="sc">$</span>Chick<span class="sc">==</span>chick]], <span class="co">#time points for this chick</span></span>
+<span id="cb182-48"><a href="summarizing-distributions-in-base-r.html#cb182-48" aria-hidden="true" tabindex="-1"></a>               <span class="at">y =</span> ChickWeight<span class="sc">$</span>weight[ChickWeight<span class="sc">$</span>Chick<span class="sc">==</span>chick], <span class="co">#weights </span></span>
+<span id="cb182-49"><a href="summarizing-distributions-in-base-r.html#cb182-49" aria-hidden="true" tabindex="-1"></a>               <span class="at">lty=</span><span class="dv">1</span>, <span class="at">lwd=</span><span class="fl">0.3</span>, <span class="co">#thin lines</span></span>
+<span id="cb182-50"><a href="summarizing-distributions-in-base-r.html#cb182-50" aria-hidden="true" tabindex="-1"></a>               <span class="at">col=</span><span class="fu">brewer.pal</span>(<span class="dv">4</span>,<span class="st">&quot;Dark2&quot;</span>)[chickdiet]) <span class="co">#colour by diet</span></span>
+<span id="cb182-51"><a href="summarizing-distributions-in-base-r.html#cb182-51" aria-hidden="true" tabindex="-1"></a>       })</span>
+<span id="cb182-52"><a href="summarizing-distributions-in-base-r.html#cb182-52" aria-hidden="true" tabindex="-1"></a><span class="co">#points: - this time we give the coordinates to a variable first</span></span>
+<span id="cb182-53"><a href="summarizing-distributions-in-base-r.html#cb182-53" aria-hidden="true" tabindex="-1"></a>jitteredPoints <span class="ot">&lt;-</span> <span class="fu">smartJitter</span>(<span class="at">modelFrame=</span><span class="fu">model.frame</span>(ChickWeight<span class="sc">$</span>weight <span class="sc">~</span> ChickWeight<span class="sc">$</span>Time)) <span class="co"># jittered coordinates</span></span>
+<span id="cb182-54"><a href="summarizing-distributions-in-base-r.html#cb182-54" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(jitteredPoints[,<span class="dv">1</span>] <span class="sc">+</span> <span class="fu">c</span>(<span class="fl">0.25</span>,<span class="sc">-</span><span class="fl">0.25</span>)[<span class="dv">1</span><span class="sc">+</span><span class="fu">as.numeric</span>(ChickWeight<span class="sc">$</span>Treat<span class="sc">==</span><span class="dv">1</span>)], <span class="co">#move left or right, depending on treatment</span></span>
+<span id="cb182-55"><a href="summarizing-distributions-in-base-r.html#cb182-55" aria-hidden="true" tabindex="-1"></a>       jitteredPoints[,<span class="dv">2</span>], <span class="co">#keep y-position</span></span>
+<span id="cb182-56"><a href="summarizing-distributions-in-base-r.html#cb182-56" aria-hidden="true" tabindex="-1"></a>  <span class="at">cex=</span><span class="fl">0.45</span>, <span class="co">#make points a bit smaller</span></span>
+<span id="cb182-57"><a href="summarizing-distributions-in-base-r.html#cb182-57" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch=</span><span class="dv">16</span>,<span class="co">#fill points</span></span>
+<span id="cb182-58"><a href="summarizing-distributions-in-base-r.html#cb182-58" aria-hidden="true" tabindex="-1"></a>  <span class="at">col=</span><span class="fu">brewer.pal</span>(<span class="dv">4</span>,<span class="st">&quot;Dark2&quot;</span>)[<span class="fu">as.numeric</span>(<span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Diet))]) <span class="co">#color by diet</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/05halfboxes-points-1.png" width="672" /></p>
+</div>
+</div>
+<div id="histograms" class="section level2" number="7.5">
+<h2><span class="header-section-number">7.5</span> Histograms</h2>
+<p>From what you’ve read above about the values that the boxplot
+represents, you can already tell that it is more appropriate for
+unimodal distributions - that is, distributions that have most values in
+the middle. To see this, let’s focus on the chicken data from the first
+and third week and look at diet 3 only.</p>
+<div class="sourceCode" id="cb183"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb183-1"><a href="summarizing-distributions-in-base-r.html#cb183-1" aria-hidden="true" tabindex="-1"></a>ChickWeight_3 <span class="ot">&lt;-</span> ChickWeight[ ChickWeight<span class="sc">$</span>Time <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">16</span>,<span class="dv">18</span>,<span class="dv">20</span>,<span class="dv">21</span>) <span class="sc">&amp;</span><span class="co">#subset of days</span></span>
+<span id="cb183-2"><a href="summarizing-distributions-in-base-r.html#cb183-2" aria-hidden="true" tabindex="-1"></a>                                    ChickWeight<span class="sc">$</span>Diet<span class="sc">==</span><span class="dv">3</span> ,] <span class="co">#and diet 3</span></span></code></pre></div>
+<p>An easy way to visualize distributions as histograms:</p>
+<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb184-1"><a href="summarizing-distributions-in-base-r.html#cb184-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(ChickWeight_3<span class="sc">$</span>weight)</span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-subset-histogram-1.png" width="672" /></p>
+<p>As usual, the default is ugly, but with a few additional arguments, this
+becomes a useful view:</p>
+<div class="sourceCode" id="cb185"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb185-1"><a href="summarizing-distributions-in-base-r.html#cb185-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co">#different margins</span></span>
+<span id="cb185-2"><a href="summarizing-distributions-in-base-r.html#cb185-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">tcl=</span><span class="sc">-</span><span class="fl">0.3</span>, <span class="co">#shorter tick marks</span></span>
+<span id="cb185-3"><a href="summarizing-distributions-in-base-r.html#cb185-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mgp=</span><span class="fu">c</span>(<span class="fl">1.9</span>,<span class="fl">0.5</span>,<span class="dv">0</span>)) <span class="co">#move axis labels</span></span>
+<span id="cb185-4"><a href="summarizing-distributions-in-base-r.html#cb185-4" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(ChickWeight_3<span class="sc">$</span>weight,</span>
+<span id="cb185-5"><a href="summarizing-distributions-in-base-r.html#cb185-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;weight&quot;</span>,</span>
+<span id="cb185-6"><a href="summarizing-distributions-in-base-r.html#cb185-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;counts&quot;</span>,</span>
+<span id="cb185-7"><a href="summarizing-distributions-in-base-r.html#cb185-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span><span class="st">&quot;&quot;</span>, <span class="co">#no title, this is in the axis labels</span></span>
+<span id="cb185-8"><a href="summarizing-distributions-in-base-r.html#cb185-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">cex.axis=</span><span class="fl">0.8</span>, <span class="co">#smaller axis annotation</span></span>
+<span id="cb185-9"><a href="summarizing-distributions-in-base-r.html#cb185-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">las=</span><span class="dv">1</span>, <span class="co">#all axis marks horizontal</span></span>
+<span id="cb185-10"><a href="summarizing-distributions-in-base-r.html#cb185-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">yaxs =</span> <span class="st">&quot;i&quot;</span>, <span class="co">#x-axis to cut y axis at 0</span></span>
+<span id="cb185-11"><a href="summarizing-distributions-in-base-r.html#cb185-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb185-12"><a href="summarizing-distributions-in-base-r.html#cb185-12" aria-hidden="true" tabindex="-1"></a><span class="fu">box</span>(<span class="st">&quot;plot&quot;</span>,<span class="at">bty=</span><span class="st">&quot;l&quot;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-subset-histogram-nicer-1.png" width="672" /></p>
+<p>Okay, so what you see are two humps of values. This because one hump
+contains the values from the first week and the other contains the
+values of the second week. <em>In real life, you’d not want to throw these
+two sets of values into the same plot, because you know they don’t
+belong together. But bear with us for a moment.</em></p>
+<p>If you plot these values as a single boxplot box, this is what it looks
+like:</p>
+<div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb186-1"><a href="summarizing-distributions-in-base-r.html#cb186-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co">#different margins</span></span>
+<span id="cb186-2"><a href="summarizing-distributions-in-base-r.html#cb186-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">tcl=</span><span class="sc">-</span><span class="fl">0.3</span>, <span class="co">#shorter tick marks</span></span>
+<span id="cb186-3"><a href="summarizing-distributions-in-base-r.html#cb186-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mgp=</span><span class="fu">c</span>(<span class="fl">1.9</span>,<span class="fl">0.5</span>,<span class="dv">0</span>)) <span class="co">#move axis labels</span></span>
+<span id="cb186-4"><a href="summarizing-distributions-in-base-r.html#cb186-4" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(ChickWeight_3<span class="sc">$</span>weight,</span>
+<span id="cb186-5"><a href="summarizing-distributions-in-base-r.html#cb186-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">&quot;demo subset&quot;</span>,</span>
+<span id="cb186-6"><a href="summarizing-distributions-in-base-r.html#cb186-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;weight&quot;</span>,</span>
+<span id="cb186-7"><a href="summarizing-distributions-in-base-r.html#cb186-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">cex.axis=</span><span class="fl">0.8</span>, <span class="co">#smaller axis annotation</span></span>
+<span id="cb186-8"><a href="summarizing-distributions-in-base-r.html#cb186-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">pch=</span><span class="dv">16</span>, <span class="co">#filled symbols</span></span>
+<span id="cb186-9"><a href="summarizing-distributions-in-base-r.html#cb186-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">las=</span><span class="dv">1</span>) <span class="co">#all axis marks horizontal</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-subset-boxplot-nicer-1.png" width="672" /></p>
+<p>Without points plotted, you’d never guess what the distribution was.</p>
+<p>To clarify this, in the following plot, we add the quartiles and where
+whiskers would lie in the histogram:</p>
+<div class="sourceCode" id="cb187"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb187-1"><a href="summarizing-distributions-in-base-r.html#cb187-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co">#different margins</span></span>
+<span id="cb187-2"><a href="summarizing-distributions-in-base-r.html#cb187-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">tcl=</span><span class="sc">-</span><span class="fl">0.3</span>, <span class="co">#shorter tick marks</span></span>
+<span id="cb187-3"><a href="summarizing-distributions-in-base-r.html#cb187-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mgp=</span><span class="fu">c</span>(<span class="fl">1.9</span>,<span class="fl">0.5</span>,<span class="dv">0</span>)) <span class="co">#move axis labels</span></span>
+<span id="cb187-4"><a href="summarizing-distributions-in-base-r.html#cb187-4" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(ChickWeight_3<span class="sc">$</span>weight,</span>
+<span id="cb187-5"><a href="summarizing-distributions-in-base-r.html#cb187-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;weight&quot;</span>,</span>
+<span id="cb187-6"><a href="summarizing-distributions-in-base-r.html#cb187-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;counts&quot;</span>,</span>
+<span id="cb187-7"><a href="summarizing-distributions-in-base-r.html#cb187-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span><span class="st">&quot;&quot;</span>, <span class="co">#no title, this is in the axis labels</span></span>
+<span id="cb187-8"><a href="summarizing-distributions-in-base-r.html#cb187-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">cex.axis=</span><span class="fl">0.8</span>, <span class="co">#smaller axis annotation</span></span>
+<span id="cb187-9"><a href="summarizing-distributions-in-base-r.html#cb187-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">las=</span><span class="dv">1</span>, <span class="co">#all axis marks horizontal</span></span>
+<span id="cb187-10"><a href="summarizing-distributions-in-base-r.html#cb187-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">yaxs =</span> <span class="st">&quot;i&quot;</span>, <span class="co">#x-axis to cut y axis at 0</span></span>
+<span id="cb187-11"><a href="summarizing-distributions-in-base-r.html#cb187-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb187-12"><a href="summarizing-distributions-in-base-r.html#cb187-12" aria-hidden="true" tabindex="-1"></a><span class="fu">box</span>(<span class="st">&quot;plot&quot;</span>,<span class="at">bty=</span><span class="st">&quot;l&quot;</span>)</span>
+<span id="cb187-13"><a href="summarizing-distributions-in-base-r.html#cb187-13" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="fu">median</span>(ChickWeight_3<span class="sc">$</span>weight),<span class="at">lwd=</span><span class="dv">3</span>) <span class="co">#median</span></span>
+<span id="cb187-14"><a href="summarizing-distributions-in-base-r.html#cb187-14" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="fu">quantile</span>(ChickWeight_3<span class="sc">$</span>weight,<span class="fu">c</span>(<span class="fl">0.25</span>,<span class="fl">0.75</span>)),<span class="at">lwd=</span><span class="dv">1</span>) <span class="co">#quartiles</span></span>
+<span id="cb187-15"><a href="summarizing-distributions-in-base-r.html#cb187-15" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="fu">boxplot</span>(ChickWeight_3<span class="sc">$</span>weight,<span class="at">plot =</span> F)<span class="sc">$</span>stats[<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">5</span>),],<span class="at">lwd=</span><span class="dv">1</span>,<span class="at">lty=</span><span class="dv">2</span>) <span class="co"># whiskers</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-subset-histogram-withMedian-1.png" width="672" /></p>
+<p>So, you see, the median lies at a place where there are no values at
+all. The histogram therefore gives a better visualization of this
+distribution. But it represents just one sample and overlaying several
+barplots or histograms would look clunky.</p>
+</div>
+<div id="density-plots" class="section level2" number="7.6">
+<h2><span class="header-section-number">7.6</span> Density plots</h2>
+<p>One way of dealing with this is described in the next sections. R can
+smooth histograms and plot the smoothed line as density plot:</p>
+<div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb188-1"><a href="summarizing-distributions-in-base-r.html#cb188-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co">#different margins</span></span>
+<span id="cb188-2"><a href="summarizing-distributions-in-base-r.html#cb188-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">tcl=</span><span class="sc">-</span><span class="fl">0.3</span>, <span class="co">#shorter tick marks</span></span>
+<span id="cb188-3"><a href="summarizing-distributions-in-base-r.html#cb188-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mgp=</span><span class="fu">c</span>(<span class="fl">1.9</span>,<span class="fl">0.5</span>,<span class="dv">0</span>)) <span class="co">#move axis labels</span></span>
+<span id="cb188-4"><a href="summarizing-distributions-in-base-r.html#cb188-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">density</span>(ChickWeight_3<span class="sc">$</span>weight,<span class="at">from=</span><span class="dv">0</span>),</span>
+<span id="cb188-5"><a href="summarizing-distributions-in-base-r.html#cb188-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;weight&quot;</span>,</span>
+<span id="cb188-6"><a href="summarizing-distributions-in-base-r.html#cb188-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;density&quot;</span>,</span>
+<span id="cb188-7"><a href="summarizing-distributions-in-base-r.html#cb188-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span><span class="st">&quot;&quot;</span>, <span class="co">#no title, this is in the axis labels</span></span>
+<span id="cb188-8"><a href="summarizing-distributions-in-base-r.html#cb188-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">cex.axis=</span><span class="fl">0.8</span>, <span class="co">#smaller axis annotation</span></span>
+<span id="cb188-9"><a href="summarizing-distributions-in-base-r.html#cb188-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">las=</span><span class="dv">1</span>, <span class="co">#all axis marks horizontal</span></span>
+<span id="cb188-10"><a href="summarizing-distributions-in-base-r.html#cb188-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">yaxs =</span> <span class="st">&quot;i&quot;</span> <span class="co">#x-axis to cut y axis at 0</span></span>
+<span id="cb188-11"><a href="summarizing-distributions-in-base-r.html#cb188-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-subset-density-1.png" width="672" /></p>
+<p>One thing to keep in mind is the number of observations you need. To
+estimate such a smooth line, you want many points (a few hundred are
+better than 10). But R will do its best and plot a (maybe deceiving)
+line down to 2 points. You cant try this out below, by replacing the 80
+(all available points) with smaller numbers (less points):</p>
+<div class="sourceCode" id="cb189"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb189-1"><a href="summarizing-distributions-in-base-r.html#cb189-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co">#different margins</span></span>
+<span id="cb189-2"><a href="summarizing-distributions-in-base-r.html#cb189-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">tcl=</span><span class="sc">-</span><span class="fl">0.3</span>, <span class="co">#shorter tick marks</span></span>
+<span id="cb189-3"><a href="summarizing-distributions-in-base-r.html#cb189-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mgp=</span><span class="fu">c</span>(<span class="fl">1.9</span>,<span class="fl">0.5</span>,<span class="dv">0</span>)) <span class="co">#move axis labels</span></span>
+<span id="cb189-4"><a href="summarizing-distributions-in-base-r.html#cb189-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">density</span>( <span class="co">#the density function</span></span>
+<span id="cb189-5"><a href="summarizing-distributions-in-base-r.html#cb189-5" aria-hidden="true" tabindex="-1"></a>  ChickWeight_3<span class="sc">$</span>weight[<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(ChickWeight_3<span class="sc">$</span>weight), <span class="co">#we take a random sample of the weights</span></span>
+<span id="cb189-6"><a href="summarizing-distributions-in-base-r.html#cb189-6" aria-hidden="true" tabindex="-1"></a>                                         <span class="dv">80</span>)], <span class="co"># sample size -&gt; change this value</span></span>
+<span id="cb189-7"><a href="summarizing-distributions-in-base-r.html#cb189-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">from=</span><span class="dv">0</span>),</span>
+<span id="cb189-8"><a href="summarizing-distributions-in-base-r.html#cb189-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;weight&quot;</span>,</span>
+<span id="cb189-9"><a href="summarizing-distributions-in-base-r.html#cb189-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;density&quot;</span>,</span>
+<span id="cb189-10"><a href="summarizing-distributions-in-base-r.html#cb189-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span><span class="st">&quot;&quot;</span>, <span class="co">#no title, this is in the axis labels</span></span>
+<span id="cb189-11"><a href="summarizing-distributions-in-base-r.html#cb189-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">cex.axis=</span><span class="fl">0.8</span>, <span class="co">#smaller axis annotation</span></span>
+<span id="cb189-12"><a href="summarizing-distributions-in-base-r.html#cb189-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">las=</span><span class="dv">1</span>, <span class="co">#all axis marks horizontal</span></span>
+<span id="cb189-13"><a href="summarizing-distributions-in-base-r.html#cb189-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">yaxs =</span> <span class="st">&quot;i&quot;</span> <span class="co">#x-axis to cut y axis at 0</span></span>
+<span id="cb189-14"><a href="summarizing-distributions-in-base-r.html#cb189-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-subset-density-less-1.png" width="672" /></p>
+</div>
+<div id="violinplots" class="section level2" number="7.7">
+<h2><span class="header-section-number">7.7</span> Violinplots</h2>
+<p>Violinplots use a similar smoothing as the density plot above. But then,
+they flip the graph by 90 degrees and mirror it. This gives a violin
+shape for distributions that are bimodal as the one above.</p>
+<div class="sourceCode" id="cb190"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb190-1"><a href="summarizing-distributions-in-base-r.html#cb190-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co">#different margins</span></span>
+<span id="cb190-2"><a href="summarizing-distributions-in-base-r.html#cb190-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">tcl=</span><span class="sc">-</span><span class="fl">0.3</span>, <span class="co">#shorter tick marks</span></span>
+<span id="cb190-3"><a href="summarizing-distributions-in-base-r.html#cb190-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mgp=</span><span class="fu">c</span>(<span class="fl">1.9</span>,<span class="fl">0.5</span>,<span class="dv">0</span>)) <span class="co">#move axis labels</span></span>
+<span id="cb190-4"><a href="summarizing-distributions-in-base-r.html#cb190-4" aria-hidden="true" tabindex="-1"></a><span class="fu">vioplot</span>(ChickWeight_3<span class="sc">$</span>weight,</span>
+<span id="cb190-5"><a href="summarizing-distributions-in-base-r.html#cb190-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">names =</span> <span class="st">&quot;demo subset&quot;</span>,</span>
+<span id="cb190-6"><a href="summarizing-distributions-in-base-r.html#cb190-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">drawRect =</span> F,</span>
+<span id="cb190-7"><a href="summarizing-distributions-in-base-r.html#cb190-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">col=</span><span class="st">&quot;white&quot;</span>,</span>
+<span id="cb190-8"><a href="summarizing-distributions-in-base-r.html#cb190-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb190-9"><a href="summarizing-distributions-in-base-r.html#cb190-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;weight&quot;</span>,</span>
+<span id="cb190-10"><a href="summarizing-distributions-in-base-r.html#cb190-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">cex.axis=</span><span class="fl">0.8</span>, <span class="co">#smaller axis annotation</span></span>
+<span id="cb190-11"><a href="summarizing-distributions-in-base-r.html#cb190-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">pch=</span><span class="dv">16</span>, <span class="co">#filled symbols</span></span>
+<span id="cb190-12"><a href="summarizing-distributions-in-base-r.html#cb190-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">las=</span><span class="dv">1</span>) <span class="co">#all axis marks horizontal</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-subset-vioplot-1.png" width="672" /></p>
+<p>By default, violinplots are actually endowed with a tiny boxplot in the
+middle:</p>
+<div class="sourceCode" id="cb191"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb191-1"><a href="summarizing-distributions-in-base-r.html#cb191-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co">#different margins</span></span>
+<span id="cb191-2"><a href="summarizing-distributions-in-base-r.html#cb191-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">tcl=</span><span class="sc">-</span><span class="fl">0.3</span>, <span class="co">#shorter tick marks</span></span>
+<span id="cb191-3"><a href="summarizing-distributions-in-base-r.html#cb191-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mgp=</span><span class="fu">c</span>(<span class="fl">1.9</span>,<span class="fl">0.5</span>,<span class="dv">0</span>)) <span class="co">#move axis labels</span></span>
+<span id="cb191-4"><a href="summarizing-distributions-in-base-r.html#cb191-4" aria-hidden="true" tabindex="-1"></a><span class="fu">vioplot</span>(ChickWeight_3<span class="sc">$</span>weight,</span>
+<span id="cb191-5"><a href="summarizing-distributions-in-base-r.html#cb191-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">names =</span> <span class="st">&quot;demo subset&quot;</span>,</span>
+<span id="cb191-6"><a href="summarizing-distributions-in-base-r.html#cb191-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb191-7"><a href="summarizing-distributions-in-base-r.html#cb191-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;weight&quot;</span>,</span>
+<span id="cb191-8"><a href="summarizing-distributions-in-base-r.html#cb191-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">cex.axis=</span><span class="fl">0.8</span>, <span class="co">#smaller axis annotation</span></span>
+<span id="cb191-9"><a href="summarizing-distributions-in-base-r.html#cb191-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">pch=</span><span class="dv">16</span>, <span class="co">#filled symbols</span></span>
+<span id="cb191-10"><a href="summarizing-distributions-in-base-r.html#cb191-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">las=</span><span class="dv">1</span>) <span class="co">#all axis marks horizontal</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-subset-vioplot-complete-1.png" width="672" /></p>
+<p>If you put several of these next to each other, you have a plot like a
+boxplot, but instead of only boxes you have violins, which are better at
+showing distributions:</p>
+<div class="sourceCode" id="cb192"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb192-1"><a href="summarizing-distributions-in-base-r.html#cb192-1" aria-hidden="true" tabindex="-1"></a>ChickWeight_2 <span class="ot">&lt;-</span> ChickWeight[ ChickWeight<span class="sc">$</span>Time <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">16</span>,<span class="dv">18</span>,<span class="dv">20</span>,<span class="dv">21</span>) <span class="sc">&amp;</span><span class="co">#subset of days</span></span>
+<span id="cb192-2"><a href="summarizing-distributions-in-base-r.html#cb192-2" aria-hidden="true" tabindex="-1"></a>                                    ChickWeight<span class="sc">$</span>Diet<span class="sc">==</span><span class="dv">2</span> ,] <span class="co">#and diet 2</span></span>
+<span id="cb192-3"><a href="summarizing-distributions-in-base-r.html#cb192-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb192-4"><a href="summarizing-distributions-in-base-r.html#cb192-4" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co">#different margins</span></span>
+<span id="cb192-5"><a href="summarizing-distributions-in-base-r.html#cb192-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">tcl=</span><span class="sc">-</span><span class="fl">0.3</span>, <span class="co">#shorter tick marks</span></span>
+<span id="cb192-6"><a href="summarizing-distributions-in-base-r.html#cb192-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">mgp=</span><span class="fu">c</span>(<span class="fl">1.9</span>,<span class="fl">0.5</span>,<span class="dv">0</span>)) <span class="co">#move axis labels</span></span>
+<span id="cb192-7"><a href="summarizing-distributions-in-base-r.html#cb192-7" aria-hidden="true" tabindex="-1"></a><span class="fu">vioplot</span>(<span class="fu">cbind</span>(ChickWeight_2<span class="sc">$</span>weight,ChickWeight_3<span class="sc">$</span>weight),</span>
+<span id="cb192-8"><a href="summarizing-distributions-in-base-r.html#cb192-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">names =</span> <span class="fu">c</span>(<span class="st">&quot;2&quot;</span>,<span class="st">&quot;3&quot;</span>),</span>
+<span id="cb192-9"><a href="summarizing-distributions-in-base-r.html#cb192-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">&quot;diet&quot;</span>,</span>
+<span id="cb192-10"><a href="summarizing-distributions-in-base-r.html#cb192-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;weight&quot;</span>,</span>
+<span id="cb192-11"><a href="summarizing-distributions-in-base-r.html#cb192-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">cex.axis=</span><span class="fl">0.8</span>, <span class="co">#smaller axis annotation</span></span>
+<span id="cb192-12"><a href="summarizing-distributions-in-base-r.html#cb192-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">pch=</span><span class="dv">16</span>, <span class="co">#filled symbols</span></span>
+<span id="cb192-13"><a href="summarizing-distributions-in-base-r.html#cb192-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">las=</span><span class="dv">1</span>) <span class="co">#all axis marks horizontal</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-subset-vioplot-diets-1.png" width="672" /></p>
+<p>You can use violinplots pretty much like boxplots, when it comes to
+coding. Here, you see our example from the boxplot section, as
+violinplots. Only the function name <code>boxplot</code> needed to be changed to
+<code>vioplot</code>.</p>
+<div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb193-1"><a href="summarizing-distributions-in-base-r.html#cb193-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co">#different margins</span></span>
+<span id="cb193-2"><a href="summarizing-distributions-in-base-r.html#cb193-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">tcl=</span><span class="sc">-</span><span class="fl">0.3</span>, <span class="co">#shorter tick marks</span></span>
+<span id="cb193-3"><a href="summarizing-distributions-in-base-r.html#cb193-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mgp=</span><span class="fu">c</span>(<span class="fl">1.9</span>,<span class="fl">0.5</span>,<span class="dv">0</span>)) <span class="co">#move axis labels</span></span>
+<span id="cb193-4"><a href="summarizing-distributions-in-base-r.html#cb193-4" aria-hidden="true" tabindex="-1"></a><span class="fu">vioplot</span>(ChickWeight<span class="sc">$</span>weight <span class="sc">~</span> ChickWeight<span class="sc">$</span>Time, <span class="co">#only the function changed here!</span></span>
+<span id="cb193-5"><a href="summarizing-distributions-in-base-r.html#cb193-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">&quot;time point&quot;</span>,</span>
+<span id="cb193-6"><a href="summarizing-distributions-in-base-r.html#cb193-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;weight&quot;</span>,</span>
+<span id="cb193-7"><a href="summarizing-distributions-in-base-r.html#cb193-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">cex.axis=</span><span class="fl">0.8</span>, <span class="co">#smaller axis annotation</span></span>
+<span id="cb193-8"><a href="summarizing-distributions-in-base-r.html#cb193-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">pch=</span><span class="dv">16</span>, <span class="co">#filled symbols</span></span>
+<span id="cb193-9"><a href="summarizing-distributions-in-base-r.html#cb193-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">las=</span><span class="dv">1</span>) <span class="co">#all axis marks horizontal</span></span>
+<span id="cb193-10"><a href="summarizing-distributions-in-base-r.html#cb193-10" aria-hidden="true" tabindex="-1"></a>quiet <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="fu">unique</span>(ChickWeight<span class="sc">$</span>Chick), <span class="co">#the quiet is a dirty trick to suppress console output</span></span>
+<span id="cb193-11"><a href="summarizing-distributions-in-base-r.html#cb193-11" aria-hidden="true" tabindex="-1"></a>       <span class="cf">function</span>(chick){ <span class="co">#per chick, do</span></span>
+<span id="cb193-12"><a href="summarizing-distributions-in-base-r.html#cb193-12" aria-hidden="true" tabindex="-1"></a>         chickdiet <span class="ot">&lt;-</span> <span class="fu">unique</span>(<span class="fu">as.numeric</span>(<span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Diet))[ChickWeight<span class="sc">$</span>Chick<span class="sc">==</span>chick]) <span class="co">#which diet did our chick have?</span></span>
+<span id="cb193-13"><a href="summarizing-distributions-in-base-r.html#cb193-13" aria-hidden="true" tabindex="-1"></a>         <span class="fu">lines</span>(<span class="at">x =</span> <span class="fu">as.numeric</span>(<span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Time))[ChickWeight<span class="sc">$</span>Chick<span class="sc">==</span>chick], <span class="co">#time points for this chick</span></span>
+<span id="cb193-14"><a href="summarizing-distributions-in-base-r.html#cb193-14" aria-hidden="true" tabindex="-1"></a>               <span class="at">y =</span> ChickWeight<span class="sc">$</span>weight[ChickWeight<span class="sc">$</span>Chick<span class="sc">==</span>chick], <span class="co">#weights </span></span>
+<span id="cb193-15"><a href="summarizing-distributions-in-base-r.html#cb193-15" aria-hidden="true" tabindex="-1"></a>               <span class="at">lty=</span><span class="dv">1</span>, <span class="at">lwd=</span><span class="fl">0.3</span>, <span class="co">#thin lines</span></span>
+<span id="cb193-16"><a href="summarizing-distributions-in-base-r.html#cb193-16" aria-hidden="true" tabindex="-1"></a>               <span class="at">col=</span><span class="fu">brewer.pal</span>(<span class="dv">4</span>,<span class="st">&quot;Dark2&quot;</span>)[chickdiet]) <span class="co">#colour by diet</span></span>
+<span id="cb193-17"><a href="summarizing-distributions-in-base-r.html#cb193-17" aria-hidden="true" tabindex="-1"></a>       })</span>
+<span id="cb193-18"><a href="summarizing-distributions-in-base-r.html#cb193-18" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="fu">smartJitter</span>(<span class="at">modelFrame=</span><span class="fu">model.frame</span>(ChickWeight<span class="sc">$</span>weight <span class="sc">~</span> ChickWeight<span class="sc">$</span>Time)),<span class="co">#jitter added</span></span>
+<span id="cb193-19"><a href="summarizing-distributions-in-base-r.html#cb193-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">cex=</span><span class="fl">0.45</span>, <span class="co">#make points a bit smaller</span></span>
+<span id="cb193-20"><a href="summarizing-distributions-in-base-r.html#cb193-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch=</span><span class="dv">16</span>,<span class="co">#fill points</span></span>
+<span id="cb193-21"><a href="summarizing-distributions-in-base-r.html#cb193-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">col=</span><span class="fu">brewer.pal</span>(<span class="dv">4</span>,<span class="st">&quot;Dark2&quot;</span>)[<span class="fu">as.numeric</span>(<span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Diet))]) <span class="co">#color by diet</span></span>
+<span id="cb193-22"><a href="summarizing-distributions-in-base-r.html#cb193-22" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topleft&quot;</span>, <span class="co">#legend, position</span></span>
+<span id="cb193-23"><a href="summarizing-distributions-in-base-r.html#cb193-23" aria-hidden="true" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">levels</span>(<span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Diet)), <span class="co">#names of diet</span></span>
+<span id="cb193-24"><a href="summarizing-distributions-in-base-r.html#cb193-24" aria-hidden="true" tabindex="-1"></a>       <span class="at">pch=</span><span class="dv">16</span>, <span class="co">#filled points like plot</span></span>
+<span id="cb193-25"><a href="summarizing-distributions-in-base-r.html#cb193-25" aria-hidden="true" tabindex="-1"></a>       <span class="at">pt.cex =</span> <span class="fl">0.45</span>,</span>
+<span id="cb193-26"><a href="summarizing-distributions-in-base-r.html#cb193-26" aria-hidden="true" tabindex="-1"></a>       <span class="at">col=</span><span class="fu">brewer.pal</span>(<span class="dv">4</span>,<span class="st">&quot;Dark2&quot;</span>), <span class="co">#colours like plot</span></span>
+<span id="cb193-27"><a href="summarizing-distributions-in-base-r.html#cb193-27" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;diet&quot;</span>, <span class="co">#legend title</span></span>
+<span id="cb193-28"><a href="summarizing-distributions-in-base-r.html#cb193-28" aria-hidden="true" tabindex="-1"></a>       <span class="at">bty=</span><span class="st">&quot;n&quot;</span>) <span class="co">#no box around legend</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-vioplot-all-1.png" width="672" /></p>
+</div>
+<div id="beanplots" class="section level2" number="7.8">
+<h2><span class="header-section-number">7.8</span> Beanplots</h2>
+<p>An alternative to violinplots are beanplots. These are kind of useful,
+if we have two groups of samples whose distribution should be compared
+over different levels. Here is an example, comparing diet 1 (the control
+diet) to the other diets:</p>
+<div class="sourceCode" id="cb194"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb194-1"><a href="summarizing-distributions-in-base-r.html#cb194-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="co">#different margins</span></span>
+<span id="cb194-2"><a href="summarizing-distributions-in-base-r.html#cb194-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">tcl=</span><span class="sc">-</span><span class="fl">0.3</span>, <span class="co">#shorter tick marks</span></span>
+<span id="cb194-3"><a href="summarizing-distributions-in-base-r.html#cb194-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mgp=</span><span class="fu">c</span>(<span class="fl">1.9</span>,<span class="fl">0.5</span>,<span class="dv">0</span>)) <span class="co">#move axis labels</span></span>
+<span id="cb194-4"><a href="summarizing-distributions-in-base-r.html#cb194-4" aria-hidden="true" tabindex="-1"></a><span class="fu">beanplot</span>(<span class="fu">lapply</span>(<span class="fu">split</span>(ChickWeight, <span class="sc">~</span> Treat <span class="sc">+</span> Time),<span class="cf">function</span>(x) x<span class="sc">$</span>weight), <span class="co"># !different format</span></span>
+<span id="cb194-5"><a href="summarizing-distributions-in-base-r.html#cb194-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">what=</span><span class="fu">c</span>(F,T,T,F), <span class="co">#undocumente option</span></span>
+<span id="cb194-6"><a href="summarizing-distributions-in-base-r.html#cb194-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">side =</span> <span class="st">&quot;both&quot;</span>, <span class="co">#two sides</span></span>
+<span id="cb194-7"><a href="summarizing-distributions-in-base-r.html#cb194-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">col =</span> <span class="fu">list</span>(<span class="fu">brewer.pal</span>(<span class="dv">4</span>,<span class="st">&quot;Dark2&quot;</span>)[<span class="dv">1</span>],<span class="st">&quot;grey&quot;</span>),</span>
+<span id="cb194-8"><a href="summarizing-distributions-in-base-r.html#cb194-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">&quot;time point&quot;</span>,</span>
+<span id="cb194-9"><a href="summarizing-distributions-in-base-r.html#cb194-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">&quot;weight&quot;</span>,</span>
+<span id="cb194-10"><a href="summarizing-distributions-in-base-r.html#cb194-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">cex.axis=</span><span class="fl">0.8</span>, <span class="co">#smaller axis annotation</span></span>
+<span id="cb194-11"><a href="summarizing-distributions-in-base-r.html#cb194-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">pch=</span><span class="dv">16</span>, <span class="co">#filled symbols</span></span>
+<span id="cb194-12"><a href="summarizing-distributions-in-base-r.html#cb194-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">las=</span><span class="dv">1</span>) <span class="co">#all axis marks horizontal</span></span>
+<span id="cb194-13"><a href="summarizing-distributions-in-base-r.html#cb194-13" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topleft&quot;</span>, <span class="co">#legend, position</span></span>
+<span id="cb194-14"><a href="summarizing-distributions-in-base-r.html#cb194-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">&quot;control&quot;</span>,<span class="st">&quot;2,3,4&quot;</span>), <span class="co">#names of diet</span></span>
+<span id="cb194-15"><a href="summarizing-distributions-in-base-r.html#cb194-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill=</span><span class="fu">c</span>(<span class="fu">brewer.pal</span>(<span class="dv">4</span>,<span class="st">&quot;Dark2&quot;</span>)[<span class="dv">1</span>],<span class="st">&quot;grey&quot;</span>), <span class="co">#colours like plot</span></span>
+<span id="cb194-16"><a href="summarizing-distributions-in-base-r.html#cb194-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;diet&quot;</span>, <span class="co">#legend title</span></span>
+<span id="cb194-17"><a href="summarizing-distributions-in-base-r.html#cb194-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">bty=</span><span class="st">&quot;n&quot;</span>) <span class="co">#no box around legend</span></span></code></pre></div>
+<p><img src="_main_files/figure-html/05chickweight-beanplot-all-1.png" width="672" /></p>
+<p>While this is an interesting idea, there are a few problems with this
+implementation:</p>
+<ul>
+<li>the density lines are not calculated in the most appropriate way
+(you can see the distributions reaching below 0, which can’t be
+true)</li>
+<li>the way the groups are defined is inflexible</li>
+<li>the function is brutally badly documented (you need to read the code
+to find the arguments and you get error messages if you try to open
+the help)</li>
+</ul>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="introduction-to-scatter-plots-in-rggplot2.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="distributions-ggplot2.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/05_distributions_base.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf", "_main.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -1,0 +1,413 @@
+---
+title: "06 - Distributions & ggplot2"
+author: "Joachim Goedhart"
+date: '2022-09-08'
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: 4
+  pdf_document: default
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### 6.1 Setup and data
+
+Let's load the `{tidyverse}` package, which includes the `{ggplot2}`
+package that we will use for plotting:
+
+```{r}
+  library(tidyverse)
+```
+
+For the first set of visualizations, we use the ChickWeight data set
+that comes with R. Let's look at the first few lines:
+
+```{r chickweight}
+head(ChickWeight)
+```
+
+It can be useful to look at the last lines as well:
+
+```{r}
+tail(ChickWeight)
+```
+
+To summarize the dataset:
+
+```{r}
+summary(ChickWeight) #dataset is present in the workspace with the dataset name
+```
+
+### 6.2 Multiple distributions
+
+#### 6.3 Plotting the data
+
+You see that you have 4 columns, most importantly weight. There are 3
+columns with 'metadata': the Time that a chick weighed, which Chick, and
+its Diet. Let's plot the weight versus Time:
+
+```{r chickweight-scatterAll}
+ggplot(data = ChickWeight, aes(x=Time, y=weight)) +
+  geom_point()
+```
+
+Let's change the defauklt theme to set the background of the plot panel
+to white:
+
+```{r}
+theme_set(theme_light(base_size = 14))
+```
+
+The points are overlapping. To reduce overlap, we can introduce random
+displacement, also known as jitter. The `width` can be used to control
+the amount of jitter:
+
+```{r}
+ggplot(data = ChickWeight, aes(x=Time, y=weight)) +
+  geom_jitter()
+```
+
+Since there is still overlap, the dots can be made more transparent:
+
+```{r}
+ggplot(data = ChickWeight, aes(x=Time, y=weight)) +
+  geom_jitter(width = 0.25, alpha=0.5)
+```
+
+### 6.4 Boxplots
+
+There are several ways to summarize the distribution of the data. The
+most common are barplots, boxplots and violinplots. The barplot is an
+over simplication of the data that only depicts the average. This type
+of summary should be avoided, see
+[here](https://doi.org/10.1371/journal.pbio.1002128) for more about
+that. Boxplots and violinplots are better suited as summaries.
+
+In a boxplot, the values that are depicted by default are:
+
+-   the median (big bar in the middle = the 50th percentile)
+-   the 25th and 75 percentiles (ends of the box = quartiles)
+-   the whiskers extend to the last points within 1.5 \* IQR from the
+    quartiles (IQR is the interquartile range, i.e. the range between
+    the box's ends)
+-   all points that lie outside are plotted as points (outliers)
+
+Here we go:
+
+```{r}
+ggplot(data = ChickWeight, aes(x=Time, y=weight)) + geom_boxplot()
+```
+
+In the plot above, all data is used for the summary, so we should
+indicate that we want to group the data by time:
+
+```{r}
+ggplot(data = ChickWeight, aes(x=Time, y=weight, group=Time)) + geom_boxplot()
+```
+
+Since different data distribution can give rise to the same boxplot, it
+is still useful to plot the data:
+
+```{r}
+ggplot(data = ChickWeight, aes(x=Time, y=weight, group=Time)) +
+  geom_jitter(width = 0.25, alpha=0.5) +
+  geom_boxplot()
+```
+
+The boxplot is now on top of the data. This can be solved by changing
+the order of the the layers or by changing the fill color of the
+boxplot:
+
+```{r}
+ggplot(data = ChickWeight, aes(x=Time, y=weight, group=Time)) +
+  geom_jitter(width = 0.25, alpha=0.5) +
+  geom_boxplot(fill=NA)
+```
+
+One other thing needs to be fixed. The outliers are plotted twice. Once
+as a jittered dot and once as outlier of the boxplot. To remove the
+outlier from the boxplot we use:
+
+```{r}
+ggplot(data = ChickWeight, aes(x=Time, y=weight, group=Time)) +
+  geom_jitter(width = 0.25, alpha=0.5) +
+  geom_boxplot(fill=NA, outlier.shape = NA)
+```
+
+This graph looks a bit funny, since the Time points are not equally
+spaced. There is a difference of 2 for almost all, execpt for the last
+two time points which are 20 and 21. When there is continuous data on
+the x-axis (e.g. time, length, concentration) it makes sense to use
+those data for the x-axis position. However, we could also treat the
+x-axis data as labels or categories (instead of numbers). This would
+result in equal spacing, although the values are not equally spaced. To
+do this, we need to convert the Time data to a 'factor'. This can be
+done in the dataset or directly in the ggplot command as shown below:
+
+```{r}
+ggplot(data = ChickWeight, aes(x=as.factor(Time), y=weight, group=Time)) +
+  geom_jitter(width = 0.25, alpha=0.5) +
+  geom_boxplot(fill=NA, outlier.shape = NA)
+```
+
+Another explanation of discrete versus quantitative data on the x-axis
+with ggplot example code [can be found
+here](https://joachimgoedhart.github.io/DataViz-protocols/plotting-the-data.html#discrete-conditions).
+
+The boxplot is a summary of the data that shows the midpoint of the data
+(median = middle line), the middle 50% of the data (the box) and the
+extremes with the whiskers. The exact defenition can vary between the
+different whiskers, to it's a good idea to check that. From the
+[`geom_boxplot()`
+webpage](https://ggplot2.tidyverse.org/reference/geom_boxplot.html):
+"The upper whisker extends from the hinge to the largest value no
+further than 1.5 \* IQR from the hinge (where IQR is the inter-quartile
+range, or distance between the first and third quartiles). The lower
+whisker extends from the hinge to the smallest value at most 1.5 \* IQR
+of the hinge. Data beyond the end of the whiskers are called "outlying"
+points and are plotted individually."
+
+### 6.5 Violinplots
+
+To better summarize the distribution, a violinplot can be displayed:
+
+```{r}
+ggplot(data = ChickWeight, aes(x=Time, y=weight, group=Time)) + geom_violin(scale = "width", fill="grey")
+```
+
+If desired the quantiles can be displayed. These can be user-defined and
+here we use the quartiles that corresponds to the horizontal lines that
+define the boxplot. So the middle line is the median:
+
+```{r}
+ggplot(data = ChickWeight, aes(x=Time, y=weight, group=Time)) +
+  geom_violin(scale = "width", fill="grey", draw_quantiles = c(0.25,0.5,0.75))
+```
+
+Another option is to combine a boxplot with a violinplot to display the
+quartiles:
+
+```{r}
+ggplot(data = ChickWeight, aes(x=Time, y=weight, group=Time)) +
+  geom_violin(scale = "width", fill="grey") +
+  geom_boxplot(fill="white", outlier.shape = NA, width=0.2)
+```
+
+To combine the violinplot with the data:
+
+```{r}
+ggplot(data = ChickWeight, aes(x=Time, y=weight, group=Time)) +
+  geom_violin(scale = "width", fill="grey") +
+  geom_jitter(width = 0.25, alpha=0.5)
+```
+
+The data are acquired for different Diets so we can map that data to
+different colors:
+
+```{r}
+ggplot(data = ChickWeight, aes(x=Time, y=weight, group=Time)) +
+  geom_violin(scale = "width", fill="grey") +
+  geom_jitter(width = 0.25, alpha=0.5, aes(color=Diet))
+```
+
+### 6.6 Facets: Splitting into multiple plots
+
+Let's say we want to compare the weight for different diets. In ggplot
+there is a way to 'split' the data and show it in multiple graphs. The
+simplest function is `facet_wrap()` and let's see how that works:
+
+```{r}
+ggplot(data = ChickWeight, aes(x=Time, y=weight, group=Time)) +
+  geom_violin(scale = "width", fill="grey") +
+  geom_jitter(width = 0.25, alpha=0.5, aes(color=Diet)) +
+  facet_wrap(~Diet)
+```
+
+The `facet_wrap()` function calculates the optimal layout, but it can be
+defined by ncol (or nrow):
+
+```{r}
+ggplot(data = ChickWeight, aes(x=Time, y=weight, group=Time)) +
+  geom_violin(scale = "width", fill="grey") +
+  geom_jitter(width = 0.25, alpha=0.5, aes(color=Diet)) +
+  facet_wrap(~Diet, ncol = 4)
+```
+
+The use of `facet_wrap()` is particularly powerful when the data has
+several conditions. Another, similar function, is `facet_grid()` which
+allows splitting the data according to two parameters:
+
+```{r}
+ggplot(data = ChickWeight, aes(x=Time, y=weight, group=Time)) +
+  geom_violin(scale = "width", fill="grey") +
+  geom_jitter(width = 0.25, alpha=0.5, aes(color=Diet)) +
+  facet_grid(Diet~Time, scales = "free_x") +
+  theme(axis.text.x = element_blank()) #Removes the Time labels from the x-axis
+```
+
+In the example here, it may not be the best idea to split the Time in
+different plots, but it illustrates how `facet_grid()` can be used.
+
+### 6.7 A single distribution
+
+Let's have a look at the combined data of the first and last week from
+diet 3. This can be achieved in multiple ways. For instance we can
+generate a new dataframe. But we can also filter the data and feed it
+directly into ggplot with the pipe operator:
+
+```{r}
+ChickWeight %>% filter(Diet==3) %>%
+  filter(Time %in% c(0,2,4,6,16,18,20,21)) %>%
+  ggplot(aes(x=Diet, y=weight)) +
+  geom_violin(scale = "width", fill="grey90") +
+  geom_jitter(width = 0.25, alpha=1, size=5)
+```
+
+To generate a new dataframe:
+
+```{r}
+ChickWeight_sub <- ChickWeight %>%
+  filter(Diet==3) %>%
+  filter(Time %in% c(0,2,4,6,16,18,20,21))
+```
+
+#### 6.7.1 A single violinplot
+
+Since we have combined data from the first and last week, we see a bimodal
+distribution. This is nicely visualized with the violinplot. The
+violinplot shows the distribution of the data between the two extremes.
+The violinplot shows the *estimated* density distribution of the data.
+This ranges from the minimal to the maximal value of the data. To
+extrapolate the distribution we can use `trim=FALSE`:
+
+```{r}
+ggplot(ChickWeight_sub, aes(x=Diet, y=weight)) +
+  geom_violin(scale = "width", fill="grey90", trim = FALSE) +
+  geom_jitter(width = 0.25, alpha=1, size=5)
+```
+
+#### 6.7.2 Density plot
+
+The violinplot is much like a smoothened hisogram. We can plot one side
+of the violinplot and in this case it is called a density plot:
+
+```{r}
+ggplot(ChickWeight_sub, aes(y=weight)) +
+  geom_density(fill="grey90")
+```
+
+These plots are typically rotated 90 degrees:
+
+```{r}
+ggplot(ChickWeight_sub, aes(x=weight)) +
+  geom_density(fill="grey90")
+```
+
+To add the data we can use `geom_rug()`:
+
+```{r}
+ggplot(ChickWeight_sub, aes(x=weight)) +
+  geom_density(fill="grey90") +
+  geom_rug()
+```
+
+#### 6.7.3 Histogram
+
+To display these data as a histogram instead:
+
+```{r}
+ggplot(ChickWeight_sub, aes(x=weight)) +
+  geom_histogram()
+```
+
+And we can combine them:
+
+```{r}
+ggplot(ChickWeight_sub, aes(x=weight)) +
+  geom_histogram() + geom_density()
+```
+
+The density estimate is invisible, since it has a different amplitude.
+To solve this:
+
+```{r}
+# From: https://stackoverflow.com/questions/37404002/geom-density-to-match-geom-histogram-binwitdh
+ggplot(ChickWeight_sub, aes(x=weight)) +
+  geom_histogram(binwidth = 10, fill="grey80") +
+  geom_density(aes(y = 10*..count..), fill="black", alpha=0.5)
+```
+
+One thing that is not so nice is the margin between the plot and the
+axis. To remove the margin:
+
+```{r}
+# From: https://stackoverflow.com/questions/37404002/geom-density-to-match-geom-histogram-binwitdh
+ggplot(ChickWeight_sub, aes(x=weight)) +
+  geom_histogram(binwidth = 10, fill="grey80") +
+  geom_density(aes(y = 10*..count..), fill="black", alpha=0.5) +
+  scale_y_continuous(expand = c(0,NA))
+```
+
+To further improve this, we can set the maximal value of the x-axis:
+
+```{r}
+# From: https://stackoverflow.com/questions/37404002/geom-density-to-match-geom-histogram-binwitdh
+ggplot(ChickWeight_sub, aes(x=weight)) +
+  geom_histogram(binwidth = 10, fill="grey80") +
+  geom_density(aes(y = 10*..count..), fill="black", alpha=0.5) +
+  scale_y_continuous(expand = c(0,NA), limits = c(0,11))
+```
+
+### 6.8 Two distributions
+
+#### 6.8.1 Histogram & Density
+
+It is possible to overlay multiple histograms and/or density curves:
+
+```{r}
+ChickWeight %>% filter(Diet %in% c(2,3)) %>%
+  filter(Time %in% c(0,2,4,6,16,18,20,21)) %>%
+  ggplot(aes(x=weight, fill=Diet)) +
+  geom_histogram(binwidth = 10) +
+  geom_density(aes(y = 10*..count..), alpha=0.5) +
+  scale_y_continuous(expand = c(0,NA), limits = c(0,21))
+```
+
+By default the histograms are stacked (unlike the density plot), making
+it difficult to compare them. This can be solved and requires
+tranparancy because they partially overlap.
+
+```{r}
+ChickWeight %>% filter(Diet %in% c(2,3)) %>%
+  filter(Time %in% c(0,2,4,6,16,18,20,21)) %>%
+  ggplot(aes(x=weight, fill=Diet)) +
+  geom_histogram(binwidth = 10, alpha=0.8, position="identity") +
+  geom_density(aes(y = 10*..count..), alpha=0.5) +
+  scale_y_continuous(expand = c(0,NA), limits = c(0,11))
+```
+
+#### 6.8.2 Splitting into two plots
+
+However, overlaying histograms is usually not a great idea as this
+generates a cluttered plot. One way to solve this is by splitting the
+data with `facet_wrap()`. We can use `labeller` to use both the
+parameter as its value for labeling the plots. In this case the legend
+can be removed as it is redundant, allowing more space for the data:
+
+```{r}
+ChickWeight %>% filter(Diet %in% c(2,3)) %>%
+  filter(Time %in% c(0,2,4,6,16,18,20,21)) %>%
+  ggplot(aes(x=weight, fill=Diet)) +
+  geom_histogram(binwidth = 10, alpha=0.8, position="identity") +
+  geom_density(aes(y = 10*..count..), alpha=0.5) +
+  scale_y_continuous(expand = c(0,NA), limits = c(0,11)) +
+  facet_wrap(~Diet, labeller = label_both) +
+  theme(legend.position = "none")
+```

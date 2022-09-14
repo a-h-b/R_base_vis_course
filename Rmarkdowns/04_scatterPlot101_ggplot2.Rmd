@@ -1,0 +1,265 @@
+---
+title: "04 - Introduction to scatter plots in R/ggplot2"
+author: "Joachim Goedhart"
+date: '2022-09-08'
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: 4
+  pdf_document: default
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+theme_set(theme_grey())
+```
+
+### 4.1 Setup
+
+In this notebook, we will use the `{ggplot2}` package for generating scatter plots. This package is part of the `{tidyverse}` package, so we will load that first:
+
+```{r}
+library(tidyverse)
+```
+
+We'll use the iris data set that comes with R.
+
+```{r iris}
+data("iris") #import like this is possible for R's inbuilt datasets
+head(iris)
+summary(iris) #dataset is present in the workspace with the dataset name
+```
+
+You see that you have 5 columns, with measurements of iris flowers in three species.
+
+### 4.2 Scatterplots
+
+#### 4.2.1 Defaults
+
+We'll use the length and widths of the petals for the x- and y-axis. The `ggplot()` function is used to generate the plot. But we need to define the data for x and y within `aes()`. Finally, we need to define the "geometry" that is used for plotting. Here we use points and to do so, we need the function `geom_point()`. Note that the different functions are combined with the plus sign: `+`. For clarity, I use a new line after each function:
+
+Let's make a first plot:
+
+```{r iris-scatterAll}
+ggplot(data = iris) +
+  aes(x=Petal.Length, y=Petal.Width) +
+  geom_point()
+```
+
+#### 4.2.2 Themes
+
+This looks pretty good, but we can improve both the visualization and the layout. The layout can be changed with `theme()`. This enables full control over every element of the plot and the options can be overwhelming. Luckily, there are a few standard themes that you can use. This is an example with `theme_bw()`. Within the themes you can change the font size by defining `base_size`:
+
+```{r}
+ggplot(data = iris) +
+  aes(x=Petal.Length, y=Petal.Width) +
+  geom_point() +
+  theme_bw(base_size = 14)
+```
+
+There are different themes that you can try: `theme_light()`, `theme_classic`, `theme_linedraw()` and `theme_minimal()`. You can replace the original theme in the chunk above and rerun to the effect. When axes are not informative, (e.g. NMDS, t-SNE, uMap plots), you may remove theme completely with `theme_void()`:
+
+```{r}
+ggplot(data = iris) +
+  aes(x=Petal.Length, y=Petal.Width) +
+  geom_point() +
+  theme_void(base_size = 14)
+```
+
+This removes all theme elements and you can add them back with the `theme()` function:
+
+```{r}
+ggplot(data = iris) +
+  aes(x=Petal.Length, y=Petal.Width) +
+  geom_point() +
+  theme_void(base_size = 14) +
+  theme(axis.title.x = element_text(color = "black")) +
+  theme(axis.title.y = element_text(color = "black", angle = 90)) +
+  theme(axis.line.x.bottom = element_line(color="black", linetype = 1, size=.5)) +
+  theme(axis.line.y.left = element_line(color="black", linetype = 1, size=.5))
+```
+
+The code above shows the great level of control over the layout with `theme()` and that every detail can be controlled. This is however quite a daunting process and therefore it is much easier to stick with the predefined themes and modify only a couple of aspects. For instance, we can start with `theme_bw()` and remove the grid:
+
+```{r}
+ggplot(data = iris) +
+  aes(x=Petal.Length, y=Petal.Width) +
+  geom_point() +
+  theme_bw(base_size = 14)+
+  theme(panel.grid = element_blank())
+```
+
+Since the default ggplot2 theme is not ideal, you may set another theme as your default. All subsequent plots (whether you generate from an Rmarkdown file or from the console) will have this theme:
+
+```{r}
+theme_set(theme_bw(base_size = 14))
+```
+
+### 4.3 Intermezzo: Plots as objects
+
+It is quite common in ggplot to assign (using `<-`) a basic plot to an 'object' and after that apply/add functions to the object to modify it. This allows to quickly try a couple of variations in the command line. Let's assign the plot shown before to the object `p`:
+
+```{r}
+p <- ggplot(data = iris) +
+  aes(x=Petal.Length, y=Petal.Width) +
+  geom_point() +
+  theme_bw(base_size = 14)+
+  theme(panel.grid = element_blank())
+```
+
+Note that there is no output. To display the plot we can call `p`:
+
+```{r}
+p
+```
+
+### 4.4 Modifying plots
+### 4.4.1 Axis labels
+
+We can use the new object `p` to modify the axis labels:
+
+```{r}
+p + labs(x="Petal length", y="Petal width")
+```
+
+To store these changes in a new object, let's say p2 (but you can also override p) we need to assign the changes as follows:
+
+```{r}
+p2 <- p + labs(x="Petal length", y="Petal width")
+```
+
+To view the plot we can call p2:
+
+```{r}
+p2
+```
+
+#### 4.4.2 Scales and ranges
+
+To set the limits of a plot, the xlim() and ylim() functions can be used:
+
+```{r}
+p2 + xlim(c(2,6)) + ylim(c(0,2))
+```
+
+Note that we need a vector to supply the lower and upper limit of the axes. We can use `NA` to set the limit automatically:
+
+```{r}
+p2 + xlim(c(2,NA)) + ylim(c(0,2))
+```
+
+Log scale can be applied (here obly to the x-axis):
+
+```{r}
+p2 + scale_x_log10()
+```
+
+#### 4.4.3 More control: Aesthetics & Geometries
+
+Thus far, we have plotted the Petal.length and Petal.Width data as positions on the x or y-axis. This is defined in the `aes()` function. There are other ways to visualize data, for instance by color, shape of a symbol or its size. These so-called aesthetics can be applied in the ggplot function. The idea is that we 'map' data to an aesthetic. This is made explicitly in the ggplot function when we write it down in full (note that we can leave out the `data =` and `mapping =` and ggplot will still understand what we are trying to do):
+
+```{r}
+ggplot(data = iris, mapping = aes(x=Petal.Length, y=Petal.Width))
+```
+
+By itself, this call is not sufficient to generate the plot. We need to define a geometry for plotting, e.g. `geom_point()`:
+
+```{r}
+ggplot(data = iris, mapping = aes(x=Petal.Length, y=Petal.Width)) + geom_point()
+```
+
+Let's look again at the iris dataset:
+
+```{r}
+head(iris)
+```
+
+There is a column with data on the Species. We can now map that data on an aesthetic, for instance color:
+
+```{r}
+ggplot(data = iris, mapping = aes(x=Petal.Length, y=Petal.Width, color=Species)) + geom_point()
+```
+
+And we can also map that to the size of the symbols:
+
+```{r}
+ggplot(data = iris, mapping = aes(x=Petal.Length, y=Petal.Width, size=Species)) + geom_point()
+```
+
+The mapping of data on different aspects of the plotted objects (=geometries) is a very powerful concept that enables plotting of multiple parameters at the same time. To show an extreme example, (and this is probably not helping the interpretation of the data), we can display the data of all 5 columns in the iris dataset in a single plot:
+
+```{r}
+ggplot(data = iris, mapping = aes(x=Petal.Length, y=Petal.Width, size=Sepal.Length, color=Species, alpha=Petal.Length)) + geom_point()
+```
+
+The properties of the geometry can also be controlled independent from the data. Here's an example where the Species is shown as color (controlled by the `aes()` function) and the properties of the dots is defined in the geom_point() function:
+
+```{r}
+ggplot(data = iris, mapping = aes(x=Petal.Length, y=Petal.Width, color=Species)) +
+  geom_point(size=5, alpha=0.5)
+```
+
+The shape can also be changed and this is defined by a number. An example is given below:
+
+```{r}
+ggplot(data = iris, mapping = aes(x=Petal.Length, y=Petal.Width, color=Species)) +
+  geom_point(size=5, alpha=0.5, shape=15)
+```
+
+For more information on the possible shapes and their corresponding numbers [see this page](https://ggplot2.tidyverse.org/articles/ggplot2-specs.html)
+
+### 4.5 Legends
+
+Legends are automatically added by ggplot. However, you may not always need a legend. The legend can be removed as follows:
+
+```{r}
+p <- ggplot(data = iris, mapping = aes(x=Petal.Length, y=Petal.Width, color=Species)) +
+  geom_point(size=5, alpha=0.5)
+
+p + theme(legend.position = "none")
+```
+
+The appearance of the legend can be fully controlled with `theme()`. We can change the title, position and color of the text:
+
+```{r}
+p + theme(legend.position = "top", legend.justification = "right") +
+  guides(color = guide_legend(title="Type:"))
+```
+
+### 4.6 Lines and trends
+
+You can plot lines between the data per Species:
+
+```{r iris-line}
+p + geom_line()
+```
+
+That's not very informative, but this could be useful for some types of data, e.g. when time is depicted on x-axis.
+
+If we were interested in trends, a trendline can be added ("lm" is an abbreviation for linear model):
+
+```{r}
+p + geom_smooth(method = "lm")
+```
+
+Interestingly, it generates individual trend lines for the different Species, because we mapped the Species to a color. The trendline inherits the aesthetics that are defined in the `ggplot()` call. If we want to have a trendline for the combined data and keep different color for the Species, we can define the aesthetic within `geom_line()`, instead of `ggplot()`:
+
+```{r}
+ggplot(data = iris, mapping = aes(x=Petal.Length, y=Petal.Width)) +
+  geom_point(aes(color=Species), size=5, alpha=0.5) +
+  geom_smooth(method = "lm", color="black")
+```
+
+Note that the plot consists of multiple layers and that the last layer is the one that's on top. So if we want to plot the data on top of the trendline, we can alter the order of `geom_point()` and `geom_smooth()`:
+
+```{r}
+
+ggplot(data = iris, mapping = aes(x=Petal.Length, y=Petal.Width)) +
+  geom_smooth(method = "lm", color="black") +
+  geom_point(aes(color=Species), size=5, alpha=0.5)
+```

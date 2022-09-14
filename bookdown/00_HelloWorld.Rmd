@@ -1,0 +1,110 @@
+# Hello World - base R
+
+## Welcome
+
+Welcome to the R visualization workshop. If you are completely new to R
+and need to find something in the RStudio environment, check out this
+[cheat
+sheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/rstudio-ide.pdf).
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. You can
+toggle its appearance by clicking *Source* or *Visual* at the top of the
+script tab (or by clicking on the gear symbol and (de-)selecting 'Use
+Visual Editor'). The aim of this notebook is to familiarize yourself
+with this format. It will also check whether the functions you need for
+today are working.
+
+### Interacting with R
+
+Within a workbook, you can interact with R in two ways:
+
+-   the traditional way: typing commands or code into the Console that
+    you usually find in the bottom left window in RStudio. The `>` at
+    the beginning of a line is called a 'prompt'. You can only type
+    commands, when you see the prompt. If you gave a command, and there
+    is no prompt, it means R is still calculating. Results from entering
+    commands in the console appear in the console (except for e.g.
+    plots, which appear in their own window).
+
+-   You can also interact with R via the R Markdown Notebook: The
+    notebook consists of two types of text, markdown as this text, and
+    code 'chunks'. These chunks can be executed (see the little symbols
+    at the top of the chunks below). When you execute code within the
+    notebook, the results appear beneath the code.
+
+Try executing the chunk below by clicking the *Run* button within the
+chunk or by placing your cursor inside it and pressing
+*Cmd+Shift+Enter*.
+
+```{r 00helloWorld, echo=FALSE}
+print("Hello World.") #comments behind a hashtag are ignored
+
+plot(-8:8,(-8:8)^2,type="l",ylim=c(0,200),ann=F,axes=F) #the mouth
+
+points(c(-5,5),rep(150,2),cex=5) #the eyes
+
+points(c(-5,5),rep(145,2),cex=2,pch=16) #the pupils
+```
+
+### Chunks
+You can add a new chunk by clicking the *Insert Chunk* button on the
+toolbar or by pressing *Cmd+Option+I*. You could do this for example to
+see what happens if you change some code without loosing the original.
+For example, try to copy some code from above into a new chunk below and
+move the eyes or change the mouth. *Note: You can't have the same name
+for two chunks in the same file, so you need to change the name when
+copying, i.e. the word behind r.*
+
+## Test 'knitting'
+A cool feature of notebooks is that you can produce an HTML file from
+them that contains the text, code, and outputs. You can use this as your
+data report. To produce an HTML file containing the code and output, you
+can click the *Knit* button or press *Cmd+Shift+K*.
+[Here](https://raw.githubusercontent.com/rstudio/cheatsheets/main/rmarkdown.pdf)'s
+a quick summary of R markdown. Refer to the [R markdown
+guidelines](https://bookdown.org/yihui/rmarkdown/r-code.html) to learn
+more on how to control the chunks' appearance in the final output. You
+will see examples in the following notebooks, too.
+
+Knit this markdown to test that everything is working fine for you.
+*Note: If you get the error message* **Duplicate chunk label...** *, you
+forgot to change the chunk labels/names.*
+
+```{r 00libraries}
+if(!require(RColorBrewer)){
+  install.packages("RColorBrewer",repos = "http://cran.us.r-project.org")
+  library(RColorBrewer)
+}
+if(!require(openxlsx)){
+  install.packages("openxlsx",repos = "http://cran.us.r-project.org")
+  library(openxlsx)
+}
+```
+
+Here should be a list of files we provided you:
+
+```{r 00rawDir, echo=FALSE}
+currentDir <- "../datasets"
+list.files(currentDir)
+```
+
+Ask the instructor, if something does not work.
+
+
+## Resources on R
+
+Modern Statistics for Modern Biology (Susan Holmes & Wolfgang Huber):
+<https://web.stanford.edu/class/bios221/book/index.html>
+
+Introduction to Data Science (Rafael A. Irizarry):
+<https://leanpub.com/datasciencebook>
+
+R for Data Science (Hadley Wickham & Garrett Grolemund):
+<https://r4ds.had.co.nz/index.html>
+
+R Programming for Data Science (Roger D. Peng):
+<https://leanpub.com/rprogramming>
+
+R Cookbook (James (JD) Long & Paul Teetor): <https://rc2e.com/>
+
+Advanced R (Hadley Wickham): <https://adv-r.hadley.nz/>

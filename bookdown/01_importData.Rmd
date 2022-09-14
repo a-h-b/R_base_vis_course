@@ -1,0 +1,173 @@
+# Importing data - base R
+
+In this chapter, we take a look at functions to import data into R.
+
+## Using base R
+
+If we are only relying on base R, we need our data in common text
+formats, such as tab- or comma separated files. It's not unusual for
+laboratory machines, analysis programs, or bioinformaticians to supply
+the data in such a format. If you've got data in Microsoft Excel, you
+can choose comma-separated (.csv) and tab-separated (.tsv) format from
+the `Save as...` menu.
+
+R's base functions for reading files need to be told about the structure
+of the file. Then, it is actually pretty flexible with the input format.
+Here are some examples. Take a look at the files we import in a text
+editor, such as Textedit or Notepad, to see what the original data looks
+like.
+
+### Tab-delimited data with a header and using standard decimal points
+
+The first example is a pretty standard text file without any hidden
+problems. *Remember, you can execute the chunks by clicking the `Run`
+button within the chunk or by placing your cursor inside it and pressing
+`Cmd+Shift+Enter`.*
+
+```{r 01readTab1}
+UA_v1 <- read.delim("../datasets/USArrests_tab.txt")
+head(UA_v1)
+```
+
+### Non-standard decimal points
+
+If your computer is set up with Dutch standards, Excel most likely
+exports numbers with a comma instead of a point/full stop as decimal
+point. Here's how you can tell R about this.
+
+```{r 01readTab2}
+UA_v2 <- read.delim("../datasets/USArrestsComma_tab.txt",dec=",")
+head(UA_v2)
+```
+
+### Comma-separated data with a header and using standard decimal points
+
+Data with standard decimal points might also come separated by commas:
+
+```{r 01readTab3}
+UA_v3 <- read.csv("../datasets/USArrests_comma.csv")
+head(UA_v3)
+```
+
+If you look at the chunk above, we used different functions to read the
+tab- and comma-separated files. This saves us some typing, because by
+default `read.delim` separates the input at a tab and `read.csv`
+separates the input at the comma. However, `read.delim` and `read.csv`
+(along with a whole bunch of other functions) belong to one family. They
+only differ in their defaults, so if you explicitly state the field
+separator and some other formatting characteristics (like the decimal
+point `dec` above), you can interchange these functions. I find it a lot
+easier to remember the names of those arguments than the defaults of all
+the functions. So, I will use `read.delim` for the rest of the notebook:
+
+```{r 01readTab3b}
+UA_v3b <- read.delim("../datasets/USArrests_comma.csv",sep=",")
+head(UA_v3b)
+```
+
+### Tables without headers
+
+While not best practice, you sometimes get data without a set of column
+headers:
+
+```{r 01readTab4}
+UA_v4 <- read.delim("../datasets/USArrests_commaNoHeader.csv",sep=",")
+head(UA_v4)
+```
+
+You can add column names manually:
+
+```{r 01fixTab4}
+colnames(UA_v4) <- c("Murder", "Assault", "UrbanPop", "Rape")
+head(UA_v4)
+```
+
+### Additional lines
+
+Sometimes your data has some kind of preface that does not match the
+rest of your data. You can ignore it, if it is labeled with a specific
+character like so:
+
+```{r 01readTab5}
+UA_v5 <- read.delim("../datasets/USArrests_tabComments.txt",comment.char = "#")
+head(UA_v5)
+```
+
+Such a character is also ignored further down:
+
+```{r 01readTab6}
+UA_v6 <- read.delim("../datasets/USArrests_tabManipulated.txt",comment.char = ";")
+head(UA_v6)
+```
+
+There are many more options, e.g.: 
+
+- `skip` : if you want to skip a
+certain number of lines at the top 
+- `quote` : if fields with text are
+enclosed by quotation marks other than `"` or `'` 
+- `row.names` : if one
+of the columns contains row names, which can be handled differently in
+R 
+- `na.strings` : if you need to mark non-available data points, e.g.
+"NaN" or "n.d."; you can also use multiple words, e.g.
+c("NA","n.d.","Na") 
+- `stringsAsFactors` : if R should interpret columns
+with words in the data table as factors instead of a vector of words.
+Don't worry, if you don't know the difference between factors and
+character vectors at this moment. But if you're curious, take a look at
+the [chapter on
+factors](https://adv-r.hadley.nz/vectors-chap.html#factors) in the
+advanced R book.
+
+## Further methods
+
+### Excel files
+There are several functions/packages that can deal with the `.xlsx`
+    format, e.g. [`readxl`](https://readxl.tidyverse.org/), which is
+    automatically installed with the `tidyverse` package or
+    [`openxlsx`](https://ycphs.github.io/openxlsx/index.html), which is
+    demonstrated below.
+
+```{r 01readXlsxSingle}
+if(!require(openxlsx)){
+  install.packages("openxlsx",repos = "http://cran.us.r-project.org")
+  library(openxlsx)
+}
+pg <- read.xlsx("../datasets/plantGrowth.xlsx")
+head(pg)
+```
+
+You can see above that this function is smart enough to take the decimal
+separator from Excel and change it to the standard full stop. By
+default, the first line becomes the column names. 
+
+It is even a bit more
+smart: Take a look at the second sheet of `allData.xlsx` in the course
+material. It does not feature the cleanest formatting with those empty
+lines. But `read.xlsx` understands that we don't want to have empty
+lines. 
+
+To load the second sheet, we need to use the `sheet` argument -
+this determines which of the sheets in an .xlsx file to read. You can
+either give the name `sheet=hairEyeColor` or the number of the sheet:
+
+```{r 01readXlsxMultiple}
+hc <- read.xlsx("../datasets/allData.xlsx",sheet = 2)
+head(hc)
+```
+
+### Reading from URLs
+You can use base R's `read.delim`/`read.csv`/`read.table` family of
+    functions to load data from a webpage by giving the URL:
+
+```{r 01readFromURL}
+turl <- read.delim("https://github.com/a-h-b/R_base_vis_course/raw/main/TestCSV.csv", 
+                   sep = ",")
+head(turl)
+```
+
+### Reading from the clipboard
+R can actually read data that you've copied 'from the clipboard'.
+    But we recommend to never use this function, because it's not
+    reproducible.
