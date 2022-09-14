@@ -1,1 +1,1 @@
-This repository contains some data and notebooks for a workshop on R-based data visualization. (Here)[https://a-h-b.github.io/R_base_vis_course/] is a web page with all the content, rendered by bookdown.
+This repository contains some data and notebooks for a workshop on R-based data visualization. [Here](https://a-h-b.github.io/R_base_vis_course/) is a web page with all the content, rendered by bookdown.
